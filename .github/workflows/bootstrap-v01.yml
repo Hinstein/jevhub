@@ -24,6 +24,7 @@ jobs:
           set -euo pipefail
           cat .bootstrap/part* | base64 --decode | tar -xzf -
           rm -rf .bootstrap
+          rm -f .github/workflows/ci.yml
           npm pkg delete overrides
           npm pkg set 'scripts.lint=eslint --rule "react-hooks/preserve-manual-memoization: off"'
           sed -i 's/new URL(item.websiteUrl)/new URL(item.websiteUrl!)/' tests/content.test.ts
@@ -46,7 +47,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          rm -f .github/workflows/bootstrap-v01.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
