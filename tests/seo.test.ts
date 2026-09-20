@@ -40,6 +40,7 @@ describe("SEO route contract", () => {
 
   it("uses the production domain", () => {
     expect(new URL(SITE.url).hostname).toBe("jevhub.xyz");
+    expect(SITE.homeUrl).toBe("https://jevhub.xyz/");
     expect(new URL(SITE.storeUrl).hostname).toBe("jevhub.store");
   });
 
@@ -49,6 +50,8 @@ describe("SEO route contract", () => {
       "Organization",
       "WebSite",
     ]);
+    expect(graph[0].url).toBe(SITE.homeUrl);
+    expect(graph[1].url).toBe(SITE.homeUrl);
   });
 
   it("builds canonical BreadcrumbList items", () => {
