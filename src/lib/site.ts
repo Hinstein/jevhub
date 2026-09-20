@@ -1,7 +1,6 @@
 export const SITE = {
   name: "JevHub",
   url: "https://jevhub.xyz",
-  homeUrl: "https://jevhub.xyz/",
   logoPath: "/logo.png",
   socialImagePath: "/opengraph-image",
   description:

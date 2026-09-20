@@ -30,6 +30,7 @@ describe("SEO route contract", () => {
     for (const entry of sitemap()) {
       expect(entry.lastModified).toBeUndefined();
     }
+    expect(sitemap()[0].url).toBe(SITE.url);
   });
 
   it("contains all eight template detail routes", () => {
@@ -40,7 +41,6 @@ describe("SEO route contract", () => {
 
   it("uses the production domain", () => {
     expect(new URL(SITE.url).hostname).toBe("jevhub.xyz");
-    expect(SITE.homeUrl).toBe("https://jevhub.xyz/");
     expect(new URL(SITE.storeUrl).hostname).toBe("jevhub.store");
   });
 
@@ -50,8 +50,8 @@ describe("SEO route contract", () => {
       "Organization",
       "WebSite",
     ]);
-    expect(graph[0].url).toBe(SITE.homeUrl);
-    expect(graph[1].url).toBe(SITE.homeUrl);
+    expect(graph[0].url).toBe(SITE.url);
+    expect(graph[1].url).toBe(SITE.url);
   });
 
   it("builds canonical BreadcrumbList items", () => {

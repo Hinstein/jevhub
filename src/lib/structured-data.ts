@@ -6,7 +6,7 @@ export type BreadcrumbItem = {
 };
 
 export function siteStructuredData() {
-  const organizationId = `${SITE.homeUrl}#organization`;
+  const organizationId = `${SITE.url}/#organization`;
 
   return {
     "@context": "https://schema.org",
@@ -15,7 +15,7 @@ export function siteStructuredData() {
         "@type": "Organization",
         "@id": organizationId,
         name: SITE.name,
-        url: SITE.homeUrl,
+        url: SITE.url,
         description: SITE.description,
         logo: {
           "@type": "ImageObject",
@@ -26,9 +26,9 @@ export function siteStructuredData() {
       },
       {
         "@type": "WebSite",
-        "@id": `${SITE.homeUrl}#website`,
+        "@id": `${SITE.url}/#website`,
         name: SITE.name,
-        url: SITE.homeUrl,
+        url: SITE.url,
         description: SITE.description,
         publisher: {
           "@id": organizationId,

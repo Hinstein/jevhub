@@ -20,12 +20,12 @@ export const metadata: Metadata = {
     apple: "/logo.png",
   },
   alternates: {
-    canonical: SITE.homeUrl,
+    canonical: SITE.url,
   },
   openGraph: {
     type: "website",
     siteName: SITE.name,
-    url: SITE.homeUrl,
+    url: SITE.url,
     title: "JevHub: Jev Guides, Templates, Calculator, and Ecosystem",
     description: SITE.description,
     images: [
