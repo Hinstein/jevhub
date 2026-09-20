@@ -28,6 +28,7 @@ function usd(value: number) {
 export default function PricingPage() {
   return (
     <ArticleShell
+      path="/pricing"
       title="Jev pricing"
       description={`As last verified on ${JEV_PRICING.lastVerifiedAt}, TypeSafe lists Jev input at $${JEV_PRICING.pricePerMillionInputTokens} per million tokens. Output is listed as free to meter.`}
     >
