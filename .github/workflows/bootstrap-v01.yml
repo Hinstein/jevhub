@@ -1,54 +1,32 @@
-name: Bootstrap JevHub V0.1
+name: JevHub CI
 
 on:
   push:
     branches: [main]
-    paths:
-      - ".bootstrap/**"
-      - ".github/workflows/bootstrap-v01.yml"
+  pull_request:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  build-and-publish:
+  verify:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Reconstruct V0.1 source
-        shell: bash
-        run: |
-          set -euo pipefail
-          cat .bootstrap/part* | base64 --decode | tar -xzf -
-          rm -rf .bootstrap
-          rm -f .github/workflows/ci.yml
-          npm pkg delete overrides
-          npm pkg set 'scripts.lint=eslint --rule "react-hooks/preserve-manual-memoization: off"'
-          sed -i 's/new URL(item.websiteUrl)/new URL(item.websiteUrl!)/' tests/content.test.ts
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
 
       - name: Upgrade npm
         run: npm install --global npm@11.19.0
 
       - name: Install dependencies
-        run: npm install --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
 
       - name: Quality gate
         run: npm run check
-
-      - name: Commit verified V0.1 to main
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -m "feat: implement JevHub V0.1"
-          git push origin HEAD:main
