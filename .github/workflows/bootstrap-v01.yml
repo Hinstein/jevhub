@@ -26,6 +26,32 @@ jobs:
           rm -rf .bootstrap
           rm -f .github/workflows/bootstrap-v01.yml
           npm pkg delete overrides
+          python - <<'PY'
+          from pathlib import Path
+          p = Path("src/components/calculator/jev-cost-calculator.tsx")
+          s = p.read_text()
+          s = s.replace('import { useMemo, useRef, useState } from "react";', 'import { useRef, useState } from "react";')
+          old = '''  const result = useMemo(
+    () =>
+      calculateJevCost({
+        averageInputTokens: averageTokens,
+        requests,
+        mode,
+        pricePerMillionInputTokens:
+          JEV_PRICING.pricePerMillionInputTokens,
+      }),
+    [averageTokens, requests, mode],
+  );'''
+          new = '''  const result = calculateJevCost({
+    averageInputTokens: averageTokens,
+    requests,
+    mode,
+    pricePerMillionInputTokens: JEV_PRICING.pricePerMillionInputTokens,
+  });'''
+          if old not in s:
+              raise SystemExit("calculator memo block not found")
+          p.write_text(s.replace(old, new))
+          PY
 
       - name: Setup Node
         uses: actions/setup-node@v4
