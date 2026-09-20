@@ -60,6 +60,8 @@ export default async function TemplateDetailPage({ params }: Props) {
 
   return (
     <ArticleShell
+      path={`/templates/${template.slug}`}
+      breadcrumbParent={{ name: "Templates", path: "/templates" }}
       eyebrow={`${template.category} · ${template.difficulty}`}
       title={template.title}
       description={template.description}
