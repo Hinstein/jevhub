@@ -11,6 +11,7 @@ export const metadata = pageMetadata(
 export default function JevVsChatGPTPage() {
   return (
     <ArticleShell
+      path="/jev-vs-chatgpt"
       title="Jev vs ChatGPT"
       description="Jev and generative LLMs solve different parts of a workflow. Jev is optimized for bounded typed decisions; ChatGPT-style models are optimized for flexible generated language and broader open-ended tasks."
     >
