@@ -57,6 +57,7 @@ const response = await client.systemOne({
 export default function GettingStartedPage() {
   return (
     <ArticleShell
+      path="/getting-started"
       title="Getting started with Jev"
       description="The shortest path is: install the official SDK, set a TypeSafe API key, send state plus typed questions, then use the returned decision in your own code."
     >
