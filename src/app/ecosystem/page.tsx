@@ -13,6 +13,7 @@ export const metadata = pageMetadata(
 export default function EcosystemPage() {
   return (
     <ArticleShell
+      path="/ecosystem"
       eyebrow="Curated directory"
       title="Jev ecosystem"
       description="A deliberately small directory of projects checked at their original repositories. JevHub does not rank these projects or treat inclusion as an endorsement."
