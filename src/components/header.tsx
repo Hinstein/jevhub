@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { NAV_ITEMS } from "@/lib/site";
 import { StoreLink } from "@/components/store-link";
 
@@ -8,7 +9,7 @@ export function Header() {
       <div className="shell header-inner">
         <Link className="brand" href="/">
           <span className="brand-mark" aria-hidden="true">
-            J
+            <Image src="/logo.png" alt="" width={32} height={32} priority />
           </span>
           <span>JevHub</span>
         </Link>
