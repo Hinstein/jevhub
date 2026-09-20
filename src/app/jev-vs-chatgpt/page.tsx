@@ -3,8 +3,8 @@ import { ArticleShell } from "@/components/article-shell";
 import { pageMetadata } from "@/lib/metadata";
 
 export const metadata = pageMetadata(
-  "Jev vs ChatGPT",
-  "A neutral comparison of Jev's bounded decision role with generative LLMs such as ChatGPT, plus a practical architecture for using both.",
+  "Jev vs ChatGPT: When to Use Each",
+  "Compare Jev's typed, bounded decisions with ChatGPT-style generative models and learn how to combine both in an application workflow.",
   "/jev-vs-chatgpt",
 );
 

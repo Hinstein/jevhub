@@ -5,8 +5,8 @@ import { JEV_PRICING } from "@/data/jev-pricing";
 import { pageMetadata } from "@/lib/metadata";
 
 export const metadata = pageMetadata(
-  "Jev Cost Calculator",
-  "Estimate Jev cost from average input tokens and request volume using the currently listed TypeSafe input-token price.",
+  "Jev Cost Calculator: Estimate Token Costs",
+  "Estimate per-request and monthly Jev input-token costs from average tokens, request volume, and the current official price.",
   "/tools/jev-cost-calculator",
 );
 

@@ -38,7 +38,24 @@ Changes made in the SEO pass:
 - Organization JSON-LD points to the crawlable 512x512 PNG at `/logo.png`;
 - the Google-compatible multi-size `/favicon.ico` is the preferred site icon;
 - the SEO contract tests cover share-image metadata and the raster Organization
-  logo.
+  logo;
+- the main entry pages use search-intent-specific titles and descriptions while
+  keeping the V0.1 route count unchanged.
+
+## Latest production verification
+
+Verified against `https://jevhub.xyz` after the logo and metadata release:
+
+- Lighthouse mobile checks for the home page, What is Jev, Cost Calculator,
+  one Template detail page, and Ecosystem: SEO, performance, accessibility,
+  and best-practices categories all passed;
+- all 16 sitemap URLs returned successful HTML responses with one H1, a unique
+  title, a unique description, a self-referential canonical, and crawlable
+  internal links;
+- `/robots.txt`, `/sitemap.xml`, `/favicon.ico`, `/logo.png`, the OG image, and
+  the Google verification file returned 200;
+- `/go/store` remained a 307 redirect with `X-Robots-Tag: noindex, nofollow`
+  and stayed out of the sitemap.
 
 ## Account-level work still required
 

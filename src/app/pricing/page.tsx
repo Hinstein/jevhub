@@ -5,8 +5,8 @@ import { JEV_PRICING } from "@/data/jev-pricing";
 import { pageMetadata } from "@/lib/metadata";
 
 export const metadata = pageMetadata(
-  "Jev Pricing",
-  "Current Jev input and output pricing, simple cost examples, the official source, and a live Jev cost calculator.",
+  "Jev Pricing: Input Tokens and Cost Calculator",
+  "See Jev's current input-token pricing, free-to-meter output, official source, and estimate usage with the Jev cost calculator.",
   "/pricing",
 );
 

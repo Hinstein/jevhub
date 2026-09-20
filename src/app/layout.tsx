@@ -10,7 +10,7 @@ import { SITE } from "@/lib/site";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: "JevHub — Learn, build, and explore Jev",
+    default: "JevHub: Jev Guides, Templates, Calculator, and Ecosystem",
     template: "%s | JevHub",
   },
   description: SITE.description,
@@ -26,20 +26,20 @@ export const metadata: Metadata = {
     type: "website",
     siteName: SITE.name,
     url: SITE.url,
-    title: "JevHub — Learn, build, and explore Jev",
+    title: "JevHub: Jev Guides, Templates, Calculator, and Ecosystem",
     description: SITE.description,
     images: [
       {
         url: new URL(SITE.socialImagePath, SITE.url).toString(),
         width: 1200,
         height: 630,
-        alt: "JevHub — Learn, build, and explore Jev",
+        alt: "JevHub: Jev guides, templates, calculator, and ecosystem",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "JevHub — Learn, build, and explore Jev",
+    title: "JevHub: Jev Guides, Templates, Calculator, and Ecosystem",
     description: SITE.description,
     images: [new URL(SITE.socialImagePath, SITE.url).toString()],
   },

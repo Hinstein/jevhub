@@ -4,8 +4,8 @@ import { CodeBlock } from "@/components/code-block";
 import { pageMetadata } from "@/lib/metadata";
 
 export const metadata = pageMetadata(
-  "What is Jev?",
-  "A practical explanation of Jev, TypeSafe AI's System One decision model, including Choice, Score, Noul, and where it fits next to generative LLMs.",
+  "What Is Jev? TypeSafe AI's System One Explained",
+  "Learn what Jev is, how TypeSafe AI's System One model returns typed probabilistic decisions, and when to use Choice, Score, and Noul.",
   "/what-is-jev",
 );
 

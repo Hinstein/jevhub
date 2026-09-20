@@ -4,8 +4,8 @@ import { CodeBlock } from "@/components/code-block";
 import { pageMetadata } from "@/lib/metadata";
 
 export const metadata = pageMetadata(
-  "Getting Started with Jev",
-  "Install the official TypeSafe JavaScript SDK, send your first System One request, and understand state, Choice, Score, and Noul.",
+  "Jev JavaScript SDK Quickstart",
+  "Install the official TypeSafe JavaScript SDK, set your API key, and send a first System One request with Choice, Score, and Noul.",
   "/getting-started",
 );
 

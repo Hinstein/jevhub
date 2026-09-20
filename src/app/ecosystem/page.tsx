@@ -5,8 +5,8 @@ import { ecosystem, ecosystemCategories } from "@/content/ecosystem";
 import { pageMetadata } from "@/lib/metadata";
 
 export const metadata = pageMetadata(
-  "Jev Ecosystem",
-  "A curated Jev ecosystem directory covering official SDKs, community clients, integrations, playgrounds, agent tooling, and open-source research.",
+  "Jev Ecosystem: SDKs, Integrations, and Tools",
+  "Browse a curated Jev ecosystem directory of official SDKs, community clients, integrations, agent tools, playgrounds, and research.",
   "/ecosystem",
 );
 

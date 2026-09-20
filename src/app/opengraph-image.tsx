@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "JevHub — Learn, build, and explore Jev";
+export const alt = "JevHub: Jev guides, templates, calculator, and ecosystem";
 export const size = {
   width: 1200,
   height: 630,

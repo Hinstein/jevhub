@@ -4,8 +4,8 @@ import { templateCategories, templates } from "@/content/templates";
 import { pageMetadata } from "@/lib/metadata";
 
 export const metadata = pageMetadata(
-  "Jev Templates",
-  "Eight practical Jev decision templates for support, sales, agents, and community workflows using Choice, Score, and Noul.",
+  "Jev Templates: Choice, Score, and Noul Patterns",
+  "Explore eight practical Jev templates for support, sales, agents, moderation, and other bounded decisions, with TypeScript examples and limits.",
   "/templates",
 );
 
