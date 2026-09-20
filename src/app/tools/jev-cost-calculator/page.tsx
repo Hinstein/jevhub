@@ -13,6 +13,7 @@ export const metadata = pageMetadata(
 export default function CostCalculatorPage() {
   return (
     <ArticleShell
+      path="/tools/jev-cost-calculator"
       eyebrow="Free tool"
       title="Jev cost calculator"
       description="Estimate per-request, daily, monthly, and annual Jev input-token cost. All calculator inputs stay in your browser."
