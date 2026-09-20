@@ -15,8 +15,8 @@ export const metadata: Metadata = {
   },
   description: SITE.description,
   icons: {
-    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
-    shortcut: "/icon.svg",
+    icon: [{ url: "/favicon.ico", sizes: "any", type: "image/x-icon" }],
+    shortcut: "/favicon.ico",
   },
   alternates: {
     canonical: SITE.url,
