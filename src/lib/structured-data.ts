@@ -19,7 +19,7 @@ export function siteStructuredData() {
         description: SITE.description,
         logo: {
           "@type": "ImageObject",
-          url: `${SITE.url}/icon.svg`,
+          url: new URL(SITE.logoPath, SITE.url).toString(),
           width: 512,
           height: 512,
         },

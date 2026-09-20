@@ -7,6 +7,7 @@ export function pageMetadata(
   path: string,
 ): Metadata {
   const canonical = new URL(path, SITE.url).toString();
+  const socialImage = new URL(SITE.socialImagePath, SITE.url).toString();
 
   return {
     title,
@@ -18,11 +19,20 @@ export function pageMetadata(
       title,
       description,
       url: canonical,
+      images: [
+        {
+          url: socialImage,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
     },
     twitter: {
-      card: "summary",
+      card: "summary_large_image",
       title,
       description,
+      images: [socialImage],
     },
   };
 }

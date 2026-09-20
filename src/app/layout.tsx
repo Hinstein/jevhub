@@ -27,11 +27,20 @@ export const metadata: Metadata = {
     url: SITE.url,
     title: "JevHub — Learn, build, and explore Jev",
     description: SITE.description,
+    images: [
+      {
+        url: new URL(SITE.socialImagePath, SITE.url).toString(),
+        width: 1200,
+        height: 630,
+        alt: "JevHub — Learn, build, and explore Jev",
+      },
+    ],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "JevHub — Learn, build, and explore Jev",
     description: SITE.description,
+    images: [new URL(SITE.socialImagePath, SITE.url).toString()],
   },
 };
 

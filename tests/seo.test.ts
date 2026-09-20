@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import robots from "@/app/robots";
 import sitemap from "@/app/sitemap";
 import { templates } from "@/content/templates";
+import { pageMetadata } from "@/lib/metadata";
 import { INDEXABLE_ROUTES, SITE } from "@/lib/site";
 import {
   breadcrumbStructuredData,
@@ -60,5 +61,19 @@ describe("SEO route contract", () => {
     expect(data.itemListElement[1].item).toBe(
       `${SITE.url}/templates`,
     );
+  });
+
+  it("provides share image metadata for content pages", () => {
+    const metadata = pageMetadata("Jev Pricing", "Pricing guide", "/pricing");
+    const serialized = JSON.stringify(metadata);
+
+    expect(serialized).toContain(`${SITE.url}/opengraph-image`);
+    expect(JSON.stringify(metadata.twitter)).toContain("summary_large_image");
+  });
+
+  it("uses a crawlable raster logo in Organization data", () => {
+    const graph = siteStructuredData()["@graph"];
+
+    expect(graph[0].logo.url).toBe(`${SITE.url}/logo.png`);
   });
 });
