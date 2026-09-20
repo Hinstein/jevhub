@@ -1,44 +1,90 @@
 # JevHub
 
-JevHub 是一个独立的 Jev 学习、工具、模板与生态入口站，目标域名为 **jevhub.xyz**。
+JevHub is an independent Jev learning, tools, templates, and ecosystem site for **jevhub.xyz**.
 
-> 重要边界：JevHub 与购买/充值站 **jevhub.store** 是两个独立项目。JevHub 不承载支付、订单、兑换码、余额、账本、用户购买后台等交易逻辑，只保留一个可追踪的外部跳转入口。
+> JevHub is not affiliated with or endorsed by TypeSafe AI. The commerce site **jevhub.store** is a separate project and is only linked through `/go/store`.
 
-## V0.1 目标
+## V0.1 scope
 
-V0.1 只做一个轻量、可快速上线、SEO 友好的内容/工具站：
+The first release intentionally stays small:
 
-- 16 个可索引页面
-- 5 个基础学习/SEO 页面
-- 1 个 Jev Cost Calculator
-- 1 个 Templates 索引页 + 8 个模板详情页
-- 1 个精选 Ecosystem 页面
-- 1 个指向 jevhub.store 的非索引跳转入口
-- 无数据库、无登录、无后台、无支付、无 Marketplace、无 Jev 在线 Playground
+- 16 indexable pages
+- 5 core learning / SEO pages
+- 1 local Jev cost calculator
+- 1 template index + 8 practical template pages
+- 1 curated ecosystem page with 20–30 checked projects
+- 1 noindex redirect to `jevhub.store`
+- no database
+- no auth
+- no payments
+- no marketplace
+- no online Jev API playground
 
-## 文档
+## Stack
 
-开发前必须按顺序阅读：
-
-1. [V0.1 产品范围](docs/V0.1_PRODUCT_SPEC.md)
-2. [参考项目与复用边界](docs/REFERENCE_PROJECTS.md)
-3. [首版内容规格](docs/CONTENT_SPEC.md)
-4. [开发执行顺序](docs/IMPLEMENTATION_PLAN.md)
-5. [验收标准](docs/ACCEPTANCE_CRITERIA.md)
-6. [Codex / Agent 开发规则](AGENTS.md)
-
-## V0.1 技术原则
-
-- Next.js 16 + TypeScript
+- Next.js 16
+- React 19
+- TypeScript
 - Tailwind CSS 4
-- shadcn/ui（只用必要组件）
-- 内容和静态数据优先，不引入数据库
-- 页面尽量服务端渲染/静态生成
-- SEO 信息集中管理
-- Jev 价格等易变事实必须单一数据源，并记录来源与最近核验时间
-- 任何 Jev 能力描述、价格、SDK 用法都优先引用 TypeSafe 官方来源
-- 社区项目只作为示例/灵感来源，必须标记为社区项目，不得写成官方能力
+- Vitest
 
-## V0.1 完成定义
+V0.1 uses no runtime database and no Jev API key.
 
-只有在 [docs/ACCEPTANCE_CRITERIA.md](docs/ACCEPTANCE_CRITERIA.md) 中全部 Gate 通过后，V0.1 才算完成。完成后停止扩功能，先上线并观察 Search Console、Analytics 和 Store 跳转数据，再决定 V0.2。
+## Local development
+
+```bash
+npm install
+npm run dev
+```
+
+Quality gate:
+
+```bash
+npm run check
+```
+
+That runs lint, typecheck, unit/content tests, and a production build.
+
+## Optional analytics
+
+Set a GA4 measurement ID:
+
+```bash
+NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
+```
+
+The site emits:
+
+- `page_view`
+- `calculator_used`
+- `template_code_copied`
+- `ecosystem_outbound_clicked`
+- `store_click`
+
+Without the variable, analytics is a no-op.
+
+## Content truth
+
+Jev pricing is stored once in `src/data/jev-pricing.ts`. Any pricing update should change that file and its `lastVerifiedAt` together.
+
+Official TypeSafe SDK behavior should be checked against:
+
+- https://github.com/typesafe-ai/typesafe-sdk-js
+- https://docs.typesafe.ai
+
+Community examples are labeled as community sources and are not presented as official TypeSafe recommendations.
+
+## Planning docs
+
+Read these before changing V0.1 scope:
+
+1. `docs/V0.1_PRODUCT_SPEC.md`
+2. `docs/REFERENCE_PROJECTS.md`
+3. `docs/CONTENT_SPEC.md`
+4. `docs/IMPLEMENTATION_PLAN.md`
+5. `docs/ACCEPTANCE_CRITERIA.md`
+6. `AGENTS.md`
+
+## Release rule
+
+When the V0.1 acceptance gates pass, stop adding features. Deploy, connect Search Console/analytics, observe real queries and clicks, then decide V0.2 from data.

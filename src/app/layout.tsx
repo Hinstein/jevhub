@@ -1,0 +1,68 @@
+import type { Metadata } from "next";
+import Script from "next/script";
+import "@/app/globals.css";
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
+import { AnalyticsRouteTracker } from "@/components/analytics";
+import { SITE } from "@/lib/site";
+
+export const metadata: Metadata = {
+  metadataBase: new URL(SITE.url),
+  title: {
+    default: "JevHub — Learn, build, and explore Jev",
+    template: "%s | JevHub",
+  },
+  description: SITE.description,
+  alternates: {
+    canonical: SITE.url,
+  },
+  openGraph: {
+    type: "website",
+    siteName: SITE.name,
+    url: SITE.url,
+    title: "JevHub — Learn, build, and explore Jev",
+    description: SITE.description,
+  },
+  twitter: {
+    card: "summary",
+    title: "JevHub — Learn, build, and explore Jev",
+    description: SITE.description,
+  },
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  const gaId = process.env.NEXT_PUBLIC_GA_ID;
+
+  return (
+    <html lang="en">
+      <body>
+        {gaId ? (
+          <>
+            <Script
+              async
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+              strategy="afterInteractive"
+            />
+            <Script id="ga4" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                window.gtag = gtag;
+                gtag('js', new Date());
+                gtag('config', '${gaId}', { send_page_view: false });
+              `}
+            </Script>
+            <AnalyticsRouteTracker />
+          </>
+        ) : null}
+        <Header />
+        <main>{children}</main>
+        <Footer />
+      </body>
+    </html>
+  );
+}
