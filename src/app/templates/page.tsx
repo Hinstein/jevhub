@@ -12,6 +12,7 @@ export const metadata = pageMetadata(
 export default function TemplatesPage() {
   return (
     <ArticleShell
+      path="/templates"
       eyebrow="Template library"
       title="Jev decision templates"
       description="Eight small patterns for bounded decisions. Each template includes example state, question design, TypeScript, limits, and sources."
