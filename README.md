@@ -47,13 +47,16 @@ That runs lint, typecheck, unit/content tests, and a production build.
 
 ## Optional analytics
 
-Set a GA4 measurement ID:
+Set either a GA4 measurement ID or a self-hosted Umami website:
 
 ```bash
 NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
+NEXT_PUBLIC_UMAMI_SCRIPT_URL=https://analytics.example.com/script.js
+NEXT_PUBLIC_UMAMI_WEBSITE_ID=your-website-id
+NEXT_PUBLIC_UMAMI_DOMAINS=jevhub.xyz
 ```
 
-The site emits:
+The site emits page views and these custom events:
 
 - `page_view`
 - `calculator_used`
@@ -61,7 +64,8 @@ The site emits:
 - `ecosystem_outbound_clicked`
 - `store_click`
 
-Without the variable, analytics is a no-op.
+When both providers are configured, custom events are sent to both. Without a
+provider configuration, analytics is a no-op.
 
 ## Content truth
 

@@ -41,11 +41,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
+  const umamiScriptUrl = process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL;
+  const umamiWebsiteId = process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID;
+  const umamiDomains = process.env.NEXT_PUBLIC_UMAMI_DOMAINS;
 
   return (
     <html lang="en">
       <body>
         <SiteStructuredData />
+        {umamiScriptUrl && umamiWebsiteId ? (
+          <Script
+            src={umamiScriptUrl}
+            data-website-id={umamiWebsiteId}
+            {...(umamiDomains ? { "data-domains": umamiDomains } : {})}
+            strategy="afterInteractive"
+          />
+        ) : null}
         {gaId ? (
           <>
             <Script
