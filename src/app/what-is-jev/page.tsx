@@ -24,6 +24,7 @@ const result = await client.systemOne({
 export default function WhatIsJevPage() {
   return (
     <ArticleShell
+      path="/what-is-jev"
       title="What is Jev?"
       description="Jev is TypeSafe AI's first public System One model: it takes state plus typed questions and returns bounded decisions with probabilities instead of free-form prose."
     >
