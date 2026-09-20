@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="JevHub">
+  <rect width="512" height="512" rx="112" fill="#07110f"/>
+  <rect x="42" y="42" width="428" height="428" rx="86" fill="#0b1714" stroke="#6ee7b7" stroke-width="16"/>
+  <path d="M178 146h66v151c0 55-31 87-86 87-18 0-36-4-50-11l16-54c10 4 20 6 29 6 17 0 25-10 25-31V146Zm96 0h62l37 146 37-146h66l-71 238h-64l-67-238Z" fill="#edf8f4"/>
+</svg>
