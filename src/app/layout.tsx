@@ -4,6 +4,7 @@ import "@/app/globals.css";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { AnalyticsRouteTracker } from "@/components/analytics";
+import { SiteStructuredData } from "@/components/structured-data";
 import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -13,6 +14,10 @@ export const metadata: Metadata = {
     template: "%s | JevHub",
   },
   description: SITE.description,
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    shortcut: "/icon.svg",
+  },
   alternates: {
     canonical: SITE.url,
   },
@@ -40,6 +45,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <SiteStructuredData />
         {gaId ? (
           <>
             <Script
