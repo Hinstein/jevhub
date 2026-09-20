@@ -25,6 +25,7 @@ jobs:
           cat .bootstrap/part* | base64 --decode | tar -xzf -
           rm -rf .bootstrap
           rm -f .github/workflows/bootstrap-v01.yml
+          npm pkg delete overrides
 
       - name: Setup Node
         uses: actions/setup-node@v4
