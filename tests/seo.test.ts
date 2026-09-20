@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { INDEXABLE_ROUTES, SITE } from "@/lib/site";
+import robots from "@/app/robots";
+import sitemap from "@/app/sitemap";
 import { templates } from "@/content/templates";
+import { INDEXABLE_ROUTES, SITE } from "@/lib/site";
+import {
+  breadcrumbStructuredData,
+  siteStructuredData,
+} from "@/lib/structured-data";
 
 describe("SEO route contract", () => {
   it("has exactly 16 unique indexable routes", () => {
@@ -10,6 +16,19 @@ describe("SEO route contract", () => {
 
   it("never indexes the store redirect", () => {
     expect(INDEXABLE_ROUTES).not.toContain("/go/store");
+    expect(sitemap().map((entry) => entry.url)).not.toContain(
+      `${SITE.url}/go/store`,
+    );
+  });
+
+  it("keeps /go/store crawlable so its X-Robots-Tag noindex can be seen", () => {
+    expect(JSON.stringify(robots().rules)).not.toContain("/go/");
+  });
+
+  it("does not publish stale sitemap lastModified values", () => {
+    for (const entry of sitemap()) {
+      expect(entry.lastModified).toBeUndefined();
+    }
   });
 
   it("contains all eight template detail routes", () => {
@@ -21,5 +40,25 @@ describe("SEO route contract", () => {
   it("uses the production domain", () => {
     expect(new URL(SITE.url).hostname).toBe("jevhub.xyz");
     expect(new URL(SITE.storeUrl).hostname).toBe("jevhub.store");
+  });
+
+  it("emits Organization and WebSite structured data", () => {
+    const graph = siteStructuredData()["@graph"];
+    expect(graph.map((entry) => entry["@type"])).toEqual([
+      "Organization",
+      "WebSite",
+    ]);
+  });
+
+  it("builds canonical BreadcrumbList items", () => {
+    const data = breadcrumbStructuredData([
+      { name: "Home", path: "/" },
+      { name: "Templates", path: "/templates" },
+    ]);
+
+    expect(data["@type"]).toBe("BreadcrumbList");
+    expect(data.itemListElement[1].item).toBe(
+      `${SITE.url}/templates`,
+    );
   });
 });
