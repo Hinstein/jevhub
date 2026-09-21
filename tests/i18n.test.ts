@@ -31,11 +31,12 @@ describe("locale routing", () => {
     expect(getLocaleFromPathname("/pricing")).toBe("en");
   });
 
-  it("pre-renders the 16 localized content paths", () => {
+  it("pre-renders the 17 localized content paths", () => {
     const params = generateStaticParams();
 
-    expect(params).toHaveLength(16);
+    expect(params).toHaveLength(17);
     expect(params).toContainEqual({ slug: [] });
+    expect(params).toContainEqual({ slug: ["playground"] });
     expect(params).toContainEqual({ slug: ["templates", "refund-detection"] });
   });
 
