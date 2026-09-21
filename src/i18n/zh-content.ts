@@ -91,7 +91,7 @@ const zhTemplates: Record<string, TemplateTranslation> = {
   "lead-qualification": {
     title: "销售线索筛选",
     description: "把潜在销售机会与合作、客服、Spam 和目的不明的消息区分开。",
-    useCases: ["入站销售", "CRM 分流", "销售提醒"],
+    useCases: ["销售线索", "CRM 分流", "销售提醒"],
     questions: {
       inbound_type: {
         instruction: "判断这条收到的消息应该进入哪一类。",
@@ -162,7 +162,7 @@ const zhTemplates: Record<string, TemplateTranslation> = {
     useCases: ["联系表单", "收件箱分流", "社区入口"],
     questions: {
       message_type: {
-        instruction: "为这条入站消息选择最合适的路由。",
+        instruction: "判断这条收到的消息应该进入哪一类。",
         criteria: {
           sales: "正在评估我们产品的潜在客户",
           partnership: "具体的合作提议",
