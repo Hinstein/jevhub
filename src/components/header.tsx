@@ -37,9 +37,9 @@ export function Header() {
         <nav className="desktop-nav" aria-label={copy.primaryNav}>
           {navItems.map((item) => (
             <Link
-              className={currentPath === item.href ? "nav-link nav-active" : "nav-link"}
+              className={currentPath === withoutLocale(item.href) ? "nav-link nav-active" : "nav-link"}
               href={item.href}
-              aria-current={currentPath === item.href ? "page" : undefined}
+              aria-current={currentPath === withoutLocale(item.href) ? "page" : undefined}
               key={item.href}
             >
               {item.label}

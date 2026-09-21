@@ -6,6 +6,7 @@ import {
 } from "@/i18n/config";
 import {
   localizedEcosystemCategory,
+  localizedPrimitive,
   localizedTemplate,
 } from "@/i18n/zh-content";
 import { ecosystem } from "@/content/ecosystem";
@@ -72,5 +73,7 @@ describe("localized content", () => {
     expect(localized.questions[0].instruction).toBe("客户的主要请求是什么？");
 
     expect(localizedEcosystemCategory(ecosystem[0].category, "zh")).toBe("官方");
+    expect(localizedPrimitive("choice", "zh")).toBe("Choice");
+    expect(localizedPrimitive("score", "zh")).toBe("Score");
   });
 });
