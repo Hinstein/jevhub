@@ -2,12 +2,16 @@ import type { Metadata } from "next";
 import { localizePath, type Locale } from "@/i18n/config";
 import { SITE } from "@/lib/site";
 
+function absoluteUrl(path: string) {
+  return path === "/" ? SITE.url : new URL(path, SITE.url).toString();
+}
+
 export function pageMetadata(
   title: string,
   description: string,
   path: string,
 ): Metadata {
-  const canonical = new URL(path, SITE.url).toString();
+  const canonical = absoluteUrl(path);
   const socialImage = new URL(SITE.socialImagePath, SITE.url).toString();
 
   return {
@@ -16,8 +20,9 @@ export function pageMetadata(
     alternates: {
       canonical,
       languages: {
-        en: new URL(path, SITE.url).toString(),
-        "zh-CN": new URL(localizePath(path, "zh"), SITE.url).toString(),
+        en: canonical,
+        "zh-CN": absoluteUrl(localizePath(path, "zh")),
+        "x-default": canonical,
       },
     },
     openGraph: {
@@ -51,7 +56,7 @@ export function localizedPageMetadata(
   path: string,
 ): Metadata {
   const localizedPath = localizePath(path, locale);
-  const canonical = new URL(localizedPath, SITE.url).toString();
+  const canonical = absoluteUrl(localizedPath);
   const socialImage = new URL(SITE.socialImagePath, SITE.url).toString();
 
   return {
@@ -61,8 +66,9 @@ export function localizedPageMetadata(
     alternates: {
       canonical,
       languages: {
-        en: new URL(path, SITE.url).toString(),
-        "zh-CN": new URL(localizePath(path, "zh"), SITE.url).toString(),
+        en: absoluteUrl(path),
+        "zh-CN": absoluteUrl(localizePath(path, "zh")),
+        "x-default": absoluteUrl(path),
       },
     },
     openGraph: {

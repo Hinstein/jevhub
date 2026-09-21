@@ -117,6 +117,10 @@ export default async function TemplateDetailPage({ params }: Props) {
       </ul>
 
       <h2>Sources and inspiration</h2>
+      <p className="small">
+        This template and its source links were last reviewed on{" "}
+        {template.lastReviewedAt}.
+      </p>
       <div className="source-list">
         {template.sourceNotes.map((source) => (
           <div className="source-row" key={`${source.kind}-${source.url}`}>
@@ -130,7 +134,8 @@ export default async function TemplateDetailPage({ params }: Props) {
 
       <h2>Continue</h2>
       <p>
-        Browse <Link href="/templates">all templates</Link>, learn the{" "}
+        Try this pattern in the <Link href="/playground">Jev Playground</Link>,
+        browse <Link href="/templates">all templates</Link>, learn the{" "}
         <Link href="/getting-started">official SDK shape</Link>, or estimate
         production volume with the{" "}
         <Link href="/tools/jev-cost-calculator">cost calculator</Link>.

@@ -83,6 +83,18 @@ export default function JevVsChatGPTPage() {
         multiplier into a universal “Jev is X times faster” claim.
       </p>
       <p>
+        See the{" "}
+        <a
+          href="https://typesafe.ai/blog/introducing-system-one-models-and-jev"
+          target="_blank"
+          rel="noreferrer"
+        >
+          official TypeSafe launch post ↗
+        </a>{" "}
+        for the published measurements and their caveats. Sources last
+        reviewed: 2026-09-21.
+      </p>
+      <p>
         For your own workload, start with the{" "}
         <Link href="/tools/jev-cost-calculator">cost calculator</Link> and run a
         representative evaluation rather than extrapolating from a demo.

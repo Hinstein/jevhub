@@ -4,10 +4,13 @@ const OFFICIAL_SDK =
   "https://github.com/typesafe-ai/typesafe-sdk-js";
 const COMMUNITY_PLAYGROUND =
   "https://github.com/TypeSafeAI/typesafe-playground";
+const reviewed = "2026-09-21";
+export const TEMPLATE_CONTENT_REVIEWED_AT = reviewed;
 
 export const templates: JevTemplate[] = [
   {
     slug: "refund-detection",
+    lastReviewedAt: reviewed,
     title: "Refund Detection",
     description:
       "Identify whether a support case is primarily asking for money back, without turning classification into refund authorization.",
@@ -94,6 +97,7 @@ console.log(result.answers);`,
   },
   {
     slug: "support-routing",
+    lastReviewedAt: reviewed,
     title: "Support Routing",
     description:
       "Route an incoming support message to one primary queue and score how quickly it should be reviewed.",
@@ -182,6 +186,7 @@ const result = await client.systemOne({
   },
   {
     slug: "lead-qualification",
+    lastReviewedAt: reviewed,
     title: "Lead Qualification",
     description:
       "Separate real sales opportunities from partnerships, support requests, spam, and unclear inbound messages.",
@@ -280,6 +285,7 @@ const result = await client.systemOne({
   },
   {
     slug: "buying-intent",
+    lastReviewedAt: reviewed,
     title: "Buying Intent",
     description:
       "Distinguish concrete purchasing behavior from casual interest, praise, or vague future intent.",
@@ -360,6 +366,7 @@ const result = await client.systemOne({
   },
   {
     slug: "spam-detection",
+    lastReviewedAt: reviewed,
     title: "Spam Detection",
     description:
       "Screen contact-form messages for unsolicited generic promotion while keeping an explicit unclear route.",
@@ -440,6 +447,7 @@ const result = await client.systemOne({
   },
   {
     slug: "agent-router",
+    lastReviewedAt: reviewed,
     title: "Agent Router",
     description:
       "Choose the next allowed agent or tool from a constrained graph without treating the model's choice as authorization.",
@@ -514,6 +522,7 @@ const result = await client.systemOne({
   },
   {
     slug: "task-completion",
+    lastReviewedAt: reviewed,
     title: "Task Completion",
     description:
       "Verify an agent's claim of completion against tool evidence and the observed final state.",
@@ -594,6 +603,7 @@ const result = await client.systemOne({
   },
   {
     slug: "content-moderation",
+    lastReviewedAt: reviewed,
     title: "Content Moderation",
     description:
       "Classify community replies by their role and separately decide when a human moderator should review them.",

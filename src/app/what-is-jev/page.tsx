@@ -135,6 +135,9 @@ export default function WhatIsJevPage() {
           </a>
         </li>
       </ul>
+      <p className="small">
+        Sources last reviewed: 2026-09-21.
+      </p>
 
       <h2>Next</h2>
       <p>

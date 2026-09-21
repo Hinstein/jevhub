@@ -77,6 +77,7 @@ describe("SEO route contract", () => {
       expect(metadata.alternates?.languages).toMatchObject({
         en: expectedCanonical,
         "zh-CN": new URL(`/zh-CN${route === "/" ? "" : route}`, SITE.url).toString(),
+        "x-default": expectedCanonical,
       });
 
       titles.push(title);
@@ -152,6 +153,9 @@ describe("SEO route contract", () => {
 
     expect(serialized).toContain(`${SITE.url}/opengraph-image`);
     expect(JSON.stringify(metadata.twitter)).toContain("summary_large_image");
+    expect(metadata.alternates?.languages?.["x-default"]).toBe(
+      `${SITE.url}/pricing`,
+    );
   });
 
   it("uses a crawlable raster logo in Organization data", () => {

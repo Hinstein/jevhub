@@ -119,7 +119,8 @@ export default function PricingPage() {
       <p>
         You can also review <Link href="/what-is-jev">what Jev is</Link> or
         compare its role with a generative model in{" "}
-        <Link href="/jev-vs-chatgpt">Jev vs ChatGPT</Link>.
+        <Link href="/jev-vs-chatgpt">Jev vs ChatGPT</Link>. To try a bounded
+        request directly, open the <Link href="/playground">Playground</Link>.
       </p>
     </ArticleShell>
   );

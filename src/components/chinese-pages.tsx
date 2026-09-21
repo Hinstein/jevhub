@@ -9,7 +9,11 @@ import { JevCostCalculator } from "@/components/calculator/jev-cost-calculator";
 import { StoreLink } from "@/components/store-link";
 import { TemplateCard } from "@/components/template-card";
 import { ecosystem, ecosystemCategories } from "@/content/ecosystem";
-import { templates, templateBySlug } from "@/content/templates";
+import {
+  TEMPLATE_CONTENT_REVIEWED_AT,
+  templates,
+  templateBySlug,
+} from "@/content/templates";
 import { JEV_PRICING } from "@/data/jev-pricing";
 import {
   localizedCategory,
@@ -380,10 +384,13 @@ export function ChineseWhatIsJevPage() {
           </a>
         </li>
       </ul>
+      <p className="small">一手来源最近核验：2026-09-21。</p>
 
       <h2>下一步</h2>
       <p>
-        继续阅读
+        先在
+        <LocaleLink href="/playground" locale={locale}>Playground</LocaleLink>
+        中运行一次，再继续阅读
         <LocaleLink href="/getting-started" locale={locale}>快速入门</LocaleLink>，在
         <LocaleLink href="/tools/jev-cost-calculator" locale={locale}>成本计算器</LocaleLink>中估算用量，或浏览
         <LocaleLink href="/templates" locale={locale}>实用模板</LocaleLink>。
@@ -545,7 +552,8 @@ export function ChineseGettingStartedPage() {
 
       <h2>下一步</h2>
       <p>
-        在<LocaleLink href="/templates" locale={locale}>模板</LocaleLink>中尝试具体模式，在
+        先在<LocaleLink href="/playground" locale={locale}>Playground</LocaleLink>中运行一次，在
+        <LocaleLink href="/templates" locale={locale}>模板</LocaleLink>中尝试具体模式，在
         <LocaleLink href="/tools/jev-cost-calculator" locale={locale}>成本计算器</LocaleLink>中估算生产用量，或阅读
         <LocaleLink href="/jev-vs-chatgpt" locale={locale}>Jev 与 ChatGPT</LocaleLink>了解两者分别适合什么场景。
       </p>
@@ -602,6 +610,13 @@ export function ChineseJevVsChatGPTPage() {
         TypeSafe 发布过 System One 的 benchmark 和工作流结果。这些数据来自 TypeSafe 自己的测量，而且会受任务类型、模型选择、state 大小和网络条件影响。因此 JevHub 不会把某个宣传倍数直接写成“Jev 一定快 X 倍”。
       </p>
       <p>
+        具体数据和限制可以查看
+        <a href={JEV_PRICING.sourceUrl} target="_blank" rel="noreferrer">
+          TypeSafe 官方发布文章 ↗
+        </a>
+        。来源最近核验：2026-09-21。
+      </p>
+      <p>
         对自己的真实请求，请从<LocaleLink href="/tools/jev-cost-calculator" locale={locale}>成本计算器</LocaleLink>开始，并用有代表性的样本测试，不要直接拿 demo 结果外推。
       </p>
 
@@ -653,7 +668,8 @@ export function ChineseCostCalculatorPage() {
       </ul>
 
       <p>
-        阅读<LocaleLink href="/pricing" locale={locale}>定价说明</LocaleLink>，查看
+        先在<LocaleLink href="/playground" locale={locale}>Playground</LocaleLink>中运行一次，阅读
+        <LocaleLink href="/pricing" locale={locale}>定价说明</LocaleLink>，查看
         <LocaleLink href="/getting-started" locale={locale}>如何发出第一个请求</LocaleLink>，或浏览
         <LocaleLink href="/templates" locale={locale}>Jev 模板</LocaleLink>。
       </p>
@@ -682,7 +698,10 @@ export function ChineseTemplatesPage() {
       description="8 个常见场景的 Jev 示例。每个模板都包含示例 state、问题设计、TypeScript、注意事项和来源。"
     >
       <div className="callout">
-        这些页面是可复制的代码示例。想直接体验可以先用 Playground；接入自己的项目时，请按业务规则调整选项和阈值。
+        这些页面是可复制的代码示例。想直接体验可以先用
+        <LocaleLink href="/playground" locale={locale}>Playground</LocaleLink>；接入自己的项目时，请按业务规则调整选项和阈值。
+        <br />
+        <span className="small">来源示例最近核验：{TEMPLATE_CONTENT_REVIEWED_AT}。</span>
       </div>
 
       {zhTemplateCategories.map((category) => {
@@ -790,6 +809,7 @@ export function ChineseTemplateDetailPage({ slug }: { slug: string }) {
       </ul>
 
       <h2>来源与参考</h2>
+      <p className="small">这个模板和来源链接最近核验：{template.lastReviewedAt}。</p>
       <div className="source-list">
         {template.sourceNotes.map((source) => (
           <div className="source-row" key={`${source.kind}-${source.url}`}>
@@ -803,7 +823,8 @@ export function ChineseTemplateDetailPage({ slug }: { slug: string }) {
 
       <h2>继续浏览</h2>
       <p>
-        浏览<LocaleLink href="/templates" locale={locale}>全部模板</LocaleLink>，了解
+        先在<LocaleLink href="/playground" locale={locale}>Playground</LocaleLink>中运行这个模式，浏览
+        <LocaleLink href="/templates" locale={locale}>全部模板</LocaleLink>，了解
         <LocaleLink href="/getting-started" locale={locale}>官方 SDK 用法</LocaleLink>，或使用
         <LocaleLink href="/tools/jev-cost-calculator" locale={locale}>成本计算器</LocaleLink>估算实际使用成本。
       </p>

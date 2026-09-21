@@ -1,6 +1,11 @@
+import Link from "next/link";
 import { ArticleShell } from "@/components/article-shell";
 import { TemplateCard } from "@/components/template-card";
-import { templateCategories, templates } from "@/content/templates";
+import {
+  templateCategories,
+  templates,
+  TEMPLATE_CONTENT_REVIEWED_AT,
+} from "@/content/templates";
 import { pageMetadata } from "@/lib/metadata";
 
 export const metadata = pageMetadata(
@@ -18,8 +23,13 @@ export default function TemplatesPage() {
       description="Eight small patterns for bounded decisions. Each template includes example state, question design, TypeScript, limits, and sources."
     >
       <div className="callout">
-        These are learning templates, not an online Jev runner. Copy the pattern
-        into your own server application and adapt the criteria to your policy.
+        These are learning templates for bounded decisions. Try a pattern in the{" "}
+        <Link href="/playground">Jev Playground</Link>, then copy it into your
+        own server application and adapt the criteria to your policy.
+        <br />
+        <span className="small">
+          Source examples last reviewed: {TEMPLATE_CONTENT_REVIEWED_AT}.
+        </span>
       </div>
 
       {templateCategories.map((category) => {

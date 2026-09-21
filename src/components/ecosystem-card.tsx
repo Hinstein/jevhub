@@ -22,6 +22,9 @@ export function EcosystemCard({
       </div>
       <h3>{item.name}</h3>
       <p>{content.description}</p>
+      <p className="small">
+        {locale === "zh" ? "最近核验" : "Last checked"}: {item.lastCheckedAt}
+      </p>
       <div className="ecosystem-links">
         <EcosystemOutboundLink
           href={item.repoUrl}

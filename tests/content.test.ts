@@ -23,6 +23,7 @@ describe("template content", () => {
       expect(template.typescriptExample).toContain("@typesafe-ai/sdk");
       expect(template.limits.length).toBeGreaterThan(0);
       expect(template.sourceNotes.length).toBeGreaterThan(0);
+      expect(template.lastReviewedAt).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     }
   });
 });

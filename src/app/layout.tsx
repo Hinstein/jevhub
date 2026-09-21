@@ -29,6 +29,7 @@ export const metadata: Metadata = {
     languages: {
       en: SITE.url,
       "zh-CN": new URL("/zh-CN", SITE.url).toString(),
+      "x-default": SITE.url,
     },
   },
   openGraph: {

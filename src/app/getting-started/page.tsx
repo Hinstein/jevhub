@@ -133,7 +133,8 @@ export default function GettingStartedPage() {
 
       <h2>Next</h2>
       <p>
-        Try a concrete pattern in <Link href="/templates">Templates</Link>,
+        Try a decision in the <Link href="/playground">Jev Playground</Link>,
+        copy a concrete pattern from <Link href="/templates">Templates</Link>,
         calculate projected usage in the{" "}
         <Link href="/tools/jev-cost-calculator">Cost Calculator</Link>, or review
         the conceptual boundary in{" "}

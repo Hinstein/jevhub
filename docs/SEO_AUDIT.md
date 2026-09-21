@@ -26,6 +26,8 @@ Verified for the 17 V0.1 indexable routes:
 
 - unique `<title>`, meta description, and canonical URL;
 - one visible H1 and at least two crawlable internal links per non-home page;
+- reciprocal `en`, `zh-CN`, and `x-default` alternates for the English and
+  localized route sets;
 - absolute canonical URLs and absolute sitemap URLs on `https://jevhub.xyz`;
 - `robots.txt` allows the content pages and references the sitemap;
 - sitemap contains exactly the 17 approved routes, no `/go/store`, and no fabricated
@@ -45,6 +47,12 @@ Changes made in the SEO pass:
   logo;
 - the main entry pages use search-intent-specific titles and descriptions while
   keeping the approved 17-route V0.1 set explicit.
+- the Templates, Getting Started, Pricing, and template-detail pages link to
+  the approved Playground where that context is useful;
+- template source links, ecosystem entries, and source-led comparison pages
+  expose review/check dates instead of implying that claims are timeless;
+- the Jev vs ChatGPT page links its benchmark caveat to TypeSafe's official
+  launch post.
 
 ## Production verification to rerun after deployment
 

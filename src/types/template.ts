@@ -30,4 +30,5 @@ export type JevTemplate = {
   whyItWorks: string[];
   limits: string[];
   sourceNotes: SourceNote[];
+  lastReviewedAt: string;
 };
