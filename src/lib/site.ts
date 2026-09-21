@@ -1,7 +1,13 @@
+export const LOGO_ASSETS = {
+  svg: "/icon.svg",
+  png: "/logo.png",
+  favicon: "/favicon.ico",
+} as const;
+
 export const SITE = {
   name: "JevHub",
   url: "https://jevhub.xyz",
-  logoPath: "/logo.png",
+  logoPath: LOGO_ASSETS.png,
   socialImagePath: "/opengraph-image",
   description:
     "Independent guides, cost tools, practical templates, and a curated ecosystem directory for TypeSafe AI's Jev decision model.",

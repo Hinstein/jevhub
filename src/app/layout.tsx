@@ -6,7 +6,7 @@ import { Footer } from "@/components/footer";
 import { LocaleDocument } from "@/components/locale-document";
 import { AnalyticsRouteTracker } from "@/components/analytics";
 import { SiteStructuredData } from "@/components/structured-data";
-import { SITE } from "@/lib/site";
+import { LOGO_ASSETS, SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -16,9 +16,13 @@ export const metadata: Metadata = {
   },
   description: SITE.description,
   icons: {
-    icon: [{ url: "/favicon.ico", sizes: "any", type: "image/x-icon" }],
-    shortcut: "/favicon.ico",
-    apple: "/logo.png",
+    icon: [
+      { url: LOGO_ASSETS.svg, type: "image/svg+xml" },
+      { url: LOGO_ASSETS.png, sizes: "512x512", type: "image/png" },
+      { url: LOGO_ASSETS.favicon, sizes: "any", type: "image/x-icon" },
+    ],
+    shortcut: LOGO_ASSETS.favicon,
+    apple: LOGO_ASSETS.png,
   },
   alternates: {
     canonical: SITE.url,
