@@ -75,7 +75,7 @@
 
 ---
 
-# 4. What is Jev — `/what-is-jev`
+# 3. What is Jev — `/what-is-jev`
 
 ## Search intent
 
