@@ -97,10 +97,9 @@ export function ChineseHomePage() {
       <section className="hero">
         <div className="shell">
           <div className="eyebrow">独立 Jev 资源</div>
-          <h1>学习、构建并探索 Jev。</h1>
+          <h1>Jev 学习、工具与案例，一站看懂。</h1>
           <p className="hero-copy">
-            独立的 Jev 指南、成本计算器、可复用决策模板，以及面向 TypeSafe AI
-            Jev 决策模型的精选生态目录。
+            这里整理 Jev 的入门说明、成本计算器、可复用模板和精选生态项目，帮助你快速理解并上手 TypeSafe AI 的 Jev。
           </p>
           <div className="actions">
             <LocaleLink className="button-primary" href="/playground" locale={locale}>
@@ -120,17 +119,15 @@ export function ChineseHomePage() {
       <section className="section">
         <div className="shell">
           <div className="section-heading">
-            <div className="eyebrow">四条路径</div>
-            <h2>按你当前需要使用 JevHub。</h2>
-            <p>
-              先了解概念、估算成本、复制一个边界清晰的决策模式，或查看周边生态。
-            </p>
+            <div className="eyebrow">从这里开始</div>
+            <h2>你现在想做什么？</h2>
+            <p>了解 Jev、估算成本、直接套用模板，或者看看生态里大家在做什么。</p>
           </div>
           <div className="grid grid-4">
             <LocaleLink className="card card-link" href="/what-is-jev" locale={locale}>
               <div className="eyebrow">了解</div>
               <h3>什么是 Jev？</h3>
-              <p>理解类型化决策、概率，以及 Jev 适合放在什么位置。</p>
+              <p>看懂 Jev 的输入、输出和概率，以及它适合解决什么问题。</p>
             </LocaleLink>
             <LocaleLink
               className="card card-link"
@@ -144,12 +141,12 @@ export function ChineseHomePage() {
             <LocaleLink className="card card-link" href="/templates" locale={locale}>
               <div className="eyebrow">构建</div>
               <h3>复制决策模板</h3>
-              <p>从封闭的 Choice、Score 和 Noul 模式开始。</p>
+              <p>从 Choice、Score 和 Noul 的现成示例开始。</p>
             </LocaleLink>
             <LocaleLink className="card card-link" href="/ecosystem" locale={locale}>
               <div className="eyebrow">探索</div>
               <h3>浏览生态目录</h3>
-              <p>寻找 SDK、集成、智能体工具和社区项目。</p>
+              <p>寻找 SDK、集成、Agent 工具和社区项目。</p>
             </LocaleLink>
           </div>
         </div>
@@ -159,18 +156,17 @@ export function ChineseHomePage() {
         <div className="shell">
           <div className="section-heading">
             <div className="eyebrow">Jev 擅长什么</div>
-            <h2>让软件可以直接消费的决策。</h2>
+            <h2>让程序直接拿结果继续执行。</h2>
             <p>
-              Jev 面向边界清晰的决策：分类、路由、评分，或估算一个 yes/no
-              概率。它不是自由文本生成器。
+              Jev 更适合答案范围明确的问题：分类、路由、评分，或者判断一个 yes/no 结论有多大概率成立。它不是用来写长文本的。
             </p>
           </div>
           <div className="grid grid-4">
             {[
-              ["分类", "从定义好的集合中选择一个标签。"],
-              ["路由", "选择工作流中下一个允许的路径。"],
-              ["评分", "将 state 映射到有序量表。"],
-              ["校验", "估算证据是否支持一个 yes/no 条件。"],
+              ["分类", "从预先定义的选项里选一个。"],
+              ["路由", "从允许的下一步中选择一个去向。"],
+              ["评分", "按你定义的等级给出分数。"],
+              ["判断", "给出某个 yes/no 结论成立的概率。"],
             ].map(([title, text]) => (
               <div className="card" key={title}>
                 <h3>{title}</h3>
@@ -185,7 +181,7 @@ export function ChineseHomePage() {
         <div className="shell">
           <div className="section-heading">
             <div className="eyebrow">精选模板</div>
-            <h2>从边界清晰的任务开始，而不是从空白 prompt 开始。</h2>
+            <h2>先从现成场景开始，不用从空白 prompt 写起。</h2>
           </div>
           <div className="grid grid-2">
             {featured.map((template) => (
@@ -206,7 +202,7 @@ export function ChineseHomePage() {
             <div className="eyebrow">生态预览</div>
             <h2>Jev 已经出现在真实的开发者工具中。</h2>
             <p>
-              JevHub 精选一组小型项目，并在列出前回到每个项目的原始仓库核验。
+              JevHub 只收录一小批值得看的项目，并会打开原始仓库确认信息。
             </p>
           </div>
           <div className="grid grid-3">
@@ -297,7 +293,7 @@ export function ChineseWhatIsJevPage() {
       locale={locale}
       path="/what-is-jev"
       title="什么是 Jev？"
-      description="Jev 是 TypeSafe AI 的第一个公开 System One 模型：它接收 state 和类型化问题，返回带概率的边界清晰决策，而不是自由文本。"
+      description="Jev 是 TypeSafe AI 的第一个公开 System One 模型：它接收 state（上下文）和 Choice、Score、Noul 问题，返回固定格式的结果和概率，而不是自由文本。"
     >
       <div className="callout">
         可以把 Jev 理解为给软件做分类、判断和评分的结构化决策模型，而不是聊天助手。
@@ -310,7 +306,7 @@ export function ChineseWhatIsJevPage() {
         <LocaleLink href="/playground" locale={locale}>
           Jev Playground
         </LocaleLink>
-        允许你编辑 state、切换 Choice / Noul / Score，并直接查看 Jev 返回的决策、置信度和概率分布。
+        允许你编辑 state、切换 Choice / Noul / Score，并直接查看 Jev 返回的结果、置信度和概率分布。
       </p>
       <div className="actions">
         <LocaleLink className="button-primary" href="/playground" locale={locale}>
@@ -325,36 +321,36 @@ export function ChineseWhatIsJevPage() {
         </LocaleLink>
       </div>
 
-      <h2>同一个形状，用 TypeScript 表达</h2>
-      <p>官方 JavaScript SDK 也是用 state + 类型化问题来表达这套决策结构。</p>
+      <h2>同样的逻辑，用 TypeScript 表达</h2>
+      <p>官方 JavaScript SDK 也是把 state 和问题一起发给 Jev，再读取固定格式的结果。</p>
       <CodeBlock code={example} locale={locale} />
 
       <h2>Jev 适合的场景</h2>
       <ul>
         <li>对客服、销售、审核或文档状态进行分类。</li>
-        <li>在边界清晰的工作流图中路由请求。</li>
-        <li>根据明确的严重程度或优先级量表评分。</li>
-        <li>在将较小集合交给 LLM 之前，先过滤大批量输入。</li>
-        <li>根据提供的证据核验声明或智能体动作。</li>
+        <li>在预先定义好的工作流中路由请求。</li>
+        <li>按明确的严重程度或优先级规则评分。</li>
+        <li>先过滤大批量输入，再把少量结果交给 LLM。</li>
+        <li>根据已有信息，判断某个结论或 Agent 是否真的完成了任务。</li>
       </ul>
 
       <h2>Jev 不适合的场景</h2>
       <ul>
         <li>写邮件、文章、程序或自由形式的解释。</li>
-        <li>输出空间开放的创意生成。</li>
-        <li>无法定义或拆解有效答案的任务。</li>
-        <li>没有围绕模型建立确定性政策检查，就直接授权高影响动作。</li>
+        <li>需要自由发挥的创意生成。</li>
+        <li>无法提前定义可能答案范围的任务。</li>
+        <li>没有明确的权限和业务规则，就直接授权高风险操作。</li>
       </ul>
 
       <h2>Jev 可以与 LLM 组合使用</h2>
       <p>
         一种常见架构是先让 Jev 分类、路由或过滤，只有真正需要生成语言时才调用生成式模型。
-        这样可以让决策层保持边界，同时在需要时保留 GPT、Claude 或其他 LLM 的灵活性。
+        这样可以让前置判断更可控，同时在真正需要生成内容时保留 GPT、Claude 或其他 LLM 的灵活性。
       </p>
 
       <h2>一手来源</h2>
       <p>
-        TypeSafe 的发布文章将 Jev 描述为“输入结构化 state，输出带类型的概率决策”。官方 JavaScript SDK
+        TypeSafe 的发布文章把 Jev 概括为 “structured state in, typed probabilistic decisions out”。官方 JavaScript SDK
         暴露了 <code>choice</code>、<code>score</code>、<code>noul</code> 和
         <code>systemOne</code>。
       </p>
@@ -420,7 +416,7 @@ export function ChinesePricingPage() {
       locale={locale}
       path="/pricing"
       title="Jev 定价"
-      description={`截至 ${JEV_PRICING.lastVerifiedAt} 最近核验，TypeSafe 列出的 Jev 输入价格是每百万 token $${JEV_PRICING.pricePerMillionInputTokens}。输出当前标记为免费计量。`}
+      description={`截至 ${JEV_PRICING.lastVerifiedAt} 最近核验，TypeSafe 列出的 Jev 输入价格是每 100 万 token ${JEV_PRICING.pricePerMillionInputTokens}。当前输出 token 不计费。`}
     >
       <div className="callout">
         价格可能变化。JevHub 全站只使用一份定价配置，并在下方链接回 TypeSafe 官方来源。
@@ -442,7 +438,7 @@ export function ChinesePricingPage() {
             </tr>
             <tr>
               <td>输出</td>
-              <td>{JEV_PRICING.pricePerMillionOutputTokens === 0 ? "免费计量" : formatUsd(JEV_PRICING.pricePerMillionOutputTokens)}</td>
+              <td>{JEV_PRICING.pricePerMillionOutputTokens === 0 ? "当前不计费" : formatUsd(JEV_PRICING.pricePerMillionOutputTokens)}</td>
             </tr>
           </tbody>
         </table>
@@ -466,7 +462,7 @@ export function ChinesePricingPage() {
 
       <h2>只看请求数是不够的</h2>
       <p>
-        Jev 按输入 token 计价，因此一百万次短决策可能远低于一百万次携带大量 state 的决策。估算时应同时考虑每次请求的平均输入规模和请求量。
+        Jev 按输入 token 计价。同样是 100 万次请求，state 很短和 state 很长，成本会差很多。估算时要同时看每次请求的平均输入大小和请求量。
       </p>
 
       <div className="actions">
@@ -488,7 +484,7 @@ export function ChinesePricingPage() {
 
       <h2>关于 JevHub Store</h2>
       <p>
-        JevHub 将商业流程与信息站点分开。如果访问独立 Store，你会离开本项目。JevHub 不把 Store 视为 TypeSafe 官方属性。
+        JevHub Store 是独立站点，不是 TypeSafe 官方商店。点击后会离开 JevHub 内容站。
       </p>
       <div className="actions">
         <StoreLink locale={locale} />
@@ -496,7 +492,7 @@ export function ChinesePricingPage() {
       <p>
         你也可以查看
         <LocaleLink href="/what-is-jev" locale={locale}>Jev 是什么</LocaleLink>，或在
-        <LocaleLink href="/jev-vs-chatgpt" locale={locale}>Jev 与 ChatGPT</LocaleLink>中比较两者的角色。
+        <LocaleLink href="/jev-vs-chatgpt" locale={locale}>Jev 与 ChatGPT</LocaleLink>中比较两者适合的场景。
       </p>
     </ArticleShell>
   );
@@ -508,7 +504,7 @@ export function ChineseGettingStartedPage() {
       locale={locale}
       path="/getting-started"
       title="Jev 快速入门"
-      description="最短路径是：安装官方 SDK，设置 TypeSafe API key，发送 state 和类型化问题，然后在自己的代码中使用返回的决策。"
+      description="最短路径是：安装官方 SDK，设置 TypeSafe API key，发送 state 和 Choice、Score、Noul 问题，然后在代码中读取返回结果。"
     >
       <h2>1. 前置条件</h2>
       <p>当前官方 JavaScript SDK 要求 Node.js 20 或更高版本，以及一个 TypeSafe API key。</p>
@@ -516,29 +512,29 @@ export function ChineseGettingStartedPage() {
       <h2>2. 安装官方 SDK</h2>
       <CodeBlock code={install} locale={locale} />
       <p>
-        在服务端环境中设置 <code>TYPESAFE_API_KEY</code>。请将 key 保存在服务端。官方客户端默认拒绝在浏览器中使用，因为把 key 发到网页会暴露它。
+        把 <code>TYPESAFE_API_KEY</code> 放在服务端环境变量里，不要写进前端代码。官方客户端也会阻止在浏览器中直接使用它。
       </p>
 
       <h2>3. 发送第一个决策</h2>
       <CodeBlock code={quickstart} locale={locale} />
-      <p>这个示例遵循官方 JavaScript SDK quickstart 的形状：将一条简短客服消息变成边界清晰的工单类别决策。</p>
+      <p>这个示例沿用官方 JavaScript SDK quickstart 的基本写法：让 Jev 从几个固定类别中判断这条客服消息属于哪一类。</p>
 
-      <h2>4. 理解 state</h2>
+      <h2>4. state 是什么</h2>
       <p>
-        <code>state</code> 是模型需要判断的信息，可以是文本，也可以是 JSON 兼容的结构化数据。如果应用已经知道支付状态、用户角色、工具事件或允许的路由等事实，优先使用明确字段。
+        <code>state</code> 是模型需要判断的信息，可以是文本，也可以是 JSON 兼容的结构化数据。如果应用已经知道支付状态、用户角色、tool 调用结果或允许的 route 等事实，优先用明确字段传入。
       </p>
 
-      <h2>5. 理解 questions</h2>
+      <h2>5. questions 怎么写</h2>
       <p>
-        每个命名问题都会变成一个类型化答案。Choice 在命名备选项中选择；Noul 返回 yes 的概率；Score 使用有序的量表描述，并返回期望分数和概率。
+        每个 question 都会返回固定格式的结果。Choice 从固定选项中选一个；Noul 返回 yes 的概率；Score 按你定义的等级给出分数和概率分布。
       </p>
       <CodeBlock code={multi} locale={locale} />
 
       <h2>常见错误</h2>
       <ul>
-        <li>任务本身没有边界清晰的决策形状，却要求 Jev 生成散文。</li>
+        <li>答案范围根本无法提前定义，却要求 Jev 生成长文本。</li>
         <li>Choice 标签含义模糊，没有定义区分标准。</li>
-        <li>把模型的路由或建议当成执行高影响动作的授权。</li>
+        <li>把 Jev 的结果直接当成高风险操作的执行授权。</li>
         <li>把秘密 API key 放在浏览器中调用，而不是放在服务端环境。</li>
       </ul>
 
@@ -554,7 +550,7 @@ export function ChineseGettingStartedPage() {
       <p>
         在<LocaleLink href="/templates" locale={locale}>模板</LocaleLink>中尝试具体模式，在
         <LocaleLink href="/tools/jev-cost-calculator" locale={locale}>成本计算器</LocaleLink>中估算生产用量，或阅读
-        <LocaleLink href="/jev-vs-chatgpt" locale={locale}>Jev 与 ChatGPT</LocaleLink>了解边界。
+        <LocaleLink href="/jev-vs-chatgpt" locale={locale}>Jev 与 ChatGPT</LocaleLink>了解两者分别适合什么场景。
       </p>
     </ArticleShell>
   );
@@ -566,7 +562,7 @@ export function ChineseJevVsChatGPTPage() {
       locale={locale}
       path="/jev-vs-chatgpt"
       title="Jev 与 ChatGPT"
-      description="Jev 和生成式 LLM 解决工作流中的不同部分。Jev 面向边界清晰的类型化决策；ChatGPT 风格模型面向灵活的语言生成和更开放的任务。"
+      description="Jev 和生成式 LLM 解决工作流中的不同部分。Jev 更适合固定选项、评分和概率判断；ChatGPT 更适合生成文本、代码和处理开放式任务。"
     >
       <div className="table-wrap">
         <table>
@@ -579,12 +575,12 @@ export function ChineseJevVsChatGPTPage() {
           </thead>
           <tbody>
             {[
-              ["主要输出", "类型化的 Choice、Score 或 Noul 决策", "生成文本、代码、结构化输出和工具调用"],
-              ["开放式写作", "不是目标形状", "核心优势"],
-              ["路由", "候选集合有边界时非常适合", "可以做到，但对很多场景来说范围更宽"],
-              ["评分", "明确的有序量表评分方式", "通常通过 prompt 或 schema 约束"],
+              ["主要输出", "Choice / Score / Noul 这类固定结构结果", "生成文本、代码、结构化输出和 tool calls"],
+              ["开放式写作", "不擅长", "核心优势"],
+              ["路由", "候选项事先定义好时很适合", "可以做到，但通常需要额外 prompt 或 schema 约束"],
+              ["评分", "按预先定义的等级评分", "通常通过 prompt 或 schema 约束"],
               ["解释", "不输出自由文本解释", "可以解释、总结和写散文"],
-              ["控制流", "设计为直接连接普通程序分支", "通常在语言生成本身就是任务时使用"],
+              ["程序流程", "结果可以直接进入 if / switch 等程序逻辑", "通常在生成内容本身就是任务时使用"],
             ].map(([dimension, jev, llm]) => (
               <tr key={dimension}>
                 <td>{dimension}</td>
@@ -598,7 +594,7 @@ export function ChineseJevVsChatGPTPage() {
 
       <h2>有用的问题不是“谁更强？”</h2>
       <p>
-        有用的问题是：你的工作流中哪一部分是边界清晰的决策，哪一部分真正需要生成。客服系统可以用 Jev 路由工单，再用生成式模型起草回复；研究管道可以用 Jev 过滤数千个候选，再用生成式模型总结剩余的小集合。
+        有用的问题是：工作流里哪些步骤的答案范围可以提前定义，哪些步骤真的需要生成内容。客服系统可以用 Jev 路由工单，再用生成式模型起草回复；research pipeline 也可以先用 Jev 过滤大量候选，再让生成式模型总结少量结果。
       </p>
 
       <h2>一种实用的组合架构</h2>
@@ -606,24 +602,24 @@ export function ChineseJevVsChatGPTPage() {
 
       <h2>关于速度和成本宣传</h2>
       <p>
-        TypeSafe 发布过针对 System One 任务的 benchmark 和工作流结果。这些是 TypeSafe 自己的测量，并且取决于任务形状、模型选择、state 大小和网络条件。因此 JevHub 不会把单个 headline 倍数写成通用的“Jev 快 X 倍”结论。
+        TypeSafe 发布过 System One 的 benchmark 和工作流结果。这些数据来自 TypeSafe 自己的测量，而且会受任务类型、模型选择、state 大小和网络条件影响。因此 JevHub 不会把某个宣传倍数直接写成“Jev 一定快 X 倍”。
       </p>
       <p>
-        对自己的工作负载，请从<LocaleLink href="/tools/jev-cost-calculator" locale={locale}>成本计算器</LocaleLink>开始，并运行有代表性的评估，而不是从 demo 外推。
+        对自己的真实请求，请从<LocaleLink href="/tools/jev-cost-calculator" locale={locale}>成本计算器</LocaleLink>开始，并用有代表性的样本测试，不要直接拿 demo 结果外推。
       </p>
 
       <h2>Jev 更适合的情况</h2>
       <ul>
         <li>你已经知道允许的标签或路由。</li>
-        <li>你需要根据明确量表计算语义分数。</li>
+        <li>你需要按明确规则打分。</li>
         <li>你需要在更昂贵的模型之前先做低成本过滤。</li>
-        <li>你希望决策带有不确定性，代码可以据此设置阈值。</li>
+        <li>你需要概率，而不只是一个硬标签，让代码可以据此设置阈值。</li>
       </ul>
 
       <h2>生成式 LLM 更适合的情况</h2>
       <ul>
         <li>输出本身是散文、代码、计划或总结。</li>
-        <li>有效答案空间无法预先指定。</li>
+        <li>答案无法提前列成固定选项。</li>
         <li>用户需要解释、对话或创意回应。</li>
       </ul>
 
@@ -686,10 +682,10 @@ export function ChineseTemplatesPage() {
       path="/templates"
       eyebrow="模板库"
       title="Jev 决策模板"
-      description="8 个用于边界清晰决策的小型模式。每个模板都包含示例 state、问题设计、TypeScript、使用边界和来源。"
+      description="8 个常见场景的 Jev 示例。每个模板都包含示例 state、问题设计、TypeScript、注意事项和来源。"
     >
       <div className="callout">
-        这些是学习模板，不是在线 Jev 运行器。请将模式复制到自己的服务端应用，并根据你的政策调整标准。
+        这些页面是可复制的代码示例。想直接体验可以先用 Playground；接入自己的项目时，再按业务规则调整选项和阈值。
       </div>
 
       {zhTemplateCategories.map((category) => {
@@ -776,7 +772,7 @@ export function ChineseTemplateDetailPage({ slug }: { slug: string }) {
         </section>
       ))}
 
-      <h2>预期结构化输出</h2>
+      <h2>预期输出</h2>
       <p>{template.expectedOutput}</p>
 
       <h2>TypeScript 示例</h2>
@@ -789,7 +785,7 @@ export function ChineseTemplateDetailPage({ slug }: { slug: string }) {
         ))}
       </ul>
 
-      <h2>限制与边界</h2>
+      <h2>注意事项</h2>
       <ul>
         {template.limits.map((limit) => (
           <li key={limit}>{limit}</li>
@@ -811,8 +807,8 @@ export function ChineseTemplateDetailPage({ slug }: { slug: string }) {
       <h2>继续浏览</h2>
       <p>
         浏览<LocaleLink href="/templates" locale={locale}>全部模板</LocaleLink>，了解
-        <LocaleLink href="/getting-started" locale={locale}>官方 SDK 形状</LocaleLink>，或使用
-        <LocaleLink href="/tools/jev-cost-calculator" locale={locale}>成本计算器</LocaleLink>估算生产请求量。
+        <LocaleLink href="/getting-started" locale={locale}>官方 SDK 用法</LocaleLink>，或使用
+        <LocaleLink href="/tools/jev-cost-calculator" locale={locale}>成本计算器</LocaleLink>估算实际使用成本。
       </p>
     </ArticleShell>
   );
@@ -825,10 +821,10 @@ export function ChineseEcosystemPage() {
       path="/ecosystem"
       eyebrow="精选目录"
       title="Jev 生态"
-      description="一个刻意保持小而精的项目目录，每个项目都回到原始仓库核验。JevHub 不对项目排名，也不把收录视为背书。"
+      description="一个小而精的 Jev 项目目录。每个项目都会回到原始仓库核验；JevHub 不做排名，收录也不代表背书。"
     >
       <div className="callout">
-        发现阶段会参考 Awesome Jev 等公开来源，但下面每个条目都在收录前回到原始项目核验。
+        发现项目时会参考 Awesome Jev 等公开来源，但正式收录前都会再检查原始仓库或官网。
       </div>
 
       {ecosystemCategories.map((category) => {
@@ -847,10 +843,10 @@ export function ChineseEcosystemPage() {
 
       <h2>这个目录如何维护</h2>
       <ul>
-        <li>条目必须有公开且可以直接核验的项目 URL。</li>
+        <li>条目必须有公开、可以直接核验的项目链接。</li>
         <li>描述由 JevHub 自己撰写，不直接复制列表内容。</li>
-        <li>V0.1 不使用 stars、评分或“最佳项目”排名。</li>
-        <li>V0.1 采用人工精选，不会自动镜像其他目录。</li>
+        <li>V0.1 不按 GitHub Stars、评分或“最佳项目”做排名。</li>
+        <li>V0.1 采用人工精选，不会自动搬运其他目录。</li>
       </ul>
 
       <p>
