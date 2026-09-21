@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import { ArticleShell } from "@/components/article-shell";
 import { CodeBlock } from "@/components/code-block";
+import { JevDecisionExplainer } from "@/components/jev-decision-explainer";
+import { JevPlayground } from "@/components/playground/jev-playground";
 import { EcosystemCard } from "@/components/ecosystem-card";
 import { LocaleLink } from "@/components/locale-link";
 import { JevCostCalculator } from "@/components/calculator/jev-cost-calculator";
@@ -101,15 +103,15 @@ export function ChineseHomePage() {
             Jev 决策模型的精选生态目录。
           </p>
           <div className="actions">
-            <LocaleLink className="button-primary" href="/getting-started" locale={locale}>
-              从 Jev 开始
+            <LocaleLink className="button-primary" href="/playground" locale={locale}>
+              试用 Jev Playground
             </LocaleLink>
             <LocaleLink
               className="button-secondary"
-              href="/tools/jev-cost-calculator"
+              href="/what-is-jev"
               locale={locale}
             >
-              打开成本计算器
+              什么是 Jev？
             </LocaleLink>
           </div>
         </div>
@@ -238,6 +240,57 @@ export function ChineseHomePage() {
   );
 }
 
+export function ChinesePlaygroundPage() {
+  return (
+    <>
+      <section className="playground-hero">
+        <div className="shell">
+          <div className="eyebrow">结构化决策，可见概率</div>
+          <h1>Jev Playground</h1>
+          <p className="hero-copy">
+            直接在浏览器界面里尝试 Jev 的决策形状。编辑 state，选择 Choice、Noul 或
+            Score，然后查看类型化结果和概率分布。
+          </p>
+          <div className="playground-hero-meta">
+            <span>✓ TypeSafe 凭证只在服务端</span>
+            <span>✓ 输入有边界限制</span>
+            <span>✓ JevHub 无需注册</span>
+          </div>
+        </div>
+      </section>
+
+      <JevPlayground locale={locale} />
+
+      <section className="playground-notes">
+        <div className="shell grid grid-2">
+          <div className="card">
+            <div className="eyebrow">工作方式</div>
+            <h2>浏览器不会拿到 TypeSafe API Key。</h2>
+            <p>
+              JevHub 会先校验一个小型决策请求、应用基础频率限制，再由服务端把受约束请求发送给 TypeSafe。
+            </p>
+          </div>
+          <div className="card">
+            <div className="eyebrow">继续学习</div>
+            <h2>先理解原语，再接入生产工作流。</h2>
+            <p>
+              阅读
+              <LocaleLink href="/what-is-jev" locale={locale}>
+                什么是 Jev？
+              </LocaleLink>
+              ，再从
+              <LocaleLink href="/templates" locale={locale}>
+                模板库
+              </LocaleLink>
+              选择实际模式。
+            </p>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}
+
 export function ChineseWhatIsJevPage() {
   return (
     <ArticleShell
@@ -250,26 +303,32 @@ export function ChineseWhatIsJevPage() {
         可以把 Jev 理解为面向软件的语义决策原语，而不是另一个聊天助手。
       </div>
 
-      <h2>一分钟了解 Jev</h2>
-      <p>
-        普通生成式 LLM 可以生成几乎任意字符串。Jev 放弃了这种开放式输出空间：应用预先定义决策的形状，Jev
-        用类型化答案和不确定性信息填充它。
-      </p>
-      <CodeBlock code={example} locale={locale} />
+      <JevDecisionExplainer locale={locale} />
 
-      <h2>三种问题原语</h2>
-      <h3>Choice</h3>
+      <h2>先运行一次，再继续读</h2>
       <p>
-        Choice 从命名集合中选择一个标签。它适合分类、路由、工具选择，或任何互斥分支。
+        <LocaleLink href="/playground" locale={locale}>
+          Jev Playground
+        </LocaleLink>
+        允许你编辑 state、切换 Choice / Noul / Score，并直接查看概率分布。TypeSafe API
+        Key 不会进入浏览器。
       </p>
-      <h3>Score</h3>
-      <p>
-        Score 根据有序量表评估 state。官方 JavaScript SDK 用一个至少包含两个评分等级的列表表示量表，索引从零开始。
-      </p>
-      <h3>Noul</h3>
-      <p>
-        Noul 是 yes/no 问题。返回的 <code>noul</code> 值代表 yes 结果的概率。它适合判断证据是否证明任务完成，或消息是否是合格线索。
-      </p>
+      <div className="actions">
+        <LocaleLink className="button-primary" href="/playground" locale={locale}>
+          打开 Jev Playground
+        </LocaleLink>
+        <LocaleLink
+          className="button-secondary"
+          href="/getting-started"
+          locale={locale}
+        >
+          阅读 SDK 快速入门
+        </LocaleLink>
+      </div>
+
+      <h2>同一个形状，用 TypeScript 表达</h2>
+      <p>官方 JavaScript SDK 也是用 state + 类型化问题来表达这套决策结构。</p>
+      <CodeBlock code={example} locale={locale} />
 
       <h2>Jev 适合的场景</h2>
       <ul>
@@ -290,21 +349,32 @@ export function ChineseWhatIsJevPage() {
 
       <h2>Jev 可以与 LLM 组合使用</h2>
       <p>
-        一种常见架构是先让 Jev 分类、路由或过滤，只有真正需要生成语言时才调用生成式模型。这样可以让决策层保持边界，同时在需要时保留 GPT、Claude 或其他 LLM 的灵活性。
+        一种常见架构是先让 Jev 分类、路由或过滤，只有真正需要生成语言时才调用生成式模型。
+        这样可以让决策层保持边界，同时在需要时保留 GPT、Claude 或其他 LLM 的灵活性。
       </p>
 
       <h2>一手来源</h2>
       <p>
-        TypeSafe 的发布文章将 Jev 描述为“输入结构化 state，输出带类型的概率决策”。官方 JavaScript SDK 暴露了 <code>choice</code>、<code>score</code>、<code>noul</code> 和 <code>systemOne</code>。
+        TypeSafe 的发布文章将 Jev 描述为“输入结构化 state，输出带类型的概率决策”。官方 JavaScript SDK
+        暴露了 <code>choice</code>、<code>score</code>、<code>noul</code> 和
+        <code>systemOne</code>。
       </p>
       <ul>
         <li>
-          <a href="https://typesafe.ai/blog/introducing-system-one-models-and-jev" target="_blank" rel="noreferrer">
+          <a
+            href="https://typesafe.ai/blog/introducing-system-one-models-and-jev"
+            target="_blank"
+            rel="noreferrer"
+          >
             TypeSafe：Introducing System One Models &amp; Jev ↗
           </a>
         </li>
         <li>
-          <a href="https://github.com/typesafe-ai/typesafe-sdk-js" target="_blank" rel="noreferrer">
+          <a
+            href="https://github.com/typesafe-ai/typesafe-sdk-js"
+            target="_blank"
+            rel="noreferrer"
+          >
             官方 TypeSafe JavaScript SDK ↗
           </a>
         </li>
@@ -312,10 +382,19 @@ export function ChineseWhatIsJevPage() {
 
       <h2>下一步</h2>
       <p>
-        继续阅读
-        <LocaleLink href="/getting-started" locale={locale}>快速入门</LocaleLink>，在
-        <LocaleLink href="/tools/jev-cost-calculator" locale={locale}>成本计算器</LocaleLink>中估算用量，或浏览
-        <LocaleLink href="/templates" locale={locale}>实用模板</LocaleLink>。
+        先在
+        <LocaleLink href="/playground" locale={locale}>
+          Playground
+        </LocaleLink>
+        运行一次，再到
+        <LocaleLink href="/tools/jev-cost-calculator" locale={locale}>
+          成本计算器
+        </LocaleLink>
+        估算用量，或浏览
+        <LocaleLink href="/templates" locale={locale}>
+          实用模板
+        </LocaleLink>
+        。
       </p>
     </ArticleShell>
   );
@@ -785,6 +864,7 @@ export function ChineseEcosystemPage() {
 
 export function ChinesePage({ path }: { path: string }) {
   if (path === "/") return <ChineseHomePage />;
+  if (path === "/playground") return <ChinesePlaygroundPage />;
   if (path === "/what-is-jev") return <ChineseWhatIsJevPage />;
   if (path === "/pricing") return <ChinesePricingPage />;
   if (path === "/getting-started") return <ChineseGettingStartedPage />;

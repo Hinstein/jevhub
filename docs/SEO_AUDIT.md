@@ -2,6 +2,11 @@
 
 Date: 2026-09-21
 
+> Scope note (2026-09-21): this audit was run before the public `/playground`
+> amendment and therefore verified the original 16-route production set.
+> Current code and CI define 17 indexable English routes. Re-run the live
+> production URL/Lighthouse checks for all 17 routes after the Playground release.
+
 This audit keeps the V0.1 boundary: improve crawlability, page understanding,
 sharing metadata, and Google verification without adding programmatic SEO pages
 or a second content system.
