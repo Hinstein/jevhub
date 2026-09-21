@@ -8,8 +8,9 @@ JevHub is an independent Jev learning, tools, templates, and ecosystem site for 
 
 The first release intentionally stays small:
 
-- 16 indexable pages
+- 17 indexable pages
 - 5 core learning / SEO pages
+- 1 server-side Jev Playground
 - 1 local Jev cost calculator
 - 1 template index + 8 practical template pages
 - 1 curated ecosystem page with 20–30 checked projects
@@ -18,7 +19,7 @@ The first release intentionally stays small:
 - no auth
 - no payments
 - no marketplace
-- no online Jev API playground
+- no browser-side API keys; the bounded Playground calls TypeSafe only from the server
 
 ## Stack
 
@@ -28,7 +29,7 @@ The first release intentionally stays small:
 - Tailwind CSS 4
 - Vitest
 
-V0.1 uses no runtime database and no Jev API key.
+V0.1 uses no runtime database. The public Playground requires a server-side `TYPESAFE_API_KEY`; the key is never sent to the browser.
 
 ## Local development
 
@@ -59,6 +60,7 @@ NEXT_PUBLIC_UMAMI_DOMAINS=jevhub.xyz
 The site emits page views and these custom events:
 
 - `page_view`
+- `playground_run`
 - `calculator_used`
 - `template_code_copied`
 - `ecosystem_outbound_clicked`

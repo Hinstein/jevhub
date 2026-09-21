@@ -18,9 +18,9 @@ V0.1 禁止引入：
 - 点赞、收藏、评论
 - 用户提交项目
 - Marketplace
-- 在线调用 Jev 的 Playground
-- API Key 收集或保存
-- Jev API Proxy
+- 用户 API Key 收集或保存
+- 通用 Jev API Proxy（唯一允许的例外是受限的 `/api/playground`，使用服务端 `TYPESAFE_API_KEY`）
+- 在浏览器暴露 TypeSafe API Key
 - AI 自动生成内容
 - 批量自动生成 SEO 页面
 
@@ -50,7 +50,7 @@ V0.1 禁止引入：
 
 ## 5. SEO 规则
 
-- V0.1 只有 16 个可索引页面。
+- V0.1 只有 17 个可索引英文页面；新增页面是 `/playground`。
 - `/go/store` 必须 noindex，且不能出现在 sitemap。
 - 每个可索引页面必须有唯一 title、description、canonical。
 - 不制造空目录页、标签页、分页页、参数页进入索引。
@@ -61,7 +61,7 @@ V0.1 禁止引入：
 
 - 设计目标：简洁、可信、开发者工具感。
 - 不模仿 TypeSafe 官方品牌到让用户误认为 JevHub 是官方站。
-- 首页最重要的 4 个入口：Learn / Calculator / Templates / Ecosystem。
+- 顶部主入口优先：Playground / What is Jev / Pricing / Templates / Ecosystem。
 - “Store” 使用外链图标，并明确为外部购买站。
 - 移动端优先，避免横向滚动。
 - 代码块必须支持复制。
@@ -74,7 +74,8 @@ V0.1 禁止引入：
 - unit：模板 slug 唯一、必填字段完整
 - unit：ecosystem 条目 URL/slug/分类基本校验
 - unit：pricing config 格式与 lastVerifiedAt
-- route/SEO：16 个可索引路由、canonical、metadata
+- route/SEO：17 个可索引路由、canonical、metadata
+- Playground：输入边界、问题数量、criteria、服务端密钥与限流
 - route/SEO：`/go/store` noindex 且不在 sitemap
 - build：production build 成功
 - typecheck：通过
@@ -88,10 +89,10 @@ V0.1 禁止引入：
 
 ## 9. 禁止提前做 V0.2
 
+2026-09-21 已明确批准 `/zh-CN` 本地化和公开 Jev Playground；这两项不再属于 V0.2 禁止项。
+
 除非用户明确批准，不得新增：
 
-- 中文 `/zh` 国际化
-- Playground
 - 用户系统
 - Submit project
 - Featured listing
