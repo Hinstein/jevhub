@@ -248,13 +248,13 @@ export function ChinesePlaygroundPage() {
           <div className="eyebrow">结构化决策，可见概率</div>
           <h1>Jev Playground</h1>
           <p className="hero-copy">
-            直接在浏览器界面里尝试 Jev 的决策形状。编辑 state，选择 Choice、Noul 或
-            Score，然后查看类型化结果和概率分布。
+            直接在页面里体验 Jev。填写上下文，选择 Choice、Noul 或 Score，
+            然后查看结果和概率分布。
           </p>
           <div className="playground-hero-meta">
-            <span>✓ TypeSafe 凭证只在服务端</span>
-            <span>✓ 输入有边界限制</span>
-            <span>✓ JevHub 无需注册</span>
+            <span>✓ 示例可直接运行</span>
+            <span>✓ 支持单个或多个问题</span>
+            <span>✓ 直接查看概率分布</span>
           </div>
         </div>
       </section>
@@ -264,25 +264,25 @@ export function ChinesePlaygroundPage() {
       <section className="playground-notes">
         <div className="shell grid grid-2">
           <div className="card">
-            <div className="eyebrow">工作方式</div>
-            <h2>浏览器不会拿到 TypeSafe API Key。</h2>
+            <div className="eyebrow">怎么玩</div>
+            <h2>描述场景，选择决策方式，然后运行 Jev。</h2>
             <p>
-              JevHub 会先校验一个小型决策请求、应用基础频率限制，再由服务端把受约束请求发送给 TypeSafe。
+              可以直接使用上面的示例，也可以自己填写上下文。运行后会看到 Jev 给出的结果、置信度和完整概率分布。
             </p>
           </div>
           <div className="card">
             <div className="eyebrow">继续学习</div>
-            <h2>先理解原语，再接入生产工作流。</h2>
+            <h2>先看懂 Jev 怎么做决策，再选择适合的模板。</h2>
             <p>
               阅读
               <LocaleLink href="/what-is-jev" locale={locale}>
                 什么是 Jev？
               </LocaleLink>
-              ，再从
+              ，了解 Choice、Noul 和 Score 的区别，再从
               <LocaleLink href="/templates" locale={locale}>
                 模板库
               </LocaleLink>
-              选择实际模式。
+              选择实际场景。
             </p>
           </div>
         </div>
@@ -300,7 +300,7 @@ export function ChineseWhatIsJevPage() {
       description="Jev 是 TypeSafe AI 的第一个公开 System One 模型：它接收 state 和类型化问题，返回带概率的边界清晰决策，而不是自由文本。"
     >
       <div className="callout">
-        可以把 Jev 理解为面向软件的语义决策原语，而不是另一个聊天助手。
+        可以把 Jev 理解为给软件做分类、判断和评分的结构化决策模型，而不是聊天助手。
       </div>
 
       <JevDecisionExplainer locale={locale} />
@@ -310,8 +310,7 @@ export function ChineseWhatIsJevPage() {
         <LocaleLink href="/playground" locale={locale}>
           Jev Playground
         </LocaleLink>
-        允许你编辑 state、切换 Choice / Noul / Score，并直接查看概率分布。TypeSafe API
-        Key 不会进入浏览器。
+        允许你编辑 state、切换 Choice / Noul / Score，并直接查看 Jev 返回的决策、置信度和概率分布。
       </p>
       <div className="actions">
         <LocaleLink className="button-primary" href="/playground" locale={locale}>
@@ -583,7 +582,7 @@ export function ChineseJevVsChatGPTPage() {
               ["主要输出", "类型化的 Choice、Score 或 Noul 决策", "生成文本、代码、结构化输出和工具调用"],
               ["开放式写作", "不是目标形状", "核心优势"],
               ["路由", "候选集合有边界时非常适合", "可以做到，但对很多场景来说范围更宽"],
-              ["评分", "明确的有序量表原语", "通常通过 prompt 或 schema 约束"],
+              ["评分", "明确的有序量表评分方式", "通常通过 prompt 或 schema 约束"],
               ["解释", "不输出自由文本解释", "可以解释、总结和写散文"],
               ["控制流", "设计为直接连接普通程序分支", "通常在语言生成本身就是任务时使用"],
             ].map(([dimension, jev, llm]) => (
@@ -855,7 +854,7 @@ export function ChineseEcosystemPage() {
       </ul>
 
       <p>
-        想先了解原语？阅读<LocaleLink href="/what-is-jev" locale={locale}>什么是 Jev？</LocaleLink>，或从
+        想先了解 Jev 怎么做决策？阅读<LocaleLink href="/what-is-jev" locale={locale}>什么是 Jev？</LocaleLink>，或从
         <LocaleLink href="/templates" locale={locale}>8 个实用模板</LocaleLink>开始。
       </p>
     </ArticleShell>

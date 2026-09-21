@@ -85,9 +85,8 @@ export async function POST(request: Request) {
   if (!apiKey) {
     return json(
       {
-        error:
-          "The JevHub playground is not configured on this deployment yet.",
-        code: "playground_not_configured",
+        error: "Jev Playground is temporarily unavailable. Please try again later.",
+        code: "playground_unavailable",
       },
       { status: 503 },
     );
@@ -142,7 +141,7 @@ export async function POST(request: Request) {
         {
           error:
             upstream.status === 429
-              ? "TypeSafe is rate-limiting this playground request. Try again shortly."
+              ? "Too many requests right now. Please try again shortly."
               : "The Jev request could not be completed right now.",
         },
         { status: upstream.status === 429 ? 429 : 502 },
