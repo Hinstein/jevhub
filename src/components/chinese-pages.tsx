@@ -582,7 +582,7 @@ export function ChineseJevVsChatGPTPage() {
               ["主要输出", "类型化的 Choice、Score 或 Noul 决策", "生成文本、代码、结构化输出和工具调用"],
               ["开放式写作", "不是目标形状", "核心优势"],
               ["路由", "候选集合有边界时非常适合", "可以做到，但对很多场景来说范围更宽"],
-              ["评分", "明确的有序量表原语", "通常通过 prompt 或 schema 约束"],
+              ["评分", "明确的有序量表评分方式", "通常通过 prompt 或 schema 约束"],
               ["解释", "不输出自由文本解释", "可以解释、总结和写散文"],
               ["控制流", "设计为直接连接普通程序分支", "通常在语言生成本身就是任务时使用"],
             ].map(([dimension, jev, llm]) => (
@@ -854,7 +854,7 @@ export function ChineseEcosystemPage() {
       </ul>
 
       <p>
-        想先了解原语？阅读<LocaleLink href="/what-is-jev" locale={locale}>什么是 Jev？</LocaleLink>，或从
+        想先了解 Jev 怎么做决策？阅读<LocaleLink href="/what-is-jev" locale={locale}>什么是 Jev？</LocaleLink>，或从
         <LocaleLink href="/templates" locale={locale}>8 个实用模板</LocaleLink>开始。
       </p>
     </ArticleShell>
