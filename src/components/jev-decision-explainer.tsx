@@ -29,29 +29,29 @@ const COPY = {
       "A close distribution is a signal to clarify, fall back, or ask for review.",
   },
   zh: {
-    eyebrow: "最基本的形状",
-    title: "State + 类型化问题 → 决策 + 概率",
+    eyebrow: "Jev 的基本流程",
+    title: "state（上下文）+ 问题 → 结果 + 概率",
     state: "State",
     stateBody: "“我被重复扣款了，请帮我处理。”",
-    question: "类型化问题",
+    question: "问题",
     questionBody: "哪个团队应该处理这个请求？",
     result: "决策",
     resultBody: "账单",
     primitives: "三种提问方式",
     choice: "Choice",
-    choiceBody: "从封闭集合中选择一个标签。",
+    choiceBody: "从预先定义的选项里选一个。",
     choiceUse: "路由 · 分类 · 工具选择",
     noul: "Noul",
-    noulBody: "估算一个 yes/no 命题成立的概率。",
+    noulBody: "判断一个 yes/no 结论成立的概率。",
     noulUse: "核验 · 资格判断 · 完成度",
     score: "Score",
-    scoreBody: "把 state 放到一个有序量表上。",
+    scoreBody: "按你定义的等级给 state 打分。",
     scoreUse: "紧急度 · 风险 · 质量 · 优先级",
     uncertainty: "概率让“难判断”变得可见",
-    clear: "清晰决策",
-    close: "接近的结果",
-    clearNote: "如果业务政策允许，高差距结果可以进入自动路由。",
-    closeNote: "接近的概率分布更适合澄清、回退或人工审核。",
+    clear: "结果很明确",
+    close: "结果很接近",
+    clearNote: "当第一名明显领先时，可以按业务规则自动进入下一步。",
+    closeNote: "当几个结果很接近时，更适合补充信息、走 fallback 或人工审核。",
   },
 } as const;
 
@@ -100,9 +100,9 @@ export function JevDecisionExplainer({
             <span>{copy.question}</span>
             <strong>{copy.questionBody}</strong>
             <div className="mini-options">
-              <i>Billing</i>
-              <i>Technical</i>
-              <i>Other</i>
+              <i>{locale === "zh" ? "账单" : "Billing"}</i>
+              <i>{locale === "zh" ? "技术" : "Technical"}</i>
+              <i>{locale === "zh" ? "其他" : "Other"}</i>
             </div>
           </div>
           <div className="decision-flow-symbol">→</div>
