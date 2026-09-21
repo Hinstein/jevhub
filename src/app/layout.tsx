@@ -3,6 +3,7 @@ import Script from "next/script";
 import "@/app/globals.css";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { LocaleDocument } from "@/components/locale-document";
 import { AnalyticsRouteTracker } from "@/components/analytics";
 import { SiteStructuredData } from "@/components/structured-data";
 import { SITE } from "@/lib/site";
@@ -21,6 +22,10 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: SITE.url,
+    languages: {
+      en: SITE.url,
+      "zh-CN": new URL("/zh-CN", SITE.url).toString(),
+    },
   },
   openGraph: {
     type: "website",
@@ -56,8 +61,9 @@ export default function RootLayout({
   const umamiDomains = process.env.NEXT_PUBLIC_UMAMI_DOMAINS;
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body>
+        <LocaleDocument />
         <SiteStructuredData />
         {umamiScriptUrl && umamiWebsiteId ? (
           <Script

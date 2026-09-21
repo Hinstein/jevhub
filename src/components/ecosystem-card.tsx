@@ -1,12 +1,27 @@
 import type { EcosystemItem } from "@/types/ecosystem";
+import { type Locale } from "@/i18n/config";
+import {
+  localizedEcosystemItem,
+  localizedEcosystemCategory,
+} from "@/i18n/zh-content";
 import { EcosystemOutboundLink } from "@/components/outbound-link";
 
-export function EcosystemCard({ item }: { item: EcosystemItem }) {
+export function EcosystemCard({
+  item,
+  locale = "en",
+}: {
+  item: EcosystemItem;
+  locale?: Locale;
+}) {
+  const content = localizedEcosystemItem(item, locale);
+
   return (
     <article className="card">
-      <div className="eyebrow">{item.category}</div>
+      <div className="eyebrow">
+        {localizedEcosystemCategory(item.category, locale)}
+      </div>
       <h3>{item.name}</h3>
-      <p>{item.description}</p>
+      <p>{content.description}</p>
       <div className="ecosystem-links">
         <EcosystemOutboundLink
           href={item.repoUrl}
@@ -16,7 +31,7 @@ export function EcosystemCard({ item }: { item: EcosystemItem }) {
         {item.websiteUrl ? (
           <EcosystemOutboundLink
             href={item.websiteUrl}
-            label="Website"
+            label={locale === "zh" ? "网站" : "Website"}
             itemName={item.name}
           />
         ) : null}

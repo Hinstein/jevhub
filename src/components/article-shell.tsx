@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { BreadcrumbStructuredData } from "@/components/structured-data";
+import { localizePath, type Locale } from "@/i18n/config";
 import type { BreadcrumbItem } from "@/lib/structured-data";
 
 type Props = {
@@ -8,6 +9,7 @@ type Props = {
   description: string;
   path: string;
   breadcrumbParent?: BreadcrumbItem;
+  locale?: Locale;
   children: ReactNode;
 };
 
@@ -17,12 +19,20 @@ export function ArticleShell({
   description,
   path,
   breadcrumbParent,
+  locale = "en",
   children,
 }: Props) {
   const breadcrumbs: BreadcrumbItem[] = [
-    { name: "Home", path: "/" },
-    ...(breadcrumbParent ? [breadcrumbParent] : []),
-    { name: title, path },
+    { name: locale === "zh" ? "首页" : "Home", path: localizePath("/", locale) },
+    ...(breadcrumbParent
+      ? [
+          {
+            ...breadcrumbParent,
+            path: localizePath(breadcrumbParent.path, locale),
+          },
+        ]
+      : []),
+    { name: title, path: localizePath(path, locale) },
   ];
 
   return (

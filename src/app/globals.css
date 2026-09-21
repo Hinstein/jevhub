@@ -115,6 +115,18 @@ summary:focus-visible {
   color: var(--text);
 }
 
+.language-switcher {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 7px 11px;
+  color: var(--text);
+  font-weight: 750;
+}
+
+.language-switcher:hover {
+  border-color: var(--accent);
+}
+
 .store-link {
   display: inline-flex;
   align-items: center;

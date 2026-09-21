@@ -4,7 +4,7 @@
 
 ## A. Scope Gate
 
-- [ ] 只有 16 个可索引页面
+- [ ] 只有 16 个英文页面可索引；`/zh-CN/...` 中文本地化页面可访问但统一 noindex，不进入 sitemap
 - [ ] 无数据库
 - [ ] 无用户登录
 - [ ] 无 Dashboard/Admin
