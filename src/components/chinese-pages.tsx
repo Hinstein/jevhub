@@ -248,8 +248,8 @@ export function ChinesePlaygroundPage() {
           <div className="eyebrow">结构化决策，可见概率</div>
           <h1>Jev Playground</h1>
           <p className="hero-copy">
-            直接在浏览器界面里尝试 Jev 的决策形状。编辑 state，选择 Choice、Noul 或
-            Score，然后查看类型化结果和概率分布。
+            直接在页面里体验 Jev。填写上下文，选择 Choice、Noul 或 Score，
+            然后查看结果和概率分布。
           </p>
           <div className="playground-hero-meta">
             <span>✓ 示例可直接运行</span>
