@@ -1,6 +1,6 @@
 # JevHub V0.1 Content Spec
 
-本文件规定首版 17 个可索引页面具体写什么。2026-09-21 已批准新增 `/playground`；除此之外不要自行扩大页面数量。
+本文件规定首版 16 个可索引页面具体写什么。开发时不要自行扩大页面数量。
 
 ## 内容总原则
 
@@ -46,36 +46,7 @@
 
 ---
 
-# 2. Playground — `/playground`
-
-## Search intent
-
-- Jev playground
-- try Jev
-- Jev Choice Noul Score
-
-## 页面结构
-
-1. 简短 Hero：真实 Jev 决策、浏览器不暴露 API Key
-2. Single question / Multiple questions 切换
-3. 4 个可直接运行的预置案例
-4. 左侧 Input：state、question、type、criteria
-5. 右侧 Output：typed answer、probabilities、model、token usage
-6. 服务端边界说明 + What is Jev / Templates 内链
-
-## Runtime 边界
-
-- 只允许受约束的 `/api/playground`
-- 仅服务端读取 `TYPESAFE_API_KEY`
-- state <= 8,000 chars
-- 1–4 questions
-- choice/score 2–10 criteria
-- 基础每 IP 限流
-- 不保存 state、不收集用户 API Key
-
----
-
-# 3. What is Jev — `/what-is-jev`
+# 2. What is Jev — `/what-is-jev`
 
 ## Search intent
 
@@ -105,7 +76,7 @@
 
 ---
 
-# 4. Pricing — `/pricing`
+# 3. Pricing — `/pricing`
 
 ## Search intent
 
@@ -129,7 +100,7 @@
 
 ---
 
-# 5. Getting Started — `/getting-started`
+# 4. Getting Started — `/getting-started`
 
 ## Search intent
 
@@ -164,7 +135,7 @@
 
 ---
 
-# 6. Jev vs ChatGPT — `/jev-vs-chatgpt`
+# 5. Jev vs ChatGPT — `/jev-vs-chatgpt`
 
 ## Search intent
 
@@ -198,7 +169,7 @@
 
 ---
 
-# 7. Cost Calculator — `/tools/jev-cost-calculator`
+# 6. Cost Calculator — `/tools/jev-cost-calculator`
 
 ## Search intent
 
@@ -242,7 +213,7 @@
 
 ---
 
-# 8. Templates Index — `/templates`
+# 7. Templates Index — `/templates`
 
 ## Search intent
 
@@ -269,7 +240,7 @@
 
 ---
 
-# 9. Refund Detection — `/templates/refund-detection`
+# 8. Refund Detection — `/templates/refund-detection`
 
 ## 场景
 
@@ -303,7 +274,7 @@
 
 ---
 
-# 10. Support Routing — `/templates/support-routing`
+# 9. Support Routing — `/templates/support-routing`
 
 ## 场景
 
@@ -326,7 +297,7 @@ community customer-support intent criteria。
 
 ---
 
-# 11. Lead Qualification — `/templates/lead-qualification`
+# 10. Lead Qualification — `/templates/lead-qualification`
 
 ## 场景
 
@@ -355,7 +326,7 @@ community `sales` pack 的 inbound route。
 
 ---
 
-# 12. Buying Intent — `/templates/buying-intent`
+# 11. Buying Intent — `/templates/buying-intent`
 
 ## 场景
 
@@ -380,7 +351,7 @@ community Sales & partnerships 中 “potential customer evaluating a purchase�
 
 ---
 
-# 13. Spam Detection — `/templates/spam-detection`
+# 12. Spam Detection — `/templates/spam-detection`
 
 ## 场景
 
@@ -400,7 +371,7 @@ community Sales & partnerships 中 “potential customer evaluating a purchase�
 
 ---
 
-# 14. Agent Router — `/templates/agent-router`
+# 13. Agent Router — `/templates/agent-router`
 
 ## 场景
 
@@ -432,7 +403,7 @@ community `docs/tool-router.md`
 
 ---
 
-# 15. Task Completion — `/templates/task-completion`
+# 14. Task Completion — `/templates/task-completion`
 
 ## 场景
 
@@ -458,7 +429,7 @@ community catalog `agent_task_complete`。
 
 ---
 
-# 16. Content Moderation — `/templates/content-moderation`
+# 15. Content Moderation — `/templates/content-moderation`
 
 ## 场景
 
@@ -485,7 +456,7 @@ community Social & community pack。
 
 ---
 
-# 17. Ecosystem — `/ecosystem`
+# 16. Ecosystem — `/ecosystem`
 
 ## Search intent
 

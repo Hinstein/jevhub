@@ -25,16 +25,14 @@ export const LANGUAGE_COPY = {
 
 export const NAV_LABELS = {
   en: {
-    "/playground": "Playground",
-    "/what-is-jev": "What is Jev",
-    "/pricing": "Pricing",
+    "/what-is-jev": "Learn",
+    "/tools/jev-cost-calculator": "Calculator",
     "/templates": "Templates",
     "/ecosystem": "Ecosystem",
   },
   zh: {
-    "/playground": "Playground",
-    "/what-is-jev": "什么是 Jev",
-    "/pricing": "定价",
+    "/what-is-jev": "了解 Jev",
+    "/tools/jev-cost-calculator": "成本计算器",
     "/templates": "模板",
     "/ecosystem": "生态目录",
   },

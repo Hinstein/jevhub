@@ -10,16 +10,9 @@ import {
 } from "@/lib/structured-data";
 
 describe("SEO route contract", () => {
-  it("has exactly 17 unique indexable routes", () => {
-    expect(INDEXABLE_ROUTES).toHaveLength(17);
-    expect(new Set(INDEXABLE_ROUTES).size).toBe(17);
-  });
-
-  it("includes the public playground", () => {
-    expect(INDEXABLE_ROUTES).toContain("/playground");
-    expect(sitemap().map((entry) => entry.url)).toContain(
-      `${SITE.url}/playground`,
-    );
+  it("has exactly 16 unique indexable routes", () => {
+    expect(INDEXABLE_ROUTES).toHaveLength(16);
+    expect(new Set(INDEXABLE_ROUTES).size).toBe(16);
   });
 
   it("never indexes the store redirect", () => {

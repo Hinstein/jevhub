@@ -2,7 +2,6 @@ export type AnalyticsEvent =
   | "calculator_used"
   | "template_code_copied"
   | "ecosystem_outbound_clicked"
-  | "playground_run"
   | "store_click";
 
 type AnalyticsParams = Record<string, string | number | boolean>;

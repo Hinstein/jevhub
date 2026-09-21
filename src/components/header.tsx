@@ -7,7 +7,6 @@ import {
   LANGUAGE_COPY,
   localizePath,
   NAV_LABELS,
-  withoutLocale,
 } from "@/i18n/config";
 import { NAV_ITEMS } from "@/lib/site";
 import { Logo } from "@/components/logo";
@@ -17,7 +16,6 @@ export function Header() {
   const pathname = usePathname() ?? "/";
   const locale = getLocaleFromPathname(pathname);
   const copy = LANGUAGE_COPY[locale];
-  const currentPath = withoutLocale(pathname);
   const navItems = NAV_ITEMS.map((item) => ({
     ...item,
     href: localizePath(item.href, locale),
@@ -36,12 +34,7 @@ export function Header() {
 
         <nav className="desktop-nav" aria-label={copy.primaryNav}>
           {navItems.map((item) => (
-            <Link
-              className={currentPath === withoutLocale(item.href) ? "nav-link nav-active" : "nav-link"}
-              href={item.href}
-              aria-current={currentPath === withoutLocale(item.href) ? "page" : undefined}
-              key={item.href}
-            >
+            <Link href={item.href} key={item.href}>
               {item.label}
             </Link>
           ))}
@@ -60,11 +53,7 @@ export function Header() {
           <summary aria-label={copy.menu}>{copy.menu}</summary>
           <nav className="mobile-menu" aria-label={copy.primaryNav}>
             {navItems.map((item) => (
-              <Link
-                href={item.href}
-                aria-current={currentPath === item.href ? "page" : undefined}
-                key={item.href}
-              >
+              <Link href={item.href} key={item.href}>
                 {item.label}
               </Link>
             ))}

@@ -4,12 +4,12 @@
 
 ## A. Scope Gate
 
-- [ ] 只有 17 个英文页面可索引；`/zh-CN/...` 中文本地化页面可访问但统一 noindex，不进入 sitemap
+- [ ] 只有 16 个英文页面可索引；`/zh-CN/...` 中文本地化页面可访问但统一 noindex，不进入 sitemap
 - [ ] 无数据库
 - [ ] 无用户登录
 - [ ] 无 Dashboard/Admin
 - [ ] 无支付/订单/充值/兑换码逻辑
-- [ ] `/playground` 是唯一在线 Jev runtime 页面，浏览器不暴露 API Key
+- [ ] 无在线 Jev Playground
 - [ ] 无 API Key 输入/保存
 - [ ] 无 Marketplace
 - [ ] jevhub.store 只通过外部跳转连接
@@ -19,7 +19,6 @@
 以下全部可访问：
 
 - [ ] `/`
-- [ ] `/playground`
 - [ ] `/what-is-jev`
 - [ ] `/pricing`
 - [ ] `/getting-started`
@@ -53,19 +52,7 @@
 - [ ] 没有无来源的“X times faster/cheaper”绝对宣传
 - [ ] 全站有 independent / not affiliated disclaimer
 
-## D. Playground Gate
-
-- [ ] 浏览器不接触 `TYPESAFE_API_KEY`
-- [ ] 不提供用户 API Key 输入/保存
-- [ ] state 长度有硬上限
-- [ ] questions 限制为 1–4
-- [ ] Choice/Score criteria 有数量与长度限制
-- [ ] 服务端有 timeout 与基础 per-IP rate limit
-- [ ] 只允许转发到 TypeSafe System One，不是通用 API proxy
-- [ ] API 错误不会向浏览器泄露上游认证信息
-- [ ] Playground 在 375px 宽度下可用
-
-## E. Calculator Gate
+## D. Calculator Gate
 
 - [ ] per-request cost 正确
 - [ ] daily cost 正确
@@ -77,7 +64,7 @@
 - [ ] calculator 不发送用户输入到服务端
 - [ ] pricing config 改动会自动影响 calculator 结果
 
-## F. Template Gate
+## E. Template Gate
 
 - [ ] Exactly 8 templates
 - [ ] slug 全部唯一
@@ -90,7 +77,7 @@
 - [ ] Copy Code 可用
 - [ ] 没把“model decision”写成“authorized action”
 
-## G. Ecosystem Gate
+## F. Ecosystem Gate
 
 - [ ] 20–30 个条目
 - [ ] 每个条目已回原项目核验
@@ -101,9 +88,9 @@
 - [ ] 无虚假评分/排名
 - [ ] 不自动复制 awesome-jev 全库
 
-## H. SEO Gate
+## G. SEO Gate
 
-- [ ] 17 个页面 title 唯一
+- [ ] 16 个页面 title 唯一
 - [ ] description 唯一
 - [ ] canonical 正确
 - [ ] sitemap 只含允许索引的路由
@@ -113,7 +100,7 @@
 - [ ] 没有空 tag/category/search 参数页被索引
 - [ ] external Store link 带外链提示
 
-## I. UX / Accessibility Gate
+## H. UX / Accessibility Gate
 
 - [ ] 375px 宽度无横向滚动
 - [ ] Header mobile menu 可键盘操作
@@ -124,7 +111,7 @@
 - [ ] code blocks 在手机上可横向滚动而不破布局
 - [ ] dark mode 若未完整实现则不在 V0.1 暴露 toggle
 
-## J. Engineering Gate
+## I. Engineering Gate
 
 必须全部通过：
 
@@ -135,14 +122,13 @@
 - [ ] route/SEO tests
 - [ ] 无 TypeScript errors
 - [ ] 无未使用的 auth/payment/database dependency
-- [ ] production build 中只有批准的 `/api/playground` runtime API route
+- [ ] production build 中无意外 API route
 
-## K. Analytics Gate
+## J. Analytics Gate
 
 至少能看到：
 
 - [ ] page views
-- [ ] playground_run
 - [ ] calculator_used
 - [ ] template_code_copied
 - [ ] ecosystem_outbound_clicked
@@ -150,7 +136,7 @@
 
 不要求自建后台。
 
-## L. Release Gate
+## K. Release Gate
 
 - [ ] Production domain 指向 jevhub.xyz
 - [ ] HTTPS 正常

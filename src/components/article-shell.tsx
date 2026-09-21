@@ -14,7 +14,7 @@ type Props = {
 };
 
 export function ArticleShell({
-  eyebrow,
+  eyebrow = "JevHub guide",
   title,
   description,
   path,
@@ -40,9 +40,7 @@ export function ArticleShell({
       <BreadcrumbStructuredData items={breadcrumbs} />
       <article className="article">
         <header className="article-header">
-          <div className="eyebrow">
-            {eyebrow ?? (locale === "zh" ? "JevHub 指南" : "JevHub guide")}
-          </div>
+          <div className="eyebrow">{eyebrow}</div>
           <h1>{title}</h1>
           <p className="hero-copy">{description}</p>
         </header>

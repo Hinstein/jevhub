@@ -251,27 +251,3 @@ Status: Community directory
 - JevHub 自己编写 → `original`
 
 任何 UI 都不要把 community badge 写成 official。
-
-
----
-
-## 8. Jev Playground — UX reference only
-
-Website: https://jevplayground.com/  
-Reviewed: 2026-09-21  
-Status: Community playground reference
-
-### 可以参考
-
-- 顶部把 Playground 与 “What is Jev” 作为强入口
-- Single question / Multiple questions 的模式切换
-- 预置案例先填好 state/question，让用户直接 Run
-- 左 Input / 右 Output 的决策工作台结构
-- What is Jev 中用 state + typed question → decision + probability 解释 Jev
-- 用 clear decision vs close call 解释概率分布
-
-### 禁止照搬
-
-- 不复制其源代码、品牌、logo、逐字文案或逐像素视觉
-- JevHub 使用自己的暗色开发者工具视觉与组件
-- 运行时实现独立编写，并以 TypeSafe 官方 API/SDK 为事实源

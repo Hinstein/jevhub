@@ -25,7 +25,7 @@ export function StoreLink({
 
   return (
     <a className={className} href="/go/store" onClick={onClick}>
-      {children ?? (currentLocale === "zh" ? "Store ↗" : "Store ↗")}
+      {children ?? (currentLocale === "zh" ? "外部商店 ↗" : "Store ↗")}
     </a>
   );
 }

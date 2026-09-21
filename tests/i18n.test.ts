@@ -6,7 +6,6 @@ import {
 } from "@/i18n/config";
 import {
   localizedEcosystemCategory,
-  localizedPrimitive,
   localizedTemplate,
 } from "@/i18n/zh-content";
 import { ecosystem } from "@/content/ecosystem";
@@ -32,12 +31,11 @@ describe("locale routing", () => {
     expect(getLocaleFromPathname("/pricing")).toBe("en");
   });
 
-  it("pre-renders the 17 localized content paths", () => {
+  it("pre-renders the 16 localized content paths", () => {
     const params = generateStaticParams();
 
-    expect(params).toHaveLength(17);
+    expect(params).toHaveLength(16);
     expect(params).toContainEqual({ slug: [] });
-    expect(params).toContainEqual({ slug: ["playground"] });
     expect(params).toContainEqual({ slug: ["templates", "refund-detection"] });
   });
 
@@ -73,7 +71,5 @@ describe("localized content", () => {
     expect(localized.questions[0].instruction).toBe("客户的主要请求是什么？");
 
     expect(localizedEcosystemCategory(ecosystem[0].category, "zh")).toBe("官方");
-    expect(localizedPrimitive("choice", "zh")).toBe("Choice");
-    expect(localizedPrimitive("score", "zh")).toBe("Score");
   });
 });

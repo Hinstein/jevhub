@@ -9,7 +9,7 @@ documentation, and Schema.org. This document does not change application code.
 ## Executive conclusion
 
 JevHub's existing audit shows that the main technical foundation is already in
-place: 17 approved indexable routes, unique metadata and canonicals, crawlable
+place: 16 approved indexable routes, unique metadata and canonicals, crawlable
 internal links, HTTPS, robots.txt, sitemap.xml, the `/go/store` noindex
 boundary, favicon/logo, Open Graph image, and Organization/WebSite/
 BreadcrumbList markup. See [docs/SEO_AUDIT.md](./SEO_AUDIT.md).
@@ -62,7 +62,7 @@ In the verified property, submit:
 `https://jevhub.xyz/sitemap.xml`
 
 Check the Sitemaps report for the last download time, processing status, and
-errors. The deployed sitemap should contain exactly the 17 approved indexable
+errors. The deployed sitemap should contain exactly the 16 approved indexable
 routes and should not contain `/go/store`.
 
 The existing `robots.txt` sitemap directive is also useful for discovery, but
@@ -106,7 +106,7 @@ guidance at this point.
 
 ### 4. Preserve crawlability and indexing boundaries
 
-- The 17 intended pages must return successful HTML responses and remain
+- The 16 intended pages must return successful HTML responses and remain
   reachable without login.
 - `robots.txt` must not block the intended pages or the resources needed to
   render them.
@@ -134,7 +134,7 @@ Source: [Canonicalization](https://developers.google.com/search/docs/crawling-in
 
 ### 6. Keep titles, descriptions, headings, visible text, and links useful
 
-For each of the 17 pages, keep the current uniqueness contract and review the
+For each of the 16 pages, keep the current uniqueness contract and review the
 actual wording against user intent:
 
 - one clear, accurate page title;
@@ -251,7 +251,7 @@ Sources: [Define a favicon for Search results](https://developers.google.com/sea
 
 ## P1 — content and trust quality
 
-### 12. Strengthen the existing 17 pages using real query intent
+### 12. Strengthen the existing 16 pages using real query intent
 
 After Search Console begins collecting queries, review each page's impressions,
 queries, CTR, and clicks. Improve the page whose observed queries do not match
@@ -299,7 +299,7 @@ Sources: [Search Console overview](https://support.google.com/webmasters/answer/
 | Action | Code/repository | Server/deployment | Search Console account |
 |---|---:|---:|---:|
 | Unique titles, descriptions, H1, canonical | Yes | Verify live output | Inspect result |
-| 17-route sitemap and `/go/store` exclusion | Yes | Serve and keep 200 | Submit and monitor |
+| 16-route sitemap and `/go/store` exclusion | Yes | Serve and keep 200 | Submit and monitor |
 | robots/noindex boundaries | Yes | Preserve headers and access | Test live URL |
 | HTTPS, host redirects, 200/404/5xx, public assets | No/partly | Yes | Inspect crawl status |
 | Organization/WebSite/Breadcrumb JSON-LD | Yes | Serve rendered HTML | Rich Results Test + URL Inspection |
@@ -319,7 +319,7 @@ direct evidence:
 2. `https://jevhub.xyz/sitemap.xml` is submitted and has no processing error.
 3. Live URL Inspection passes for the home page and representative page types;
    Google-selected canonicals are reviewed.
-4. The 17 intended URLs are submitted through the sitemap and the indexing
+4. The 16 intended URLs are submitted through the sitemap and the indexing
    report has been reviewed for unexpected exclusions.
 5. Structured data is validated for representative pages, with no unresolved
    critical errors or manual action.

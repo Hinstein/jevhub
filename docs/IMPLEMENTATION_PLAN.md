@@ -2,8 +2,6 @@
 
 原则：先搭最小可验证架构，再写内容，再上工具，最后做 SEO/性能审计。禁止边做边加入 V0.2 功能。
 
-2026-09-21 scope amendment：用户明确批准新增公开 Jev Playground。它是 V0.1 唯一允许的 Jev runtime 路径，并必须保持服务端密钥、受限 payload、基础限流和无持久化。
-
 ## Phase 0 — Bootstrap
 
 创建干净项目：
@@ -128,29 +126,6 @@ Gate：
 - 页面内链正确
 - 官方/社区来源标签清楚
 - build
-
----
-
-## Phase 2.5 — Public Jev Playground（approved amendment）
-
-实现：
-
-- `/playground` 宽布局交互页
-- Single / Multiple questions
-- Choice / Noul / Score 编辑
-- 预置可运行案例
-- `POST /api/playground` 服务端 TypeSafe 转发
-- server-only `TYPESAFE_API_KEY`
-- payload validation + timeout + best-effort per-IP rate limit
-- 不保存 state、不接收用户 API Key
-
-Gate：
-
-- Playground validation unit tests
-- 浏览器 bundle 不包含 TypeSafe API Key
-- 429 / 503 / timeout 有可读错误
-- mobile 单列布局
-- build / typecheck / lint
 
 ---
 
@@ -335,7 +310,7 @@ Gate：
 
 SEO：
 
-- exactly 17 indexable pages
+- exactly 16 indexable pages
 - unique title/description
 - canonical
 - sitemap only contains allowed routes
