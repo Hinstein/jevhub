@@ -44,6 +44,17 @@ describe("public-facing copy", () => {
     expect(chineseWhatIsJev).not.toMatch(/API Key|语义决策原语|先理解原语/);
   });
 
+  it("keeps Chinese developer copy free of literal translation jargon", () => {
+    const chinesePages = source("src/components/chinese-pages.tsx");
+    const chineseContent = source("src/i18n/zh-content.ts");
+    const chineseExplainer = source("src/components/jev-decision-explainer.tsx");
+    const combined = [chinesePages, chineseContent, chineseExplainer].join("\n");
+
+    expect(combined).not.toMatch(
+      /类型化|边界清晰|原语|智能体|有序量表|泛化推广|一等结果|外围程序|受约束/,
+    );
+  });
+
   it("does not mix the English disclaimer into the Chinese footer", () => {
     const footer = source("src/components/footer.tsx");
 
