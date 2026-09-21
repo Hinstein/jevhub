@@ -551,7 +551,29 @@ td {
 .footer-inner {
   display: flex;
   justify-content: space-between;
-  gap: 24px;
+  align-items: flex-start;
+  gap: 32px;
+}
+
+.footer-copy {
+  max-width: 760px;
+}
+
+.footer-copy p {
+  margin: 8px 0 0;
+  line-height: 1.7;
+}
+
+.footer-links {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px 18px;
+}
+
+.footer-links a:hover {
+  color: var(--text);
 }
 
 .small {
@@ -619,6 +641,10 @@ td {
   .footer-inner {
     flex-direction: column;
   }
+
+  .footer-links {
+    justify-content: flex-start;
+  }
 }
 
 @media (max-width: 420px) {
@@ -679,16 +705,12 @@ td {
   margin-bottom: 18px;
 }
 
-.playground-trust {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.playground-hint {
+  max-width: 520px;
   color: var(--muted);
   font-size: 12px;
-}
-
-.playground-trust strong {
-  color: var(--accent);
+  line-height: 1.6;
+  text-align: right;
 }
 
 .segmented-control {
@@ -1184,10 +1206,9 @@ td {
     flex-direction: column;
   }
 
-  .playground-trust {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 4px;
+  .playground-hint {
+    max-width: none;
+    text-align: left;
   }
 
   .decision-flow {
