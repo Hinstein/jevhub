@@ -103,7 +103,7 @@
 
 ## H. SEO Gate
 
-- [ ] 16 个页面 title 唯一
+- [ ] 17 个页面 title 唯一
 - [ ] description 唯一
 - [ ] canonical 正确
 - [ ] sitemap 只含允许索引的路由
