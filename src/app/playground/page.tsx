@@ -18,9 +18,9 @@ export default function PlaygroundPage() {
           </div>
           <h1>Jev Playground</h1>
           <p className="hero-copy">
-            Try real Jev decision shapes from a browser UI. Edit the state,
-            choose Choice, Noul, or Score, then inspect the typed result and
-            probability distribution.
+            Try Jev directly in the browser. Add some context, choose Choice,
+            Noul, or Score, then inspect the result and probability
+            distribution.
           </p>
           <div className="playground-hero-meta">
             <span>✓ Ready-to-run examples</span>
