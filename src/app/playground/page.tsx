@@ -4,7 +4,7 @@ import { pageMetadata } from "@/lib/metadata";
 
 export const metadata = pageMetadata(
   "Jev Playground: Try Typed AI Decisions",
-  "Run bounded Jev Choice, Noul, and Score decisions from a browser UI without exposing a TypeSafe API key in the client.",
+  "Try Jev Choice, Noul, and Score decisions in a browser UI and inspect the returned decision, confidence, and probability distribution.",
   "/playground",
 );
 
@@ -23,9 +23,9 @@ export default function PlaygroundPage() {
             probability distribution.
           </p>
           <div className="playground-hero-meta">
-            <span>✓ Server-side TypeSafe credential</span>
-            <span>✓ Bounded inputs</span>
-            <span>✓ No signup on JevHub</span>
+            <span>✓ Ready-to-run examples</span>
+            <span>✓ Single or multiple questions</span>
+            <span>✓ Visible probability distributions</span>
           </div>
         </div>
       </section>
@@ -35,24 +35,22 @@ export default function PlaygroundPage() {
       <section className="playground-notes">
         <div className="shell grid grid-2">
           <div className="card">
-            <div className="eyebrow">How it works</div>
-            <h2>Your browser never receives the TypeSafe API key.</h2>
+            <div className="eyebrow">How to use it</div>
+            <h2>Describe the situation, choose a decision type, then run Jev.</h2>
             <p>
-              JevHub validates a small decision payload, applies a best-effort
-              request limit, and sends the bounded request from the server to
-              TypeSafe.
+              Start from a ready-made example or write your own state. JevHub
+              shows the returned decision together with confidence and the full
+              probability distribution.
             </p>
           </div>
           <div className="card">
-            <div className="eyebrow">Learn the model</div>
-            <h2>
-              Understand the primitives before wiring them into production.
-            </h2>
+            <div className="eyebrow">Continue learning</div>
+            <h2>See how Jev makes decisions, then pick a practical pattern.</h2>
             <p>
-              Read <Link href="/what-is-jev">What is Jev?</Link> for the
-              state/question/decision model, then use the{" "}
-              <Link href="/templates">template library</Link> for practical
-              patterns.
+              Read <Link href="/what-is-jev">What is Jev?</Link> to understand
+              Choice, Noul, and Score, then use the{" "}
+              <Link href="/templates">template library</Link> for real use
+              cases.
             </p>
           </div>
         </div>
