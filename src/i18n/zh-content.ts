@@ -325,6 +325,11 @@ export const ZH_PAGE_METADATA: Record<
     description:
       "独立的 Jev 中文指南、成本工具、决策模板和生态目录，帮助开发者理解并使用 TypeSafe AI 的 Jev 决策模型。",
   },
+  "/playground": {
+    title: "Jev Playground：在线尝试 Choice、Noul 与 Score",
+    description:
+      "在 JevHub 中尝试受约束的 Jev 决策，编辑 state 和类型化问题，并查看真实决策与概率分布。",
+  },
   "/what-is-jev": {
     title: "什么是 Jev？TypeSafe AI System One 介绍",
     description:
