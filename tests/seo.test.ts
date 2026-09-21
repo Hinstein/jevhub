@@ -41,7 +41,7 @@ describe("SEO route contract", () => {
     expect(homeTitle).toContain("Jev AI");
     expect(rootMetadata.description).toContain("Independent guide");
     expect((home.match(/<h1>/g) ?? []).length).toBe(1);
-    expect(home).toContain("Jev AI — TypeSafe&apos;s System One Decision Model");
+    expect(home).toContain("Jev AI — TypeSafe&apos;s System One Model");
     for (const route of [
       "/playground",
       "/what-is-jev",

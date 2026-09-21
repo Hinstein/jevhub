@@ -7,7 +7,7 @@ planning and review aid, not a programmatic SEO page generator.
 
 | URL | Primary intent | Secondary intent | Title | H1 | Status |
 | --- | --- | --- | --- | --- | --- |
-| `/` | Jev AI / TypeSafe Jev | Jev model | Jev AI Hub: Playground, API Guide, Pricing & Examples | Jev AI — TypeSafe's System One Decision Model | updated |
+| `/` | Jev AI / TypeSafe Jev | Jev model | Jev AI Hub: Playground, API Guide, Pricing & Examples | Jev AI — TypeSafe's System One Model | updated |
 | `/what-is-jev` | What is Jev / What is Jev AI | how Jev works | What Is Jev? TypeSafe AI's System One Explained | What is Jev? | checked |
 | `/playground` | Jev Playground | try Jev online | Jev Playground: Try Typed AI Decisions | Jev Playground | checked |
 | `/getting-started` | Jev API / Jev API quickstart | Jev JavaScript SDK / API key | Jev API Quickstart: API Key & JavaScript SDK | Jev API quickstart | updated |

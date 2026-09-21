@@ -32,7 +32,7 @@ export default function HomePage() {
       <section className="hero">
         <div className="shell">
           <div className="eyebrow">Independent Jev AI resource</div>
-          <h1>Jev AI — TypeSafe&apos;s System One Decision Model</h1>
+          <h1>Jev AI — TypeSafe&apos;s System One Model</h1>
           <p className="hero-copy">
             Jev is TypeSafe AI&apos;s System One model for structured decisions.
             Instead of generating free-form text, Jev returns typed Choice,
@@ -278,8 +278,10 @@ export default function HomePage() {
             <div className="faq-item">
               <h3>Is Jev an LLM?</h3>
               <p>
-                Jev is a System One model optimized for decisions inside
-                software rather than open-ended text generation. The{" "}
+                Not in the conventional generative-LLM sense. TypeSafe
+                describes Jev as a System One Model, a different model class
+                designed for typed decisions rather than open-ended text
+                generation. The{" "}
                 <Link href="/jev-vs-chatgpt">Jev vs ChatGPT comparison</Link>{" "}
                 explains when each shape is useful.
               </p>
