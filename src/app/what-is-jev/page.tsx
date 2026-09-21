@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArticleShell } from "@/components/article-shell";
 import { CodeBlock } from "@/components/code-block";
+import { JevDecisionExplainer } from "@/components/jev-decision-explainer";
 import { pageMetadata } from "@/lib/metadata";
 
 export const metadata = pageMetadata(
@@ -9,17 +10,19 @@ export const metadata = pageMetadata(
   "/what-is-jev",
 );
 
-const example = `import { choice, TypeSafeClient } from "@typesafe-ai/sdk";
-
-const client = new TypeSafeClient();
-const result = await client.systemOne({
-  state: { message: "I was charged twice. Please fix this ASAP." },
-  questions: {
-    category: choice("What is this ticket about?", {
-      billing: null, technical: null, other: null,
-    }),
-  },
-});`;
+const example = [
+  'import { choice, TypeSafeClient } from "@typesafe-ai/sdk";',
+  "",
+  "const client = new TypeSafeClient();",
+  "const result = await client.systemOne({",
+  '  state: { message: "I was charged twice. Please fix this ASAP." },',
+  "  questions: {",
+  '    category: choice("What is this ticket about?", {',
+  "      billing: null, technical: null, other: null,",
+  "    }),",
+  "  },",
+  "});",
+].join("\n");
 
 export default function WhatIsJevPage() {
   return (
@@ -33,34 +36,30 @@ export default function WhatIsJevPage() {
         not as another chat assistant.
       </div>
 
-      <h2>Jev in one minute</h2>
+      <JevDecisionExplainer />
+
+      <h2>Try the idea before reading more</h2>
       <p>
-        A normal generative LLM can produce almost any string. Jev gives up that
-        open-ended output space. Your application defines the shape of the
-        decision in advance, and Jev fills that shape with a typed answer and
-        uncertainty information.
+        The <Link href="/playground">Jev Playground</Link> lets you edit the
+        state, switch between Choice, Noul, and Score, and inspect the returned
+        probability distribution without putting a TypeSafe API key in your
+        browser.
+      </p>
+      <div className="actions">
+        <Link className="button-primary" href="/playground">
+          Open Jev Playground
+        </Link>
+        <Link className="button-secondary" href="/getting-started">
+          Read the SDK quickstart
+        </Link>
+      </div>
+
+      <h2>The same shape in TypeScript</h2>
+      <p>
+        The official JavaScript SDK expresses the same state + typed-question
+        structure in code.
       </p>
       <CodeBlock code={example} />
-
-      <h2>The three question primitives</h2>
-      <h3>Choice</h3>
-      <p>
-        Choice selects one label from a named set. Use it for categories,
-        routes, tool selection, or any other mutually exclusive branch.
-      </p>
-      <h3>Score</h3>
-      <p>
-        Score evaluates state against an ordered rubric. The official
-        JavaScript SDK represents the rubric as a list with at least two score
-        levels, indexed from zero.
-      </p>
-      <h3>Noul</h3>
-      <p>
-        Noul is a yes/no question. The returned <code>noul</code> value is the
-        probability of the yes outcome. It is useful for checks such as “does
-        the evidence establish completion?” or “is this message a qualified
-        lead?”
-      </p>
 
       <h2>Where Jev fits well</h2>
       <ul>
@@ -120,9 +119,10 @@ export default function WhatIsJevPage() {
 
       <h2>Next</h2>
       <p>
-        Continue with the <Link href="/getting-started">getting-started guide</Link>,
-        estimate usage in the <Link href="/tools/jev-cost-calculator">cost calculator</Link>,
-        or browse <Link href="/templates">practical templates</Link>.
+        Run a decision in the <Link href="/playground">Playground</Link>,
+        estimate usage in the{" "}
+        <Link href="/tools/jev-cost-calculator">cost calculator</Link>, or
+        browse <Link href="/templates">practical templates</Link>.
       </p>
     </ArticleShell>
   );
