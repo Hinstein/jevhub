@@ -6,7 +6,9 @@ import {
 } from "@/i18n/config";
 import {
   localizedEcosystemCategory,
+  localizedPrimitive,
   localizedTemplate,
+  ZH_PAGE_METADATA,
 } from "@/i18n/zh-content";
 import { ecosystem } from "@/content/ecosystem";
 import { templateBySlug } from "@/content/templates";
@@ -71,5 +73,18 @@ describe("localized content", () => {
     expect(localized.questions[0].instruction).toBe("客户的主要请求是什么？");
 
     expect(localizedEcosystemCategory(ecosystem[0].category, "zh")).toBe("官方");
+    expect(localizedPrimitive("choice", "zh")).toBe("Choice");
+    expect(localizedPrimitive("score", "zh")).toBe("Score");
+  });
+
+  it("keeps the V02 Chinese SEO metadata for the V0.1 route set", () => {
+    expect(ZH_PAGE_METADATA["/"].title).toBe("JevHub：学习、构建并探索 Jev");
+    expect(ZH_PAGE_METADATA["/what-is-jev"].description).toContain(
+      "根据 state 和 Choice、Score、Noul 问题返回固定格式的结果与概率",
+    );
+    expect(ZH_PAGE_METADATA["/templates"].description).toContain(
+      "客服、销售、Agent、审核等 8 个 Jev 模板",
+    );
+    expect(ZH_PAGE_METADATA).not.toHaveProperty("/playground");
   });
 });

@@ -29,7 +29,7 @@ export default function WhatIsJevPage() {
       description="Jev is TypeSafe AI's first public System One model: it takes state plus typed questions and returns bounded decisions with probabilities instead of free-form prose."
     >
       <div className="callout">
-        Jev is best thought of as a semantic decision primitive for software,
+        Jev is best thought of as a structured decision model for software,
         not as another chat assistant.
       </div>
 

@@ -1,0 +1,54 @@
+import { existsSync, readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { describe, expect, it } from "vitest";
+
+function source(path: string) {
+  return readFileSync(resolve(process.cwd(), path), "utf8");
+}
+
+describe("V02 public copy contract", () => {
+  it("keeps the revised Chinese homepage wording", () => {
+    const chinesePages = source("src/components/chinese-pages.tsx");
+
+    expect(chinesePages).toContain("Jev 学习、工具与案例，一站看懂。");
+    expect(chinesePages).toContain("从这里开始");
+    expect(chinesePages).toContain("让程序直接拿结果继续执行。");
+    expect(chinesePages).not.toContain("学习、构建并探索 Jev。");
+    expect(chinesePages).not.toContain("四条路径");
+    expect(chinesePages).not.toContain("让软件可以直接消费的决策。");
+  });
+
+  it("keeps the revised Chinese SEO metadata and developer terminology", () => {
+    const chineseContent = source("src/i18n/zh-content.ts");
+    const englishWhatIsJev = source("src/app/what-is-jev/page.tsx");
+
+    expect(chineseContent).toContain("了解 Jev 如何根据 state 和 Choice、Score、Noul 问题返回固定格式的结果与概率");
+    expect(chineseContent).toContain("安装官方 TypeSafe JavaScript SDK，设置 API key，并发送第一个 Choice、Score 或 Noul 请求。");
+    expect(chineseContent).toContain("浏览客服、销售、Agent、审核等 8 个 Jev 模板");
+    expect(chineseContent).not.toContain('  "/playground":');
+    expect(englishWhatIsJev).toContain("structured decision model for software");
+    expect(englishWhatIsJev).not.toContain("semantic decision primitive");
+  });
+
+  it("preserves V02 eyebrow, calculator, store, and locale-navigation copy", () => {
+    const articleShell = source("src/components/article-shell.tsx");
+    const calculator = source("src/components/calculator/jev-cost-calculator.tsx");
+    const storeLink = source("src/components/store-link.tsx");
+    const header = source("src/components/header.tsx");
+    const footer = source("src/components/footer.tsx");
+
+    expect(articleShell).toContain('locale === "zh" ? "JevHub 指南" : "JevHub guide"');
+    expect(calculator).toContain('periodLabel: "按天还是按月"');
+    expect(calculator).toContain('verified: "价格核验日期"');
+    expect(storeLink).toContain('currentLocale === "zh" ? "Store ↗" : "Store ↗"');
+    expect(header).toContain('currentPath === withoutLocale(item.href) ? "nav-link nav-active" : "nav-link"');
+    expect(footer).toContain("独立社区资源，与 TypeSafe AI 无关联，也未获其认可。");
+    expect(footer).not.toContain("JevHub is an independent community resource");
+  });
+
+  it("keeps the V0.1 route boundary while restoring V02 copy", () => {
+    expect(existsSync(resolve(process.cwd(), "src/app/playground/page.tsx"))).toBe(false);
+    expect(existsSync(resolve(process.cwd(), "src/app/api/playground/route.ts"))).toBe(false);
+    expect(existsSync(resolve(process.cwd(), "src/components/playground"))).toBe(false);
+  });
+});

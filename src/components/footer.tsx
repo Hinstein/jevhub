@@ -10,7 +10,7 @@ export function Footer() {
   const locale = getLocaleFromPathname(pathname);
   const disclaimer =
     locale === "zh"
-      ? "独立社区资源，与 TypeSafe AI 无关联，也未获其认可。JevHub is an independent community resource and is not affiliated with or endorsed by TypeSafe AI."
+      ? "独立社区资源，与 TypeSafe AI 无关联，也未获其认可。"
       : SITE.disclaimer;
 
   return (
