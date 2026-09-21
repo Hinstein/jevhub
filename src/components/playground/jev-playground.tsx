@@ -70,9 +70,10 @@ const COPY = {
     removeQuestion: "Remove",
     run: "Run Jev",
     running: "Running Jev…",
-    browserKey: "No browser API key",
-    serverSide:
-      "Requests use JevHub's server-side credential and bounded limits.",
+    resultHint: "Results include the decision, confidence, and probability distribution.",
+    flowInput: "State + Question",
+    flowOutput: "Decision + Probability",
+    invalidInput: "Check the state, question, and options, then try again.",
     emptyTitle: "Your Jev decision will appear here.",
     emptyBody:
       "Give Jev a state and a typed question, then run it to see the decision and probabilities.",
@@ -93,8 +94,8 @@ const COPY = {
     chooseExample: "选择一个示例 — 可直接运行",
     input: "输入",
     output: "输出",
-    state: "State",
-    stateHelp: "Jev 会读取的上下文，例如消息、记录或报告。",
+    state: "State（上下文）",
+    stateHelp: "Jev 会读取的内容，例如消息、记录或报告。",
     decision: "决策",
     question: "问题",
     type: "决策类型",
@@ -108,8 +109,10 @@ const COPY = {
     removeQuestion: "删除",
     run: "运行 Jev",
     running: "Jev 运行中…",
-    browserKey: "浏览器不接触 API Key",
-    serverSide: "请求通过 JevHub 服务端凭证发送，并受输入与频率限制。",
+    resultHint: "结果会显示决策、置信度和概率分布。",
+    flowInput: "上下文 + 问题",
+    flowOutput: "决策 + 概率",
+    invalidInput: "请检查上下文、问题和选项后再试。",
     emptyTitle: "Jev 的决策结果会显示在这里。",
     emptyBody: "提供 state 和类型化问题，然后运行 Jev 查看决策与概率。",
     result: "决策结果",
@@ -233,11 +236,14 @@ function cloneQuestion(
   };
 }
 
-function newQuestion(index: number): PlaygroundQuestionInput {
+function newQuestion(index: number, locale: Locale): PlaygroundQuestionInput {
   return {
     id: "decision_" + index,
     type: "noul",
-    instructions: "Is this condition supported by the supplied state?",
+    instructions:
+      locale === "zh"
+        ? "现有上下文是否支持这个判断？"
+        : "Is this condition supported by the supplied state?",
   };
 }
 
@@ -458,14 +464,14 @@ export function JevPlayground({ locale = "en" }: { locale?: Locale }) {
     const used = new Set(questions.map((question) => question.id));
     let number = 1;
     while (used.has("decision_" + number)) number += 1;
-    setQuestions((current) => [...current, newQuestion(number)]);
+    setQuestions((current) => [...current, newQuestion(number, locale)]);
   }
 
   async function runJev() {
     const payload = { state, questions: activeQuestions };
     const validated = validatePlaygroundRequest(payload);
     if (!validated.ok) {
-      setError(validated.error);
+      setError(locale === "zh" ? copy.invalidInput : validated.error);
       setResult(null);
       return;
     }
@@ -529,10 +535,7 @@ export function JevPlayground({ locale = "en" }: { locale?: Locale }) {
             {copy.multiple}
           </button>
         </div>
-        <div className="playground-trust">
-          <strong>✓ {copy.browserKey}</strong>
-          <span>{copy.serverSide}</span>
-        </div>
+        <div className="playground-hint">{copy.resultHint}</div>
       </div>
 
       <div className="example-strip" aria-label={copy.chooseExample}>
@@ -759,11 +762,11 @@ export function JevPlayground({ locale = "en" }: { locale?: Locale }) {
               <h2>{copy.emptyTitle}</h2>
               <p>{copy.emptyBody}</p>
               <div className="mini-flow" aria-hidden="true">
-                <span>State + Question</span>
+                <span>{copy.flowInput}</span>
                 <b>→</b>
                 <span>Jev</span>
                 <b>→</b>
-                <span>Decision + Probability</span>
+                <span>{copy.flowOutput}</span>
               </div>
             </div>
           )}
