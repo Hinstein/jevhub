@@ -221,10 +221,10 @@ export function ChineseHomePage() {
       <section className="section">
         <div className="shell">
           <div className="card">
-            <div className="eyebrow">独立商店</div>
-            <h2>JevHub 内容站与商店彼此独立。</h2>
+            <div className="eyebrow">JevHub Store</div>
+            <h2>Store 与本站分开运行。</h2>
             <p>
-              Store 是独立的 JevHub 站点。无论商店如何变化，指南、模板和生态内容都会继续在这里提供。
+              购买相关内容会跳转到独立的 JevHub Store；这里继续专注于指南、模板和生态内容。
             </p>
             <div className="actions">
               <StoreLink locale={locale} />
