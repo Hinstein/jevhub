@@ -76,7 +76,7 @@ const COPY = {
     invalidInput: "Check the state, question, and options, then try again.",
     emptyTitle: "Your Jev decision will appear here.",
     emptyBody:
-      "Give Jev a state and a typed question, then run it to see the decision and probabilities.",
+      "Add context and a question, then run Jev to see the decision and probabilities.",
     result: "Decision result",
     confidence: "confidence",
     yes: "Yes",
@@ -114,7 +114,7 @@ const COPY = {
     flowOutput: "决策 + 概率",
     invalidInput: "请检查上下文、问题和选项后再试。",
     emptyTitle: "Jev 的决策结果会显示在这里。",
-    emptyBody: "提供 state 和类型化问题，然后运行 Jev 查看决策与概率。",
+    emptyBody: "填写上下文并选择问题类型，然后运行 Jev 查看决策与概率。",
     result: "决策结果",
     confidence: "置信度",
     yes: "是",
@@ -389,7 +389,7 @@ export function JevPlayground({ locale = "en" }: { locale?: Locale }) {
           type: "noul",
           instructions:
             locale === "zh"
-              ? "现有 state 是否足以支持这个决策？"
+              ? "现有上下文是否足以支持这个决策？"
               : "Is the supplied state sufficient to support this decision?",
         },
       ]);
