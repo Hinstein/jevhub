@@ -140,16 +140,16 @@ export function JevDecisionExplainer({
         <div className="uncertainty-grid">
           <div className="uncertainty-card">
             <div className="eyebrow">{copy.clear}</div>
-            <StaticProbability label="Billing" value={96} />
-            <StaticProbability label="Technical" value={3} />
-            <StaticProbability label="Other" value={1} />
+            <StaticProbability label={locale === "zh" ? "账单" : "Billing"} value={96} />
+            <StaticProbability label={locale === "zh" ? "技术" : "Technical"} value={3} />
+            <StaticProbability label={locale === "zh" ? "其他" : "Other"} value={1} />
             <p>{copy.clearNote}</p>
           </div>
           <div className="uncertainty-card">
             <div className="eyebrow">{copy.close}</div>
-            <StaticProbability label="Billing" value={44} />
-            <StaticProbability label="Technical" value={39} />
-            <StaticProbability label="Other" value={17} />
+            <StaticProbability label={locale === "zh" ? "账单" : "Billing"} value={44} />
+            <StaticProbability label={locale === "zh" ? "技术" : "Technical"} value={39} />
+            <StaticProbability label={locale === "zh" ? "其他" : "Other"} value={17} />
             <p>{copy.closeNote}</p>
           </div>
         </div>
