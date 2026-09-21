@@ -296,6 +296,52 @@ main {
   border-color: #38675a;
 }
 
+.card-title-link:hover,
+.card-action:hover,
+.home-source-note a:hover,
+.faq-item a:hover {
+  color: var(--accent-strong);
+}
+
+.card-action {
+  margin-top: 18px;
+}
+
+.home-source-note {
+  margin: 18px 0 0;
+}
+
+.home-source-note a,
+.faq-item a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.faq-list {
+  display: grid;
+  gap: 12px;
+  max-width: 800px;
+}
+
+.faq-item {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  padding: 18px 20px;
+}
+
+.faq-item h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.faq-item p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
 .article {
   width: min(800px, calc(100% - 32px));
   margin: 0 auto;
@@ -1129,6 +1175,31 @@ td {
     rgba(16, 32, 28, 0.98),
     rgba(7, 17, 15, 0.98)
   );
+}
+
+.probability-concept {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.probability-concept span {
+  display: block;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.probability-concept strong {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.jev-explainer-compact > section {
+  margin-top: 0;
 }
 
 .mini-options {

@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { metadata as rootMetadata } from "@/app/layout";
 import robots from "@/app/robots";
@@ -16,13 +18,79 @@ import {
 } from "@/app/templates/[slug]/page";
 import { templates } from "@/content/templates";
 import { pageMetadata } from "@/lib/metadata";
-import { INDEXABLE_ROUTES, SITE } from "@/lib/site";
+import { INDEXABLE_ROUTES, NAV_ITEMS, SITE } from "@/lib/site";
 import {
   breadcrumbStructuredData,
   siteStructuredData,
 } from "@/lib/structured-data";
 
+function source(path: string) {
+  return readFileSync(resolve(process.cwd(), path), "utf8");
+}
+
 describe("SEO route contract", () => {
+  it("maps the homepage to the Jev AI search intent", () => {
+    const home = source("src/app/page.tsx");
+    const homeTitle =
+      typeof rootMetadata.title === "string"
+        ? rootMetadata.title
+        : rootMetadata.title && "default" in rootMetadata.title
+          ? rootMetadata.title.default
+          : undefined;
+
+    expect(homeTitle).toContain("Jev AI");
+    expect(rootMetadata.description).toContain("Independent guide");
+    expect((home.match(/<h1>/g) ?? []).length).toBe(1);
+    expect(home).toContain("Jev AI — TypeSafe&apos;s System One Decision Model");
+    for (const route of [
+      "/playground",
+      "/what-is-jev",
+      "/getting-started",
+      "/pricing",
+      "/templates",
+    ]) {
+      expect(home).toContain(`href="${route}"`);
+    }
+    expect(home).toContain("How much does Jev cost?");
+    expect(home).toContain("What is Jev AI?");
+    expect(home).not.toContain("Separate store");
+  });
+
+  it("keeps the primary navigation aligned with page search intent", () => {
+    expect(NAV_ITEMS.map((item) => item.href)).toEqual([
+      "/playground",
+      "/what-is-jev",
+      "/getting-started",
+      "/pricing",
+      "/templates",
+      "/ecosystem",
+    ]);
+    expect(NAV_ITEMS.map((item) => item.label)).toEqual([
+      "Playground",
+      "What is Jev",
+      "API",
+      "Pricing",
+      "Examples",
+      "Ecosystem",
+    ]);
+  });
+
+  it("gives the API and examples pages distinct search-intent headings", () => {
+    const gettingStarted = source("src/app/getting-started/page.tsx");
+    const templatesPage = source("src/app/templates/page.tsx");
+
+    expect(gettingStarted).toContain('title="Jev API quickstart"');
+    expect(gettingStarted).toContain("TypeSafe API key");
+    expect(gettingStarted).toContain("official JavaScript SDK");
+    expect(templatesPage).toContain(
+      'title="Jev examples and decision templates"',
+    );
+    expect(templatesPage).toContain("Jev API examples");
+    expect(templatesPage).toContain("Choice examples");
+    expect(templatesPage).toContain("Score examples");
+    expect(templatesPage).toContain("Noul examples");
+  });
+
   it("has exactly 17 unique indexable routes", () => {
     expect(INDEXABLE_ROUTES).toHaveLength(17);
     expect(new Set(INDEXABLE_ROUTES).size).toBe(17);

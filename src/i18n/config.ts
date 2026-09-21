@@ -26,16 +26,18 @@ export const LANGUAGE_COPY = {
 export const NAV_LABELS = {
   en: {
     "/playground": "Playground",
-    "/what-is-jev": "Learn",
-    "/tools/jev-cost-calculator": "Calculator",
-    "/templates": "Templates",
+    "/what-is-jev": "What is Jev",
+    "/getting-started": "API",
+    "/pricing": "Pricing",
+    "/templates": "Examples",
     "/ecosystem": "Ecosystem",
   },
   zh: {
     "/playground": "Playground",
     "/what-is-jev": "了解 Jev",
-    "/tools/jev-cost-calculator": "成本计算器",
-    "/templates": "模板",
+    "/getting-started": "API",
+    "/pricing": "定价",
+    "/templates": "示例",
     "/ecosystem": "生态目录",
   },
 } as const satisfies Record<Locale, Record<string, string>>;

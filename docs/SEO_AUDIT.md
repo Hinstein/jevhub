@@ -54,6 +54,35 @@ Changes made in the SEO pass:
 - the Jev vs ChatGPT page links its benchmark caveat to TypeSafe's official
   launch post.
 
+## Search-intent restructuring (2026-09-21)
+
+This round is primarily a content and information-architecture change rather
+than a technical SEO rewrite. The existing canonical, robots, sitemap,
+structured-data, hreflang, verification, and Store redirect contracts remain
+in place.
+
+The core page mapping is now explicit:
+
+- `/` targets `Jev AI` / `TypeSafe Jev`, with the System One definition in the
+  first-screen copy and links to the Playground, API, Pricing, and Examples.
+- `/getting-started` targets `Jev API` and `Jev API quickstart`, including the
+  server-side API-key boundary and official JavaScript SDK path.
+- `/templates` targets `Jev Examples` / `Jev Templates`, with natural coverage
+  of Choice, Score, Noul, and bounded decision examples.
+- `/what-is-jev`, `/playground`, `/pricing`, `/jev-vs-chatgpt`,
+  `/tools/jev-cost-calculator`, and `/ecosystem` retain distinct intents and
+  were checked for title/H1/first-paragraph alignment.
+
+The homepage now includes one illustrative working flow, a five-entry search
+intent navigation block, a pricing quick answer sourced from
+`src/data/jev-pricing.ts`, and a short FAQ. The illustrative flow is labeled as
+non-live so static example percentages are not presented as model output. The
+homepage's internal Store explanation was removed; the Header, Footer, and
+existing `/go/store` redirect remain separate.
+
+See [`SEO_KEYWORD_MAP.md`](./SEO_KEYWORD_MAP.md) for the URL/title/H1 map and
+the post-deployment Search Console observation table.
+
 ## Production verification to rerun after deployment
 
 The previous live verification predates the approved public Playground. After

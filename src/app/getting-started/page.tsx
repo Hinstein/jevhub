@@ -4,8 +4,8 @@ import { CodeBlock } from "@/components/code-block";
 import { pageMetadata } from "@/lib/metadata";
 
 export const metadata = pageMetadata(
-  "Jev JavaScript SDK Quickstart",
-  "Install the official TypeSafe JavaScript SDK, set your API key, and send a first System One request with Choice, Score, and Noul.",
+  "Jev API Quickstart: API Key & JavaScript SDK",
+  "Use the Jev API from a server with the official JavaScript SDK: set a TypeSafe API key, send a first typed request, and read Choice, Score, or Noul answers.",
   "/getting-started",
 );
 
@@ -58,13 +58,16 @@ export default function GettingStartedPage() {
   return (
     <ArticleShell
       path="/getting-started"
-      title="Getting started with Jev"
-      description="The shortest path is: install the official SDK, set a TypeSafe API key, send state plus typed questions, then use the returned decision in your own code."
+      title="Jev API quickstart"
+      description="Use the Jev API from your server: install the official JavaScript SDK, set a TypeSafe API key, send state plus typed questions, and read the returned decision in your code."
     >
-      <h2>1. Prerequisites</h2>
+      <h2>1. Before you start</h2>
       <p>
-        The current official JavaScript SDK requires Node.js 20 or newer and a
-        TypeSafe API key.
+        The Jev API is accessed through the official TypeSafe JavaScript SDK.
+        You need Node.js 20 or newer and a TypeSafe API key, and you should
+        make requests from your server rather than from browser code. This
+        quickstart sends a first request and shows how the typed answer fits
+        into an application workflow.
       </p>
 
       <h2>2. Install the official SDK</h2>

@@ -8,10 +8,12 @@ import { AnalyticsRouteTracker } from "@/components/analytics";
 import { SiteStructuredData } from "@/components/structured-data";
 import { LOGO_ASSETS, SITE } from "@/lib/site";
 
+const HOME_TITLE = "Jev AI Hub: Playground, API Guide, Pricing & Examples";
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: "JevHub: Jev Guides, Templates, Calculator, and Ecosystem",
+    default: HOME_TITLE,
     template: "%s | JevHub",
   },
   description: SITE.description,
@@ -36,20 +38,20 @@ export const metadata: Metadata = {
     type: "website",
     siteName: SITE.name,
     url: SITE.url,
-    title: "JevHub: Jev Guides, Templates, Calculator, and Ecosystem",
+    title: HOME_TITLE,
     description: SITE.description,
     images: [
       {
         url: new URL(SITE.socialImagePath, SITE.url).toString(),
         width: 1200,
         height: 630,
-        alt: "JevHub: Jev guides, templates, calculator, and ecosystem",
+        alt: HOME_TITLE,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "JevHub: Jev Guides, Templates, Calculator, and Ecosystem",
+    title: HOME_TITLE,
     description: SITE.description,
     images: [new URL(SITE.socialImagePath, SITE.url).toString()],
   },

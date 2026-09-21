@@ -9,8 +9,8 @@ import {
 import { pageMetadata } from "@/lib/metadata";
 
 export const metadata = pageMetadata(
-  "Jev Templates: Choice, Score, and Noul Patterns",
-  "Explore eight practical Jev templates for support, sales, agents, moderation, and other bounded decisions, with TypeScript examples and limits.",
+  "Jev Examples & Templates: Choice, Score, and Noul",
+  "Browse Jev API examples and eight practical decision templates covering Choice, Score, Noul, support, sales, agents, moderation, and other bounded decisions.",
   "/templates",
 );
 
@@ -18,12 +18,13 @@ export default function TemplatesPage() {
   return (
     <ArticleShell
       path="/templates"
-      eyebrow="Template library"
-      title="Jev decision templates"
-      description="Eight small patterns for bounded decisions. Each template includes example state, question design, TypeScript, limits, and sources."
+      eyebrow="Examples & templates"
+      title="Jev examples and decision templates"
+      description="Use Jev API examples for Choice, Score, and Noul questions, then adapt eight common bounded decision patterns to your own application."
     >
       <div className="callout">
-        These are learning templates for bounded decisions. Try a pattern in the{" "}
+        This page collects Jev API examples, Choice examples, Score examples,
+        and Noul examples for bounded decisions. Try a pattern in the{" "}
         <Link href="/playground">Jev Playground</Link>, then copy it into your
         own server application and adapt the criteria to your policy.
         <br />
