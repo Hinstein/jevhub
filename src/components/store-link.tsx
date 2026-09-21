@@ -2,7 +2,11 @@
 
 import type { MouseEvent, ReactNode } from "react";
 import { usePathname } from "next/navigation";
-import { getLocaleFromPathname, type Locale } from "@/i18n/config";
+import {
+  getLocaleFromPathname,
+  localizePath,
+  type Locale,
+} from "@/i18n/config";
 import { trackEvent } from "@/lib/analytics";
 
 type Props = {
@@ -24,8 +28,12 @@ export function StoreLink({
   }
 
   return (
-    <a className={className} href="/go/store" onClick={onClick}>
-      {children ?? (currentLocale === "zh" ? "Store ↗" : "Store ↗")}
+    <a
+      className={className}
+      href={localizePath("/go/store", currentLocale)}
+      onClick={onClick}
+    >
+      {children ?? (currentLocale === "zh" ? "商店 ↗" : "Store ↗")}
     </a>
   );
 }

@@ -3,15 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { getLocaleFromPathname, localizePath } from "@/i18n/config";
-import { SITE } from "@/lib/site";
 
 export function Footer() {
   const pathname = usePathname() ?? "/";
   const locale = getLocaleFromPathname(pathname);
-  const disclaimer =
-    locale === "zh"
-      ? "独立社区资源，与 TypeSafe AI 无关联，也未获其认可。"
-      : SITE.disclaimer;
 
   const links = [
     {
@@ -37,7 +32,6 @@ export function Footer() {
       <div className="shell footer-inner">
         <div className="footer-copy">
           <strong>JevHub</strong>
-          <p>{disclaimer}</p>
         </div>
         <nav
           className="footer-links"

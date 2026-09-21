@@ -18,6 +18,7 @@ import {
 } from "@/app/zh-CN/[[...slug]]/page";
 import sitemap from "@/app/sitemap";
 import { SITE } from "@/lib/site";
+import { GET as chineseStoreRedirect } from "@/app/zh-CN/go/store/route";
 
 describe("locale routing", () => {
   it("maps the current page between English and zh-CN paths", () => {
@@ -31,6 +32,18 @@ describe("locale routing", () => {
     );
     expect(getLocaleFromPathname("/zh-CN")).toBe("zh");
     expect(getLocaleFromPathname("/pricing")).toBe("en");
+    expect(localizePath("/go/store", "zh")).toBe("/zh-CN/go/store");
+  });
+
+  it("keeps the localized store redirect outside the indexable route set", () => {
+    const response = chineseStoreRedirect();
+
+    expect(response.status).toBe(307);
+    expect(response.headers.get("location")).toBe(SITE.storeUrl);
+    expect(response.headers.get("x-robots-tag")).toBe("noindex, nofollow");
+    expect(sitemap().map((entry) => entry.url)).not.toContain(
+      `${SITE.url}/zh-CN/go/store`,
+    );
   });
 
   it("pre-renders the 17 localized content paths", () => {

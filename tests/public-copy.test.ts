@@ -40,9 +40,10 @@ describe("V02 public copy contract", () => {
     expect(articleShell).toContain('locale === "zh" ? "JevHub 指南" : "JevHub guide"');
     expect(calculator).toContain('periodLabel: "按天还是按月"');
     expect(calculator).toContain('verified: "价格核验日期"');
-    expect(storeLink).toContain('currentLocale === "zh" ? "Store ↗" : "Store ↗"');
+    expect(storeLink).toContain('currentLocale === "zh" ? "商店 ↗" : "Store ↗"');
+    expect(storeLink).toContain('href={localizePath("/go/store", currentLocale)}');
     expect(header).toContain('currentPath === withoutLocale(item.href) ? "nav-link nav-active" : "nav-link"');
-    expect(footer).toContain("独立社区资源，与 TypeSafe AI 无关联，也未获其认可。");
+    expect(footer).not.toContain("独立社区资源，与 TypeSafe AI 无关联，也未获其认可。");
     expect(footer).not.toContain("JevHub is an independent community resource");
   });
 
