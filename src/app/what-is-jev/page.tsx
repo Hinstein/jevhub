@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArticleShell } from "@/components/article-shell";
 import { CodeBlock } from "@/components/code-block";
+import { JevDecisionExplainer } from "@/components/jev-decision-explainer";
 import { pageMetadata } from "@/lib/metadata";
 
 export const metadata = pageMetadata(
@@ -31,6 +32,23 @@ export default function WhatIsJevPage() {
       <div className="callout">
         Jev is best thought of as a structured decision model for software,
         not as another chat assistant.
+      </div>
+
+      <JevDecisionExplainer />
+
+      <h2>Try the idea before reading more</h2>
+      <p>
+        The <Link href="/playground">Jev Playground</Link> lets you edit the
+        state, switch between Choice, Noul, and Score, and inspect the returned
+        decision, confidence, and probability distribution.
+      </p>
+      <div className="actions">
+        <Link className="button-primary" href="/playground">
+          Open Jev Playground
+        </Link>
+        <Link className="button-secondary" href="/getting-started">
+          Read the SDK quickstart
+        </Link>
       </div>
 
       <h2>Jev in one minute</h2>
@@ -120,7 +138,8 @@ export default function WhatIsJevPage() {
 
       <h2>Next</h2>
       <p>
-        Continue with the <Link href="/getting-started">getting-started guide</Link>,
+        Run a decision in the <Link href="/playground">Playground</Link>,
+        continue with the <Link href="/getting-started">getting-started guide</Link>,
         estimate usage in the <Link href="/tools/jev-cost-calculator">cost calculator</Link>,
         or browse <Link href="/templates">practical templates</Link>.
       </p>

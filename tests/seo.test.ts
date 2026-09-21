@@ -8,6 +8,7 @@ import { metadata as ecosystemMetadata } from "@/app/ecosystem/page";
 import { metadata as gettingStartedMetadata } from "@/app/getting-started/page";
 import { metadata as comparisonMetadata } from "@/app/jev-vs-chatgpt/page";
 import { metadata as pricingMetadata } from "@/app/pricing/page";
+import { metadata as playgroundMetadata } from "@/app/playground/page";
 import { metadata as templatesMetadata } from "@/app/templates/page";
 import { metadata as whatIsJevMetadata } from "@/app/what-is-jev/page";
 import {
@@ -22,9 +23,9 @@ import {
 } from "@/lib/structured-data";
 
 describe("SEO route contract", () => {
-  it("has exactly 16 unique indexable routes", () => {
-    expect(INDEXABLE_ROUTES).toHaveLength(16);
-    expect(new Set(INDEXABLE_ROUTES).size).toBe(16);
+  it("has exactly 17 unique indexable routes", () => {
+    expect(INDEXABLE_ROUTES).toHaveLength(17);
+    expect(new Set(INDEXABLE_ROUTES).size).toBe(17);
   });
 
   it("gives every indexable route unique metadata and a self canonical", async () => {
@@ -39,6 +40,7 @@ describe("SEO route contract", () => {
 
     const metadataByRoute = new Map<string, typeof rootMetadata>([
       ["/", rootMetadata],
+      ["/playground", playgroundMetadata],
       ["/what-is-jev", whatIsJevMetadata],
       ["/pricing", pricingMetadata],
       ["/getting-started", gettingStartedMetadata],

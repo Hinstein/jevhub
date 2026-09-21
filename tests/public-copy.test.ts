@@ -25,7 +25,7 @@ describe("V02 public copy contract", () => {
     expect(chineseContent).toContain("了解 Jev 如何根据 state 和 Choice、Score、Noul 问题返回固定格式的结果与概率");
     expect(chineseContent).toContain("安装官方 TypeSafe JavaScript SDK，设置 API key，并发送第一个 Choice、Score 或 Noul 请求。");
     expect(chineseContent).toContain("浏览客服、销售、Agent、审核等 8 个 Jev 模板");
-    expect(chineseContent).not.toContain('  "/playground":');
+    expect(chineseContent).toContain('  "/playground":');
     expect(englishWhatIsJev).toContain("structured decision model for software");
     expect(englishWhatIsJev).not.toContain("semantic decision primitive");
   });
@@ -46,9 +46,16 @@ describe("V02 public copy contract", () => {
     expect(footer).not.toContain("JevHub is an independent community resource");
   });
 
-  it("keeps the V0.1 route boundary while restoring V02 copy", () => {
-    expect(existsSync(resolve(process.cwd(), "src/app/playground/page.tsx"))).toBe(false);
-    expect(existsSync(resolve(process.cwd(), "src/app/api/playground/route.ts"))).toBe(false);
-    expect(existsSync(resolve(process.cwd(), "src/components/playground"))).toBe(false);
+  it("keeps the approved Playground public surface bounded", () => {
+    const playground = source("src/components/playground/jev-playground.tsx");
+    const route = source("src/app/api/playground/route.ts");
+
+    expect(existsSync(resolve(process.cwd(), "src/app/playground/page.tsx"))).toBe(true);
+    expect(existsSync(resolve(process.cwd(), "src/app/api/playground/route.ts"))).toBe(true);
+    expect(playground).toContain("Run Jev");
+    expect(playground).not.toContain("TYPESAFE_API_KEY");
+    expect(route).toContain("TYPESAFE_API_KEY");
+    expect(route).toContain("JEV_PLAYGROUND_RATE_LIMIT");
+    expect(route).toContain("JEV_PLAYGROUND_TIMEOUT_MS");
   });
 });

@@ -28,14 +28,11 @@ export default function HomePage() {
             and a curated directory for TypeSafe AI&apos;s Jev decision model.
           </p>
           <div className="actions">
-            <Link className="button-primary" href="/getting-started">
-              Start with Jev
+            <Link className="button-primary" href="/playground">
+              Try Jev Playground
             </Link>
-            <Link
-              className="button-secondary"
-              href="/tools/jev-cost-calculator"
-            >
-              Open cost calculator
+            <Link className="button-secondary" href="/what-is-jev">
+              What is Jev?
             </Link>
           </div>
         </div>

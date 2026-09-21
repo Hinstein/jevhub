@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import { ArticleShell } from "@/components/article-shell";
 import { CodeBlock } from "@/components/code-block";
+import { JevDecisionExplainer } from "@/components/jev-decision-explainer";
+import { JevPlayground } from "@/components/playground/jev-playground";
 import { EcosystemCard } from "@/components/ecosystem-card";
 import { LocaleLink } from "@/components/locale-link";
 import { JevCostCalculator } from "@/components/calculator/jev-cost-calculator";
@@ -100,15 +102,15 @@ export function ChineseHomePage() {
             这里整理 Jev 的入门说明、成本计算器、可复用模板和精选生态项目，帮助你快速理解并上手 TypeSafe AI 的 Jev。
           </p>
           <div className="actions">
-            <LocaleLink className="button-primary" href="/getting-started" locale={locale}>
-              从 Jev 开始
+            <LocaleLink className="button-primary" href="/playground" locale={locale}>
+              试用 Jev Playground
             </LocaleLink>
             <LocaleLink
               className="button-secondary"
-              href="/tools/jev-cost-calculator"
+              href="/what-is-jev"
               locale={locale}
             >
-              打开成本计算器
+              什么是 Jev？
             </LocaleLink>
           </div>
         </div>
@@ -234,6 +236,57 @@ export function ChineseHomePage() {
   );
 }
 
+export function ChinesePlaygroundPage() {
+  return (
+    <>
+      <section className="playground-hero">
+        <div className="shell">
+          <div className="eyebrow">结构化决策，可见概率</div>
+          <h1>Jev Playground</h1>
+          <p className="hero-copy">
+            直接在页面里体验 Jev。填写上下文，选择 Choice、Noul 或 Score，
+            然后查看结果和概率分布。
+          </p>
+          <div className="playground-hero-meta">
+            <span>✓ 示例可直接运行</span>
+            <span>✓ 支持单个或多个问题</span>
+            <span>✓ 直接查看概率分布</span>
+          </div>
+        </div>
+      </section>
+
+      <JevPlayground locale={locale} />
+
+      <section className="playground-notes">
+        <div className="shell grid grid-2">
+          <div className="card">
+            <div className="eyebrow">怎么玩</div>
+            <h2>描述场景，选择决策方式，然后运行 Jev。</h2>
+            <p>
+              可以直接使用上面的示例，也可以自己填写上下文。运行后会看到 Jev 给出的结果、置信度和完整概率分布。
+            </p>
+          </div>
+          <div className="card">
+            <div className="eyebrow">继续学习</div>
+            <h2>先看懂 Jev 怎么做决策，再选择适合的模板。</h2>
+            <p>
+              阅读
+              <LocaleLink href="/what-is-jev" locale={locale}>
+                什么是 Jev？
+              </LocaleLink>
+              ，了解 Choice、Noul 和 Score 的区别，再从
+              <LocaleLink href="/templates" locale={locale}>
+                模板库
+              </LocaleLink>
+              选择实际场景。
+            </p>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}
+
 export function ChineseWhatIsJevPage() {
   return (
     <ArticleShell
@@ -244,6 +297,28 @@ export function ChineseWhatIsJevPage() {
     >
       <div className="callout">
         可以把 Jev 理解为给软件做分类、判断和评分的结构化决策模型，而不是聊天助手。
+      </div>
+
+      <JevDecisionExplainer locale={locale} />
+
+      <h2>先运行一次，再继续读</h2>
+      <p>
+        <LocaleLink href="/playground" locale={locale}>
+          Jev Playground
+        </LocaleLink>
+        允许你编辑 state、切换 Choice / Noul / Score，并直接查看 Jev 返回的结果、置信度和概率分布。
+      </p>
+      <div className="actions">
+        <LocaleLink className="button-primary" href="/playground" locale={locale}>
+          打开 Jev Playground
+        </LocaleLink>
+        <LocaleLink
+          className="button-secondary"
+          href="/getting-started"
+          locale={locale}
+        >
+          阅读 SDK 快速入门
+        </LocaleLink>
       </div>
 
       <h2>同样的逻辑，用 TypeScript 表达</h2>
@@ -607,7 +682,7 @@ export function ChineseTemplatesPage() {
       description="8 个常见场景的 Jev 示例。每个模板都包含示例 state、问题设计、TypeScript、注意事项和来源。"
     >
       <div className="callout">
-        这些页面是可复制的代码示例。接入自己的项目时，请按业务规则调整选项和阈值。
+        这些页面是可复制的代码示例。想直接体验可以先用 Playground；接入自己的项目时，请按业务规则调整选项和阈值。
       </div>
 
       {zhTemplateCategories.map((category) => {
@@ -781,6 +856,7 @@ export function ChineseEcosystemPage() {
 
 export function ChinesePage({ path }: { path: string }) {
   if (path === "/") return <ChineseHomePage />;
+  if (path === "/playground") return <ChinesePlaygroundPage />;
   if (path === "/what-is-jev") return <ChineseWhatIsJevPage />;
   if (path === "/pricing") return <ChinesePricingPage />;
   if (path === "/getting-started") return <ChineseGettingStartedPage />;

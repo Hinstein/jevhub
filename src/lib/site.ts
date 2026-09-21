@@ -10,7 +10,7 @@ export const SITE = {
   logoPath: LOGO_ASSETS.png,
   socialImagePath: "/opengraph-image",
   description:
-    "Independent guides, cost tools, practical templates, and a curated ecosystem directory for TypeSafe AI's Jev decision model.",
+    "Independent Jev playground, guides, cost tools, practical templates, and a curated ecosystem directory for TypeSafe AI's Jev decision model.",
   storeUrl:
     "https://jevhub.store/?utm_source=jevhub.xyz&utm_medium=referral&utm_campaign=store",
   disclaimer:
@@ -19,6 +19,7 @@ export const SITE = {
 
 export const INDEXABLE_ROUTES = [
   "/",
+  "/playground",
   "/what-is-jev",
   "/pricing",
   "/getting-started",
@@ -37,6 +38,7 @@ export const INDEXABLE_ROUTES = [
 ] as const;
 
 export const NAV_ITEMS = [
+  { href: "/playground", label: "Playground" },
   { href: "/what-is-jev", label: "Learn" },
   { href: "/tools/jev-cost-calculator", label: "Calculator" },
   { href: "/templates", label: "Templates" },

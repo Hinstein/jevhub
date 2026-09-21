@@ -2,6 +2,10 @@
 
 Date: 2026-09-21
 
+> Scope note (2026-09-21): the local code and CI define 17 indexable English
+> routes, including the approved public `/playground`. Re-run the live
+> production URL/Lighthouse checks for all 17 routes after deployment.
+
 This audit keeps the V0.1 boundary: improve crawlability, page understanding,
 sharing metadata, and Google verification without adding programmatic SEO pages
 or a second content system.
@@ -16,15 +20,15 @@ or a second content system.
 - [Google Breadcrumb structured data](https://developers.google.com/search/docs/appearance/structured-data/breadcrumb)
 - [Google favicon guidance](https://developers.google.com/search/docs/appearance/favicon-in-search)
 
-## Code and production audit
+## Code and local contract audit
 
-Verified for the 16 V0.1 indexable routes:
+Verified for the 17 V0.1 indexable routes:
 
 - unique `<title>`, meta description, and canonical URL;
 - one visible H1 and at least two crawlable internal links per non-home page;
 - absolute canonical URLs and absolute sitemap URLs on `https://jevhub.xyz`;
 - `robots.txt` allows the content pages and references the sitemap;
-- sitemap contains exactly the 16 approved routes, no `/go/store`, and no fabricated
+- sitemap contains exactly the 17 approved routes, no `/go/store`, and no fabricated
   modification dates;
 - `/go/store` remains crawlable but returns `X-Robots-Tag: noindex, nofollow`;
 - Organization, WebSite, and content-page BreadcrumbList JSON-LD;
@@ -40,22 +44,21 @@ Changes made in the SEO pass:
 - the SEO contract tests cover share-image metadata and the raster Organization
   logo;
 - the main entry pages use search-intent-specific titles and descriptions while
-  keeping the V0.1 route count unchanged.
+  keeping the approved 17-route V0.1 set explicit.
 
-## Latest production verification
+## Production verification to rerun after deployment
 
-Verified against `https://jevhub.xyz` after the logo and metadata release:
+The previous live verification predates the approved public Playground. After
+this change is deployed, rerun the production checks for all 17 routes:
 
-- Lighthouse mobile checks for the home page, What is Jev, Cost Calculator,
-  one Template detail page, and Ecosystem: SEO, performance, accessibility,
-  and best-practices categories all passed;
-- all 16 sitemap URLs returned successful HTML responses with one H1, a unique
-  title, a unique description, a self-referential canonical, and crawlable
-  internal links;
-- `/robots.txt`, `/sitemap.xml`, `/favicon.ico`, `/logo.png`, the OG image, and
-  the Google verification file returned 200;
-- `/go/store` remained a 307 redirect with `X-Robots-Tag: noindex, nofollow`
-  and stayed out of the sitemap.
+- Lighthouse mobile checks for the home page, Playground, What is Jev, Cost
+  Calculator, one Template detail page, and Ecosystem;
+- all sitemap URLs return successful HTML responses with unique metadata and
+  self-referential canonicals;
+- `/robots.txt`, `/sitemap.xml`, `/api/playground`, the logo assets, OG image,
+  and Google verification file return the expected responses;
+- `/go/store` remains a 307 redirect with `X-Robots-Tag: noindex, nofollow`
+  and stays out of the sitemap.
 
 ## Account-level work still required
 
