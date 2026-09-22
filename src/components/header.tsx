@@ -11,6 +11,7 @@ import {
 } from "@/i18n/config";
 import { NAV_ITEMS } from "@/lib/site";
 import { Logo } from "@/components/logo";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import { StoreLink } from "@/components/store-link";
 
 export function Header() {
@@ -46,14 +47,7 @@ export function Header() {
             </Link>
           ))}
           <StoreLink locale={locale} />
-          <Link
-            className="language-switcher"
-            href={localizePath(pathname, locale === "en" ? "zh" : "en")}
-            hrefLang={locale === "en" ? "zh-CN" : "en"}
-            aria-label={`${copy.languageLabel}: ${copy.switchTo}`}
-          >
-            {copy.switchTo}
-          </Link>
+          <LanguageSwitcher />
         </nav>
 
         <details className="mobile-nav">
@@ -69,12 +63,7 @@ export function Header() {
               </Link>
             ))}
             <StoreLink className="store-link" locale={locale} />
-            <Link
-              href={localizePath(pathname, locale === "en" ? "zh" : "en")}
-              hrefLang={locale === "en" ? "zh-CN" : "en"}
-            >
-              {copy.switchTo}
-            </Link>
+            <LanguageSwitcher />
           </nav>
         </details>
       </div>

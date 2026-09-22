@@ -14,20 +14,42 @@ const presets = [
 
 function formatUsd(value: number, locale: Locale) {
   if (!Number.isFinite(value)) return "$0";
-  return new Intl.NumberFormat(locale === "zh" ? "zh-CN" : "en-US", {
+  return new Intl.NumberFormat(
+    locale === "zh"
+      ? "zh-CN"
+      : locale === "ja"
+        ? "ja-JP"
+        : locale === "fr"
+          ? "fr-FR"
+          : locale === "pl"
+            ? "pl-PL"
+            : "en-US",
+    {
     style: "currency",
     currency: "USD",
     minimumFractionDigits: value < 0.01 ? 6 : value < 1 ? 4 : 2,
     maximumFractionDigits: value < 0.01 ? 8 : value < 1 ? 4 : 2,
-  }).format(value);
+    },
+  ).format(value);
 }
 
 function formatNumber(value: number, locale: Locale) {
   if (!Number.isFinite(value)) return "0";
-  return new Intl.NumberFormat(locale === "zh" ? "zh-CN" : "en-US", {
+  return new Intl.NumberFormat(
+    locale === "zh"
+      ? "zh-CN"
+      : locale === "ja"
+        ? "ja-JP"
+        : locale === "fr"
+          ? "fr-FR"
+          : locale === "pl"
+            ? "pl-PL"
+            : "en-US",
+    {
     maximumFractionDigits: 2,
     notation: value >= 1_000_000_000 ? "compact" : "standard",
-  }).format(value);
+    },
+  ).format(value);
 }
 
 function parseValue(value: string) {
@@ -60,7 +82,73 @@ export function JevCostCalculator({ locale = "en" }: { locale?: Locale }) {
           annualCost: "每年成本",
           monthlyTokens: "每月 token 数",
         }
-      : {
+      : locale === "ja"
+        ? {
+            inputLabel: "リクエストごとの平均入力 token 数",
+            periodLabel: "リクエスト量の期間",
+            perDay: "1 日あたりのリクエスト数",
+            perMonth: "1 か月あたりのリクエスト数",
+            presets: "クイックプリセット",
+            small: "小規模",
+            medium: "中規模",
+            highVolume: "大量利用",
+            reset: "リセット",
+            rate: "現在の入力料金",
+            verified: "最終確認",
+            estimated: "推定使用量",
+            breakdown: "コスト内訳",
+            perRequest: "リクエストあたりのコスト",
+            dailyTokens: "1 日の token 数",
+            dailyCost: "1 日のコスト",
+            monthlyCost: "1 か月のコスト",
+            annualCost: "年間コスト",
+            monthlyTokens: "1 か月の token 数",
+          }
+        : locale === "fr"
+          ? {
+              inputLabel: "Tokens d’entrée moyens par requête",
+              periodLabel: "Période du volume de requêtes",
+              perDay: "Requêtes par jour",
+              perMonth: "Requêtes par mois",
+              presets: "Préréglages rapides",
+              small: "Faible volume",
+              medium: "Volume moyen",
+              highVolume: "Fort volume",
+              reset: "Réinitialiser",
+              rate: "Tarif actuel des entrées",
+              verified: "Dernière vérification",
+              estimated: "Utilisation estimée",
+              breakdown: "Détail des coûts",
+              perRequest: "Coût par requête",
+              dailyTokens: "Tokens par jour",
+              dailyCost: "Coût quotidien",
+              monthlyCost: "Coût mensuel",
+              annualCost: "Coût annuel",
+              monthlyTokens: "Tokens par mois",
+            }
+          : locale === "pl"
+            ? {
+                inputLabel: "Średnia liczba tokenów wejściowych na żądanie",
+                periodLabel: "Okres wolumenu żądań",
+                perDay: "Żądania dziennie",
+                perMonth: "Żądania miesięcznie",
+                presets: "Szybkie ustawienia",
+                small: "Mała skala",
+                medium: "Średnia skala",
+                highVolume: "Duży wolumen",
+                reset: "Resetuj",
+                rate: "Bieżąca stawka wejściowa",
+                verified: "Ostatnia weryfikacja",
+                estimated: "Szacowane użycie",
+                breakdown: "Podział kosztów",
+                perRequest: "Koszt / żądanie",
+                dailyTokens: "Tokeny dziennie",
+                dailyCost: "Koszt dzienny",
+                monthlyCost: "Koszt miesięczny",
+                annualCost: "Koszt roczny",
+                monthlyTokens: "Tokeny miesięcznie",
+              }
+            : {
           inputLabel: "Average input tokens per request",
           periodLabel: "Request volume period",
           perDay: "Requests per day",
@@ -116,7 +204,17 @@ export function JevCostCalculator({ locale = "en" }: { locale?: Locale }) {
     <div className="calculator">
       <section
         className="form-panel"
-        aria-label={locale === "zh" ? "成本输入" : "Cost inputs"}
+        aria-label={
+          locale === "zh"
+            ? "成本输入"
+            : locale === "ja"
+              ? "コスト入力"
+              : locale === "fr"
+                ? "Entrées de coût"
+                : locale === "pl"
+                  ? "Dane kosztowe"
+                  : "Cost inputs"
+        }
       >
         <div className="field">
           <label htmlFor="average-tokens">{copy.inputLabel}</label>

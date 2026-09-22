@@ -60,6 +60,90 @@ const COPY = {
     clearNote: "当第一名明显领先时，可以按业务规则自动进入下一步。",
     closeNote: "当几个结果很接近时，更适合补充信息、走 fallback 或人工审核。",
   },
+  ja: {
+    eyebrow: "基本の流れ",
+    title: "State + 型付きの質問 → 判断 + 確率",
+    state: "State",
+    stateBody: "「サブスクリプションが二重請求されました。」",
+    question: "型付きの質問",
+    questionBody: "どのチームが対応すべきですか？",
+    result: "判断",
+    resultBody: "請求",
+    distributionLabel: "確率分布",
+    distributionBody: "許可された各選択肢に確率を付け、コードで閾値や人による確認を設定できます。",
+    illustrative: "説明用の例です。実際の Jev の応答ではありません。",
+    primitives: "Jev への 3 種類の質問",
+    choice: "Choice",
+    choiceBody: "限定された集合から 1 つのラベルを選びます。",
+    choiceUse: "ルーティング · 分類 · ツール選択",
+    noul: "Noul",
+    noulBody: "yes/no の命題が成立する確率を推定します。",
+    noulUse: "検証 · 適格性 · 完了確認",
+    score: "Score",
+    scoreBody: "定義した順序尺度に State を配置します。",
+    scoreUse: "緊急度 · リスク · 品質 · 優先度",
+    uncertainty: "確率で迷いの大きさを確認できます",
+    clear: "明確な判断",
+    close: "僅差の判断",
+    clearNote: "差が大きい結果は、ポリシーが許せば自動で次の処理に進められます。",
+    closeNote: "分布が拮抗している場合は、確認や fallback、人によるレビューの合図になります。",
+  },
+  fr: {
+    eyebrow: "Le principe",
+    title: "State + question typée → décision + probabilité",
+    state: "State",
+    stateBody: "« Mon abonnement a été débité deux fois. »",
+    question: "Question typée",
+    questionBody: "Quelle équipe doit traiter cette demande ?",
+    result: "Décision",
+    resultBody: "Facturation",
+    distributionLabel: "Distribution des probabilités",
+    distributionBody: "Chaque choix autorisé peut recevoir une probabilité que votre code peut seuiller ou faire vérifier. ",
+    illustrative: "Flux illustratif — ce n’est pas une réponse Jev en direct.",
+    primitives: "Trois façons d’interroger Jev",
+    choice: "Choice",
+    choiceBody: "Choisir un libellé dans un ensemble fermé.",
+    choiceUse: "Routage · classification · choix d’outil",
+    noul: "Noul",
+    noulBody: "Estimer la probabilité d’une proposition oui/non.",
+    noulUse: "Vérification · éligibilité · achèvement",
+    score: "Score",
+    scoreBody: "Placer le state sur une échelle ordonnée.",
+    scoreUse: "Urgence · risque · qualité · priorité",
+    uncertainty: "Les probabilités rendent les cas limites visibles",
+    clear: "Décision claire",
+    close: "Cas limite",
+    clearNote: "Un résultat nettement dominant peut être routé automatiquement si votre politique l’autorise.",
+    closeNote: "Une distribution proche invite à clarifier, utiliser un fallback ou demander une vérification.",
+  },
+  pl: {
+    eyebrow: "Podstawowy schemat",
+    title: "State + typowane pytanie → decyzja + prawdopodobieństwo",
+    state: "State",
+    stateBody: "„Moja subskrypcja została obciążona dwa razy.”",
+    question: "Typowane pytanie",
+    questionBody: "Który zespół powinien się tym zająć?",
+    result: "Decyzja",
+    resultBody: "Rozliczenia",
+    distributionLabel: "Rozkład prawdopodobieństwa",
+    distributionBody: "Każda dozwolona opcja może mieć prawdopodobieństwo, które kod może progować lub kierować do weryfikacji.",
+    illustrative: "Przykładowy przepływ — to nie jest rzeczywista odpowiedź Jev.",
+    primitives: "Trzy sposoby zadawania pytań Jev",
+    choice: "Choice",
+    choiceBody: "Wybierz jedną etykietę ze zbioru zamkniętego.",
+    choiceUse: "Routing · klasyfikacja · wybór narzędzia",
+    noul: "Noul",
+    noulBody: "Oszacuj prawdopodobieństwo tezy tak/nie.",
+    noulUse: "Weryfikacja · kwalifikacja · ukończenie",
+    score: "Score",
+    scoreBody: "Umieść state na uporządkowanej skali.",
+    scoreUse: "Pilność · ryzyko · jakość · priorytet",
+    uncertainty: "Prawdopodobieństwa pokazują niepewność",
+    clear: "Jasna decyzja",
+    close: "Wyrównany wynik",
+    clearNote: "Wyraźny wynik może być obsłużony automatycznie, jeśli pozwalają na to zasady.",
+    closeNote: "Zbliżony rozkład sygnalizuje potrzebę doprecyzowania, fallbacku lub weryfikacji.",
+  },
 } as const;
 
 function StaticProbability({
@@ -112,12 +196,52 @@ export function JevDecisionExplainer({
             <span>{copy.question}</span>
             <strong>{copy.questionBody}</strong>
             <div className="mini-options">
-              <i>{locale === "zh" ? "账单" : "Billing"}</i>
-              <i>{locale === "zh" ? "技术" : "Technical"}</i>
+              <i>{
+                locale === "zh"
+                  ? "账单"
+                  : locale === "ja"
+                    ? "請求"
+                    : locale === "fr"
+                      ? "Facturation"
+                      : locale === "pl"
+                        ? "Rozliczenia"
+                        : "Billing"
+              }</i>
+              <i>{
+                locale === "zh"
+                  ? "技术"
+                  : locale === "ja"
+                    ? "技術"
+                    : locale === "fr"
+                      ? "Technique"
+                      : locale === "pl"
+                        ? "Techniczne"
+                        : "Technical"
+              }</i>
               {compact ? (
-                <i>{locale === "zh" ? "销售" : "Sales"}</i>
+                <i>{
+                  locale === "zh"
+                    ? "销售"
+                    : locale === "ja"
+                      ? "営業"
+                      : locale === "fr"
+                        ? "Ventes"
+                        : locale === "pl"
+                          ? "Sprzedaż"
+                          : "Sales"
+                }</i>
               ) : null}
-              <i>{locale === "zh" ? "其他" : "Other"}</i>
+              <i>{
+                locale === "zh"
+                  ? "其他"
+                  : locale === "ja"
+                    ? "その他"
+                    : locale === "fr"
+                      ? "Autre"
+                      : locale === "pl"
+                        ? "Inne"
+                        : "Other"
+              }</i>
             </div>
           </div>
           <div className="decision-flow-symbol">→</div>
@@ -166,15 +290,45 @@ export function JevDecisionExplainer({
               <div className="uncertainty-card">
                 <div className="eyebrow">{copy.clear}</div>
                 <StaticProbability
-                  label={locale === "zh" ? "账单" : "Billing"}
+                  label={
+                    locale === "zh"
+                      ? "账单"
+                      : locale === "ja"
+                        ? "請求"
+                        : locale === "fr"
+                          ? "Facturation"
+                          : locale === "pl"
+                            ? "Rozliczenia"
+                            : "Billing"
+                  }
                   value={96}
                 />
                 <StaticProbability
-                  label={locale === "zh" ? "技术" : "Technical"}
+                  label={
+                    locale === "zh"
+                      ? "技术"
+                      : locale === "ja"
+                        ? "技術"
+                        : locale === "fr"
+                          ? "Technique"
+                          : locale === "pl"
+                            ? "Techniczne"
+                            : "Technical"
+                  }
                   value={3}
                 />
                 <StaticProbability
-                  label={locale === "zh" ? "其他" : "Other"}
+                  label={
+                    locale === "zh"
+                      ? "其他"
+                      : locale === "ja"
+                        ? "その他"
+                        : locale === "fr"
+                          ? "Autre"
+                          : locale === "pl"
+                            ? "Inne"
+                            : "Other"
+                  }
                   value={1}
                 />
                 <p>{copy.clearNote}</p>
@@ -182,15 +336,45 @@ export function JevDecisionExplainer({
               <div className="uncertainty-card">
                 <div className="eyebrow">{copy.close}</div>
                 <StaticProbability
-                  label={locale === "zh" ? "账单" : "Billing"}
+                  label={
+                    locale === "zh"
+                      ? "账单"
+                      : locale === "ja"
+                        ? "請求"
+                        : locale === "fr"
+                          ? "Facturation"
+                          : locale === "pl"
+                            ? "Rozliczenia"
+                            : "Billing"
+                  }
                   value={44}
                 />
                 <StaticProbability
-                  label={locale === "zh" ? "技术" : "Technical"}
+                  label={
+                    locale === "zh"
+                      ? "技术"
+                      : locale === "ja"
+                        ? "技術"
+                        : locale === "fr"
+                          ? "Technique"
+                          : locale === "pl"
+                            ? "Techniczne"
+                            : "Technical"
+                  }
                   value={39}
                 />
                 <StaticProbability
-                  label={locale === "zh" ? "其他" : "Other"}
+                  label={
+                    locale === "zh"
+                      ? "其他"
+                      : locale === "ja"
+                        ? "その他"
+                        : locale === "fr"
+                          ? "Autre"
+                          : locale === "pl"
+                            ? "Inne"
+                            : "Other"
+                  }
                   value={17}
                 />
                 <p>{copy.closeNote}</p>

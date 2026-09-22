@@ -35,6 +35,21 @@ describe("locale routing", () => {
     expect(localizePath("/go/store", "zh")).toBe("/zh-CN/go/store");
   });
 
+  it("maps the current page for each added locale", () => {
+    const addedLocales = [
+      { locale: "ja", prefix: "/ja-JP" },
+      { locale: "fr", prefix: "/fr-FR" },
+      { locale: "pl", prefix: "/pl-PL" },
+    ] as const;
+
+    for (const { locale, prefix } of addedLocales) {
+      expect(localizePath("/pricing", locale)).toBe(`${prefix}/pricing`);
+      expect(localizePath(`${prefix}/pricing`, "en")).toBe("/pricing");
+      expect(withoutLocale(`${prefix}/pricing`)).toBe("/pricing");
+      expect(getLocaleFromPathname(`${prefix}/pricing`)).toBe(locale);
+    }
+  });
+
   it("keeps the localized store redirect outside the indexable route set", () => {
     const response = chineseStoreRedirect();
 

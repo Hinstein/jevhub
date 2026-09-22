@@ -137,16 +137,97 @@ summary:focus-visible {
   background: var(--accent);
 }
 
-.language-switcher {
+.language-menu {
+  position: relative;
+}
+
+.language-menu summary {
+  list-style: none;
+}
+
+.language-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.language-menu-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 7px 10px;
   border: 1px solid var(--border);
   border-radius: 999px;
-  padding: 7px 11px;
   color: var(--text);
+  cursor: pointer;
+  font-size: 13px;
   font-weight: 750;
 }
 
-.language-switcher:hover {
+.language-menu-trigger:hover,
+.language-menu[open] .language-menu-trigger {
   border-color: var(--accent);
+}
+
+.language-globe {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+}
+
+.language-menu-current {
+  white-space: nowrap;
+}
+
+.language-menu-chevron {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1;
+}
+
+.language-menu-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 40;
+  display: grid;
+  min-width: 190px;
+  gap: 3px;
+  padding: 7px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #091511;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.4);
+}
+
+.language-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.language-option:hover,
+.language-option-active {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.language-option-active {
+  color: var(--accent);
+}
+
+.language-option-code {
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .store-link {
@@ -673,6 +754,26 @@ td {
   .mobile-menu a {
     padding: 10px;
     border-radius: 8px;
+  }
+
+  .mobile-menu .language-menu {
+    margin: 3px 0;
+  }
+
+  .mobile-menu .language-menu-trigger {
+    width: 100%;
+    justify-content: flex-start;
+    border: 0;
+    border-radius: 8px;
+  }
+
+  .mobile-menu .language-menu-panel {
+    position: static;
+    min-width: 0;
+    margin: 0 0 4px;
+    border: 0;
+    border-radius: 8px;
+    box-shadow: none;
   }
 
   .hero {

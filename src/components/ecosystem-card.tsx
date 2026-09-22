@@ -1,5 +1,5 @@
 import type { EcosystemItem } from "@/types/ecosystem";
-import { type Locale } from "@/i18n/config";
+import { LANGUAGE_COPY, type Locale } from "@/i18n/config";
 import {
   localizedEcosystemItem,
   localizedEcosystemCategory,
@@ -23,7 +23,7 @@ export function EcosystemCard({
       <h3>{item.name}</h3>
       <p>{content.description}</p>
       <p className="small">
-        {locale === "zh" ? "最近核验" : "Last checked"}: {item.lastCheckedAt}
+        {LANGUAGE_COPY[locale].lastChecked}: {item.lastCheckedAt}
       </p>
       <div className="ecosystem-links">
         <EcosystemOutboundLink
@@ -34,7 +34,7 @@ export function EcosystemCard({
         {item.websiteUrl ? (
           <EcosystemOutboundLink
             href={item.websiteUrl}
-            label={locale === "zh" ? "网站" : "Website"}
+            label={LANGUAGE_COPY[locale].website}
             itemName={item.name}
           />
         ) : null}

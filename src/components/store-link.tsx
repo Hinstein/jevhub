@@ -4,6 +4,7 @@ import type { MouseEvent, ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import {
   getLocaleFromPathname,
+  LANGUAGE_COPY,
   localizePath,
   type Locale,
 } from "@/i18n/config";
@@ -33,7 +34,7 @@ export function StoreLink({
       href={localizePath("/go/store", currentLocale)}
       onClick={onClick}
     >
-      {children ?? (currentLocale === "zh" ? "商店 ↗" : "Store ↗")}
+      {children ?? LANGUAGE_COPY[currentLocale].store}
     </a>
   );
 }

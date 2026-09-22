@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { BreadcrumbStructuredData } from "@/components/structured-data";
-import { localizePath, type Locale } from "@/i18n/config";
+import { LANGUAGE_COPY, localizePath, type Locale } from "@/i18n/config";
 import type { BreadcrumbItem } from "@/lib/structured-data";
 
 type Props = {
@@ -23,7 +23,7 @@ export function ArticleShell({
   children,
 }: Props) {
   const breadcrumbs: BreadcrumbItem[] = [
-    { name: locale === "zh" ? "首页" : "Home", path: localizePath("/", locale) },
+    { name: LANGUAGE_COPY[locale].home, path: localizePath("/", locale) },
     ...(breadcrumbParent
       ? [
           {
@@ -41,7 +41,7 @@ export function ArticleShell({
       <article className="article">
         <header className="article-header">
           <div className="eyebrow">
-            {eyebrow ?? (locale === "zh" ? "JevHub 指南" : "JevHub guide")}
+            {eyebrow ?? LANGUAGE_COPY[locale].guide}
           </div>
           <h1>{title}</h1>
           <p className="hero-copy">{description}</p>

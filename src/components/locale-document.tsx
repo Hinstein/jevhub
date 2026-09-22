@@ -2,14 +2,14 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { getLocaleFromPathname } from "@/i18n/config";
+import { getLocaleFromPathname, LOCALE_CONFIG } from "@/i18n/config";
 
 export function LocaleDocument() {
   const pathname = usePathname() ?? "/";
 
   useEffect(() => {
-    document.documentElement.lang =
-      getLocaleFromPathname(pathname) === "zh" ? "zh-CN" : "en";
+    const locale = getLocaleFromPathname(pathname);
+    document.documentElement.lang = LOCALE_CONFIG[locale].htmlLang;
   }, [pathname]);
 
   return null;

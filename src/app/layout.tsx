@@ -7,6 +7,7 @@ import { LocaleDocument } from "@/components/locale-document";
 import { AnalyticsRouteTracker } from "@/components/analytics";
 import { SiteStructuredData } from "@/components/structured-data";
 import { LOGO_ASSETS, SITE } from "@/lib/site";
+import { LOCALES, LOCALE_CONFIG, localizePath } from "@/i18n/config";
 
 const HOME_TITLE = "Jev AI Hub: Playground, API Guide, Pricing & Examples";
 
@@ -29,8 +30,14 @@ export const metadata: Metadata = {
   alternates: {
     canonical: SITE.url,
     languages: {
-      en: SITE.url,
-      "zh-CN": new URL("/zh-CN", SITE.url).toString(),
+      ...Object.fromEntries(
+        LOCALES.map((locale) => [
+          LOCALE_CONFIG[locale].hrefLang,
+          locale === "en"
+            ? SITE.url
+            : new URL(localizePath("/", locale), SITE.url).toString(),
+        ]),
+      ),
       "x-default": SITE.url,
     },
   },

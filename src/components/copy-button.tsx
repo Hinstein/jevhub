@@ -33,9 +33,37 @@ export function CopyButton({ text, templateSlug, locale = "en" }: Props) {
       className="copy-button"
       type="button"
       onClick={copy}
-      aria-label={locale === "zh" ? "复制代码" : "Copy code to clipboard"}
+      aria-label={
+        locale === "zh"
+          ? "复制代码"
+          : locale === "ja"
+            ? "コードをコピー"
+            : locale === "fr"
+              ? "Copier le code"
+              : locale === "pl"
+                ? "Kopiuj kod"
+                : "Copy code to clipboard"
+      }
     >
-      {copied ? (locale === "zh" ? "已复制" : "Copied") : locale === "zh" ? "复制" : "Copy"}
+      {copied
+        ? locale === "zh"
+          ? "已复制"
+          : locale === "ja"
+            ? "コピーしました"
+            : locale === "fr"
+              ? "Copié"
+              : locale === "pl"
+                ? "Skopiowano"
+                : "Copied"
+        : locale === "zh"
+          ? "复制"
+          : locale === "ja"
+            ? "コピー"
+            : locale === "fr"
+              ? "Copier"
+              : locale === "pl"
+                ? "Kopiuj"
+                : "Copy"}
     </button>
   );
 }

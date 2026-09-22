@@ -2,7 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { getLocaleFromPathname, localizePath } from "@/i18n/config";
+import {
+  getLocaleFromPathname,
+  LANGUAGE_COPY,
+  localizePath,
+  NAV_LABELS,
+} from "@/i18n/config";
 
 export function Footer() {
   const pathname = usePathname() ?? "/";
@@ -11,19 +16,19 @@ export function Footer() {
   const links = [
     {
       href: "/playground",
-      label: "Playground",
+      label: NAV_LABELS[locale]["/playground"],
     },
     {
       href: "/what-is-jev",
-      label: locale === "zh" ? "什么是 Jev？" : "What is Jev?",
+      label: NAV_LABELS[locale]["/what-is-jev"],
     },
     {
       href: "/pricing",
-      label: locale === "zh" ? "定价" : "Pricing",
+      label: NAV_LABELS[locale]["/pricing"],
     },
     {
       href: "/ecosystem",
-      label: locale === "zh" ? "生态目录" : "Ecosystem",
+      label: NAV_LABELS[locale]["/ecosystem"],
     },
   ];
 
@@ -35,7 +40,7 @@ export function Footer() {
         </div>
         <nav
           className="footer-links"
-          aria-label={locale === "zh" ? "页脚导航" : "Footer navigation"}
+          aria-label={LANGUAGE_COPY[locale].footerNav}
         >
           {links.map((item) => (
             <Link href={localizePath(item.href, locale)} key={item.href}>

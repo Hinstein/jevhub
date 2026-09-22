@@ -404,7 +404,7 @@ export function localizedTemplate(
   template: JevTemplate,
   locale: Locale,
 ): JevTemplate {
-  if (locale === "en") return template;
+  if (locale !== "zh") return template;
   const translation = zhTemplates[template.slug];
   if (!translation) return template;
 
@@ -427,7 +427,7 @@ export function localizedEcosystemItem(
   item: EcosystemItem,
   locale: Locale,
 ): EcosystemItem {
-  if (locale === "en") return item;
+  if (locale !== "zh") return item;
   return {
     ...item,
     description: zhEcosystemDescriptions[item.name] ?? item.description,
