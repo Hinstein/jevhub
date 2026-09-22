@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "JevHub: Jev guides, templates, calculator, and ecosystem";
+export const alt = "JevHub: learn Jev, try real apps, and build with it";
 export const size = {
   width: 1200,
   height: 630,
@@ -61,7 +61,7 @@ export default function OpenGraphImage() {
               fontWeight: 800,
             }}
           >
-            Learn, build, and explore Jev.
+            Learn Jev. Try real apps. Build with it.
           </div>
           <div
             style={{
