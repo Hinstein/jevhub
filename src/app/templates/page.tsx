@@ -24,9 +24,12 @@ export default function TemplatesPage() {
     >
       <div className="callout">
         This page collects Jev API examples, Choice examples, Score examples,
-        and Noul examples for bounded decisions. Try a pattern in the{" "}
-        <Link href="/playground">Jev Playground</Link>, then copy it into your
-        own server application and adapt the criteria to your policy.
+        and Noul examples for bounded decisions. See a finished scoring pattern
+        in the{" "}
+        <Link href="/apps/startup-idea-validator">Startup Idea Validator</Link>,
+        inspect raw decisions in the <Link href="/playground">Jev Playground</Link>,
+        then copy a pattern into your own server application and adapt the
+        criteria to your policy.
         <br />
         <span className="small">
           Source examples last reviewed: {TEMPLATE_CONTENT_REVIEWED_AT}.
