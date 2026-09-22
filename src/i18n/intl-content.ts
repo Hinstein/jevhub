@@ -284,6 +284,7 @@ export const INTL_PAGE_METADATA: Record<
 > = {
   ja: {
     "/": { title: "Jev AI：Playground、API、料金と例", description: "TypeSafe AI の Jev System One Model を学び、試し、API と実例を確認する独立ガイド。" },
+    "/apps/startup-idea-validator": { title: "スタートアップアイデア評価：Jev AI で 8 項目を採点", description: "スタートアップ、SaaS、製品アイデアを入力し、Jev が 8 つの観点で評価します。登録不要。" },
     "/playground": { title: "Jev Playground：型付き AI 判断を試す", description: "Choice、Noul、Score の Jev 判断をブラウザーで試し、確率分布を確認します。" },
     "/what-is-jev": { title: "Jev とは？TypeSafe AI の System One を解説", description: "Jev が State と型付き質問から固定形式の判断と確率を返す仕組みを説明します。" },
     "/pricing": { title: "Jev 料金：入力 token とコスト計算機", description: "Jev の現在の入力 token 料金、出力の扱い、公式ソースを確認します。" },
@@ -295,6 +296,7 @@ export const INTL_PAGE_METADATA: Record<
   },
   fr: {
     "/": { title: "Jev AI : Playground, API, tarifs et exemples", description: "Guide indépendant pour découvrir, essayer et utiliser le System One Model Jev de TypeSafe AI." },
+    "/apps/startup-idea-validator": { title: "Validateur d’idée de startup avec Jev AI", description: "Décrivez une idée de startup, SaaS ou produit et obtenez huit scores structurés avec Jev. Sans inscription." },
     "/playground": { title: "Jev Playground : essayer les décisions IA typées", description: "Essayez les décisions Choice, Noul et Score de Jev dans le navigateur et inspectez les probabilités." },
     "/what-is-jev": { title: "Qu’est-ce que Jev ? Le System One de TypeSafe AI", description: "Comprendre comment Jev transforme un state et des questions typées en décisions et probabilités." },
     "/pricing": { title: "Tarifs Jev : tokens d’entrée et calculateur", description: "Consultez le prix actuel des tokens d’entrée, la sortie et la source officielle de Jev." },
@@ -306,6 +308,7 @@ export const INTL_PAGE_METADATA: Record<
   },
   pl: {
     "/": { title: "Jev AI: Playground, API, cennik i przykłady", description: "Niezależny przewodnik po System One Model Jev firmy TypeSafe AI: poznaj go, wypróbuj i użyj w API." },
+    "/apps/startup-idea-validator": { title: "Walidator pomysłu na startup z Jev AI", description: "Opisz pomysł na startup, SaaS lub produkt i uzyskaj osiem ustrukturyzowanych ocen Jev. Bez rejestracji." },
     "/playground": { title: "Jev Playground: wypróbuj typowane decyzje AI", description: "Uruchom decyzje Choice, Noul i Score w przeglądarce i zobacz rozkład prawdopodobieństwa." },
     "/what-is-jev": { title: "Czym jest Jev? System One firmy TypeSafe AI", description: "Dowiedz się, jak Jev zamienia State i typowane pytania w decyzje oraz prawdopodobieństwa." },
     "/pricing": { title: "Cennik Jev: tokeny wejściowe i kalkulator", description: "Sprawdź bieżącą cenę tokenów wejściowych, wyjście i oficjalne źródło Jev." },
