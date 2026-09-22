@@ -44,6 +44,8 @@ describe("V02 public copy contract", () => {
     expect(storeLink).toContain("LANGUAGE_COPY[currentLocale].store");
     expect(storeLink).toContain('href={localizePath("/go/store", currentLocale)}');
     expect(header).toContain('currentPath === withoutLocale(item.href) ? "nav-link nav-active" : "nav-link"');
+    expect(header).toContain("<LanguageSwitcher />");
+    expect(header).not.toContain("showLanguageSwitcher");
     expect(languageSwitcher).toContain("function GlobeIcon()");
     expect(languageSwitcher).toContain("LOCALES.map");
     expect(languageSwitcher).toContain('role="menu"');
@@ -65,6 +67,7 @@ describe("V02 public copy contract", () => {
     expect(route).toContain("JEV_PLAYGROUND_RATE_LIMIT");
     expect(route).toContain("JEV_PLAYGROUND_TIMEOUT_MS");
     expect(ideaValidator).not.toContain("TYPESAFE_API_KEY");
+    expect(ideaValidator).toContain("IDEA_VALIDATOR_COPY");
     expect(ideaRoute).toContain("TYPESAFE_API_KEY");
     expect(ideaRoute).toContain("JEV_IDEA_VALIDATOR_RATE_LIMIT");
     expect(ideaRoute).toContain("JEV_IDEA_VALIDATOR_TIMEOUT_MS");
