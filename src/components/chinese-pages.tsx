@@ -3,6 +3,7 @@ import { ArticleShell } from "@/components/article-shell";
 import { CodeBlock } from "@/components/code-block";
 import { JevDecisionExplainer } from "@/components/jev-decision-explainer";
 import { JevPlayground } from "@/components/playground/jev-playground";
+import { IdeaValidatorPage } from "@/components/idea-validator/idea-validator-page";
 import { EcosystemCard } from "@/components/ecosystem-card";
 import { LocaleLink } from "@/components/locale-link";
 import { JevCostCalculator } from "@/components/calculator/jev-cost-calculator";
@@ -877,6 +878,7 @@ export function ChineseEcosystemPage() {
 
 export function ChinesePage({ path }: { path: string }) {
   if (path === "/") return <ChineseHomePage />;
+  if (path === "/apps/startup-idea-validator") return <IdeaValidatorPage locale="zh" />;
   if (path === "/playground") return <ChinesePlaygroundPage />;
   if (path === "/what-is-jev") return <ChineseWhatIsJevPage />;
   if (path === "/pricing") return <ChinesePricingPage />;
