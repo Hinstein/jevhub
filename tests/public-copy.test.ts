@@ -51,9 +51,11 @@ describe("V02 public copy contract", () => {
     expect(footer).not.toContain("JevHub is an independent community resource");
   });
 
-  it("keeps the approved Playground public surface bounded", () => {
+  it("keeps the approved runtime surfaces bounded", () => {
     const playground = source("src/components/playground/jev-playground.tsx");
     const route = source("src/app/api/playground/route.ts");
+    const ideaValidator = source("src/components/idea-validator/idea-validator.tsx");
+    const ideaRoute = source("src/app/api/idea-validator/route.ts");
 
     expect(existsSync(resolve(process.cwd(), "src/app/playground/page.tsx"))).toBe(true);
     expect(existsSync(resolve(process.cwd(), "src/app/api/playground/route.ts"))).toBe(true);
@@ -62,5 +64,9 @@ describe("V02 public copy contract", () => {
     expect(route).toContain("TYPESAFE_API_KEY");
     expect(route).toContain("JEV_PLAYGROUND_RATE_LIMIT");
     expect(route).toContain("JEV_PLAYGROUND_TIMEOUT_MS");
+    expect(ideaValidator).not.toContain("TYPESAFE_API_KEY");
+    expect(ideaRoute).toContain("TYPESAFE_API_KEY");
+    expect(ideaRoute).toContain("JEV_IDEA_VALIDATOR_RATE_LIMIT");
+    expect(ideaRoute).toContain("JEV_IDEA_VALIDATOR_TIMEOUT_MS");
   });
 });
