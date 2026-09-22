@@ -325,6 +325,11 @@ export const ZH_PAGE_METADATA: Record<
     description:
       "独立的 Jev 中文指南、成本工具、决策模板和生态目录，帮助开发者理解并使用 TypeSafe AI 的 Jev 决策模型。",
   },
+  "/apps/startup-idea-validator": {
+    title: "创业点子评分器：用 Jev AI 从 8 个维度评估产品想法",
+    description:
+      "输入创业、SaaS 或产品想法，选择赚钱、开源或兴趣目标，让 Jev 从 8 个维度快速评分。无需注册。",
+  },
   "/playground": {
     title: "Jev Playground：在线尝试 Choice、Noul 与 Score",
     description:
