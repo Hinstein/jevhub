@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useRef } from "react";
+import type { FocusEvent, MouseEvent } from "react";
 import {
   getLocaleFromPathname,
   LANGUAGE_COPY,
@@ -28,12 +30,72 @@ export function LanguageSwitcher() {
   const pathname = usePathname() ?? "/";
   const locale = getLocaleFromPathname(pathname);
   const copy = LANGUAGE_COPY[locale];
+  const menuRef = useRef<HTMLDetailsElement>(null);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (closeTimerRef.current) {
+        clearTimeout(closeTimerRef.current);
+      }
+    };
+  }, []);
+
+  function supportsHover() {
+    return (
+      typeof window !== "undefined" &&
+      window.matchMedia("(hover: hover) and (pointer: fine)").matches
+    );
+  }
+
+  function cancelScheduledClose() {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+  }
+
+  function openOnHover() {
+    if (!supportsHover()) return;
+    cancelScheduledClose();
+    menuRef.current?.setAttribute("open", "");
+  }
+
+  function closeAfterLeaving() {
+    if (!supportsHover()) return;
+    cancelScheduledClose();
+    closeTimerRef.current = setTimeout(() => {
+      menuRef.current?.removeAttribute("open");
+      closeTimerRef.current = null;
+    }, 120);
+  }
+
+  function keepDesktopMenuOpen(event: MouseEvent<HTMLElement>) {
+    if (!supportsHover()) return;
+    event.preventDefault();
+    openOnHover();
+  }
+
+  function closeWhenFocusLeaves(event: FocusEvent<HTMLDetailsElement>) {
+    const nextTarget = event.relatedTarget;
+    if (nextTarget && event.currentTarget.contains(nextTarget)) return;
+    if (!event.currentTarget.matches(":hover")) {
+      event.currentTarget.removeAttribute("open");
+    }
+  }
 
   return (
-    <details className="language-menu">
+    <details
+      className="language-menu"
+      onBlur={closeWhenFocusLeaves}
+      onMouseEnter={openOnHover}
+      onMouseLeave={closeAfterLeaving}
+      ref={menuRef}
+    >
       <summary
         className="language-menu-trigger"
         aria-label={copy.selectLanguage}
+        onClick={keepDesktopMenuOpen}
         title={copy.selectLanguage}
       >
         <GlobeIcon />
