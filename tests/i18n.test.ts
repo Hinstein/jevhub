@@ -70,21 +70,18 @@ describe("locale routing", () => {
     expect(params).toContainEqual({ slug: ["templates", "refund-detection"] });
   });
 
-  it("marks localized pages noindex while keeping self canonicals and hreflang", async () => {
+  it("marks localized pages noindex with self canonicals but no hreflang", async () => {
     const metadata = await generateMetadata({
       params: Promise.resolve({ slug: ["pricing"] }),
     });
     const alternates = metadata.alternates as {
       canonical: string;
-      languages: Record<string, string>;
+      languages?: Record<string, string>;
     };
 
     expect(metadata.robots).toEqual({ index: false, follow: true });
     expect(alternates.canonical).toBe("https://jevhub.xyz/zh-CN/pricing");
-    expect(alternates.languages.en).toBe("https://jevhub.xyz/pricing");
-    expect(alternates.languages["zh-CN"]).toBe(
-      "https://jevhub.xyz/zh-CN/pricing",
-    );
+    expect(alternates.languages).toBeUndefined();
     expect(sitemap().map((entry) => entry.url)).not.toContain(
       `${SITE.url}/zh-CN/pricing`,
     );
