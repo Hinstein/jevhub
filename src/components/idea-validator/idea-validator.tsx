@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { IDEA_VALIDATOR_COPY } from "@/i18n/idea-validator-copy";
+import type { Locale } from "@/i18n/config";
 import { trackEvent } from "@/lib/analytics";
 import {
   IDEA_GOALS,
@@ -9,21 +11,6 @@ import {
   type IdeaValidatorResult,
 } from "@/lib/idea-validator";
 
-const goalCopy: Record<IdeaGoal, { title: string; body: string }> = {
-  money: {
-    title: "Make money",
-    body: "Score the idea as a product or business.",
-  },
-  open_source: {
-    title: "Open source",
-    body: "Score adoption, usefulness, and developer appeal.",
-  },
-  fun: {
-    title: "Just for fun",
-    body: "Score immediate appeal, fun, and shareability.",
-  },
-};
-
 function scoreBucket(score: number) {
   if (score < 50) return "0_49";
   if (score < 65) return "50_64";
@@ -31,17 +18,8 @@ function scoreBucket(score: number) {
   return "80_100";
 }
 
-function verdictCopy(verdict: IdeaValidatorResult["verdict"]) {
-  if (verdict === "SHIP") {
-    return "The description has a strong enough shape to justify a small first build or test.";
-  }
-  if (verdict === "FIX") {
-    return "There is something here, but the weakest dimensions need a clearer answer first.";
-  }
-  return "The idea description is missing too many strong signals right now. Rework it before investing much time.";
-}
-
-export function IdeaValidator() {
+export function IdeaValidator({ locale = "en" }: { locale?: Locale }) {
+  const copy = IDEA_VALIDATOR_COPY[locale];
   const [idea, setIdea] = useState("");
   const [goal, setGoal] = useState<IdeaGoal>("money");
   const [result, setResult] = useState<IdeaValidatorResult | null>(null);
@@ -49,23 +27,21 @@ export function IdeaValidator() {
   const [running, setRunning] = useState(false);
 
   useEffect(() => {
-    trackEvent("idea_validator_view");
-  }, []);
+    trackEvent("idea_validator_view", { locale });
+  }, [locale]);
 
   async function evaluate() {
     const trimmed = idea.trim();
     if (trimmed.length < IDEA_VALIDATOR_LIMITS.minIdeaCharacters) {
-      setError(
-        `Describe the idea in at least ${IDEA_VALIDATOR_LIMITS.minIdeaCharacters} characters.`,
-      );
+      setError(copy.minError(IDEA_VALIDATOR_LIMITS.minIdeaCharacters));
       return;
     }
 
     if (result) {
-      trackEvent("idea_validator_retry", { goal });
+      trackEvent("idea_validator_retry", { goal, locale });
     }
 
-    trackEvent("idea_validator_submit", { goal });
+    trackEvent("idea_validator_submit", { goal, locale });
     setRunning(true);
     setError("");
 
@@ -81,26 +57,19 @@ export function IdeaValidator() {
         | { error?: string };
 
       if (!response.ok || !("dimensions" in data)) {
-        throw new Error(
-          "error" in data && data.error
-            ? data.error
-            : "The idea could not be scored right now.",
-        );
+        throw new Error(copy.genericError);
       }
 
       setResult(data);
       trackEvent("idea_validator_result", {
         goal,
+        locale,
         verdict: data.verdict.toLowerCase(),
         score_bucket: scoreBucket(data.overall),
       });
-    } catch (requestError) {
+    } catch {
       setResult(null);
-      setError(
-        requestError instanceof Error
-          ? requestError.message
-          : "The idea could not be scored right now.",
-      );
+      setError(copy.genericError);
     } finally {
       setRunning(false);
     }
@@ -108,21 +77,25 @@ export function IdeaValidator() {
 
   function shareOnX() {
     if (!result) return;
+
+    const bestLabel = copy.dimensionLabels[result.best.id];
+    const riskLabel = copy.dimensionLabels[result.risk.id];
+
     trackEvent("idea_validator_share", {
       goal,
+      locale,
       verdict: result.verdict.toLowerCase(),
       score_bucket: scoreBucket(result.overall),
     });
 
-    const text = [
-      `My idea scored ${result.overall}/100 — ${result.verdict} on JevHub's Startup Idea Validator.`,
-      "",
-      `Best signal: ${result.best.label} ${result.best.score}`,
-      `Biggest risk: ${result.risk.label} ${result.risk.score}`,
-      "",
-      "Try yours:",
-      "https://jevhub.xyz/apps/startup-idea-validator",
-    ].join("\n");
+    const text = copy.shareText({
+      overall: result.overall,
+      verdict: result.verdict,
+      bestLabel,
+      bestScore: result.best.score,
+      riskLabel,
+      riskScore: result.risk.score,
+    });
 
     window.open(
       "https://x.com/intent/post?text=" + encodeURIComponent(text),
@@ -132,10 +105,10 @@ export function IdeaValidator() {
   }
 
   return (
-    <section className="idea-validator" aria-label="Startup Idea Validator">
+    <section className="idea-validator" aria-label={copy.title}>
       <div className="idea-input-card">
         <label className="idea-field">
-          <span>Describe your startup or product idea</span>
+          <span>{copy.inputLabel}</span>
           <textarea
             value={idea}
             onChange={(event) => {
@@ -144,16 +117,17 @@ export function IdeaValidator() {
             }}
             maxLength={IDEA_VALIDATOR_LIMITS.maxIdeaCharacters}
             rows={7}
-            placeholder="Example: A tool that monitors public Reddit discussions for repeated workflow complaints, groups similar pain points, and helps indie developers find product ideas worth researching."
+            placeholder={copy.placeholder}
           />
           <small>
             {idea.length.toLocaleString()} /{" "}
-            {IDEA_VALIDATOR_LIMITS.maxIdeaCharacters.toLocaleString()} characters
+            {IDEA_VALIDATOR_LIMITS.maxIdeaCharacters.toLocaleString()}{" "}
+            {copy.characters}
           </small>
         </label>
 
         <fieldset className="idea-goals">
-          <legend>What is your goal?</legend>
+          <legend>{copy.goalLegend}</legend>
           <div className="idea-goal-grid">
             {IDEA_GOALS.map((item) => (
               <label
@@ -170,8 +144,8 @@ export function IdeaValidator() {
                     setResult(null);
                   }}
                 />
-                <strong>{goalCopy[item].title}</strong>
-                <span>{goalCopy[item].body}</span>
+                <strong>{copy.goals[item].title}</strong>
+                <span>{copy.goals[item].body}</span>
               </label>
             ))}
           </div>
@@ -189,13 +163,10 @@ export function IdeaValidator() {
           onClick={evaluate}
           disabled={running}
         >
-          {running ? "Jev is scoring your idea…" : "Score my idea"}
+          {running ? copy.running : copy.submit}
         </button>
 
-        <p className="idea-privacy">
-          No signup. The idea is sent only to the Jev scoring endpoint for this
-          request and is not included in analytics events.
-        </p>
+        <p className="idea-privacy">{copy.privacy}</p>
       </div>
 
       <div className="idea-result-card" aria-live="polite">
@@ -203,13 +174,13 @@ export function IdeaValidator() {
           <>
             <div className="idea-score-hero">
               <div>
-                <div className="eyebrow">Jev idea score</div>
+                <div className="eyebrow">{copy.scoreEyebrow}</div>
                 <strong>{result.overall}</strong>
                 <span>/ 100</span>
               </div>
               <div className="idea-verdict">
                 <b>{result.verdict}</b>
-                <p>{verdictCopy(result.verdict)}</p>
+                <p>{copy.verdict[result.verdict]}</p>
               </div>
             </div>
 
@@ -217,7 +188,7 @@ export function IdeaValidator() {
               {result.dimensions.map((dimension) => (
                 <div className="idea-dimension" key={dimension.id}>
                   <div className="idea-dimension-meta">
-                    <span>{dimension.label}</span>
+                    <span>{copy.dimensionLabels[dimension.id]}</span>
                     <strong>{dimension.score}</strong>
                   </div>
                   <div className="idea-score-track" aria-hidden="true">
@@ -229,15 +200,15 @@ export function IdeaValidator() {
 
             <div className="idea-signals">
               <div>
-                <span>Best signal</span>
+                <span>{copy.bestSignal}</span>
                 <strong>
-                  {result.best.label} · {result.best.score}
+                  {copy.dimensionLabels[result.best.id]} · {result.best.score}
                 </strong>
               </div>
               <div>
-                <span>Biggest risk</span>
+                <span>{copy.biggestRisk}</span>
                 <strong>
-                  {result.risk.label} · {result.risk.score}
+                  {copy.dimensionLabels[result.risk.id]} · {result.risk.score}
                 </strong>
               </div>
             </div>
@@ -251,36 +222,24 @@ export function IdeaValidator() {
                   setIdea("");
                 }}
               >
-                Try another idea
+                {copy.tryAnother}
               </button>
               <button
                 type="button"
                 className="button-secondary"
                 onClick={shareOnX}
               >
-                Share result on X
+                {copy.share}
               </button>
             </div>
           </>
         ) : (
           <div className="idea-result-empty">
             <div className="output-glyph">[ 8 ]</div>
-            <h2>Eight bounded decisions, one result.</h2>
-            <p>
-              Jev scores the idea across eight dimensions, then JevHub computes
-              the weighted total and verdict in normal application code.
-            </p>
+            <h2>{copy.emptyTitle}</h2>
+            <p>{copy.emptyBody}</p>
             <div className="idea-preview-grid" aria-hidden="true">
-              {[
-                "Problem",
-                "Customer",
-                "Demand",
-                "Value",
-                "Reach",
-                "Different",
-                "Buildable",
-                "Shareable",
-              ].map((label) => (
+              {Object.values(copy.dimensionLabels).map((label) => (
                 <span key={label}>{label}</span>
               ))}
             </div>
