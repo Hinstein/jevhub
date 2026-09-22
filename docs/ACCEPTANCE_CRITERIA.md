@@ -77,6 +77,9 @@
 - [ ] 不保存 idea 历史
 - [ ] Analytics 不包含 idea 原文
 - [ ] 页面明确说明它不是市场调查
+- [ ] 语言切换器在 Idea Validator 页面保持可用
+- [ ] zh-CN / ja-JP / fr-FR / pl-PL 均能打开同一 App 的本地化版本
+- [ ] 非英文 App 页面继续 noindex,follow 且不进入 sitemap
 - [ ] 375px 宽度可用
 - [ ] 有 WebApplication 与 Breadcrumb structured data
 
