@@ -10,7 +10,8 @@ The first release intentionally stays small:
 
 - 18 English indexable pages
 - 5 core learning / SEO pages
-- 1 server-side Startup Idea Validator\n- 1 server-side Jev Playground
+- 1 server-side Startup Idea Validator
+- 1 server-side Jev Playground
 - 1 local Jev cost calculator
 - 1 template index + 8 practical template pages
 - 1 curated ecosystem page with 20–30 checked projects
@@ -60,7 +61,12 @@ NEXT_PUBLIC_UMAMI_DOMAINS=jevhub.xyz
 The site emits page views and these custom events:
 
 - `page_view`
-- `playground_run`\n- `idea_validator_view`\n- `idea_validator_submit`\n- `idea_validator_result`\n- `idea_validator_retry`\n- `idea_validator_share`
+- `playground_run`
+- `idea_validator_view`
+- `idea_validator_submit`
+- `idea_validator_result`
+- `idea_validator_retry`
+- `idea_validator_share`
 - `calculator_used`
 - `template_code_copied`
 - `ecosystem_outbound_clicked`
