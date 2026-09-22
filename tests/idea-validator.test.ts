@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { IDEA_VALIDATOR_COPY } from "@/i18n/idea-validator-copy";
 import {
   buildIdeaValidatorQuestions,
   composeIdeaValidatorResult,
@@ -8,6 +9,14 @@ import {
 } from "@/lib/idea-validator";
 
 describe("startup idea validator", () => {
+  it("ships copy for every supported locale", () => {
+    expect(Object.keys(IDEA_VALIDATOR_COPY)).toEqual(["en", "zh", "ja", "fr", "pl"]);
+    expect(IDEA_VALIDATOR_COPY.zh.title).toContain("创业");
+    expect(IDEA_VALIDATOR_COPY.ja.submit.length).toBeGreaterThan(0);
+    expect(IDEA_VALIDATOR_COPY.fr.submit.length).toBeGreaterThan(0);
+    expect(IDEA_VALIDATOR_COPY.pl.submit.length).toBeGreaterThan(0);
+  });
+
   it("accepts a bounded idea and builds exactly eight score questions", () => {
     const input = validateIdeaValidatorInput({
       idea: "A developer tool that groups repeated support complaints into product opportunities.",
