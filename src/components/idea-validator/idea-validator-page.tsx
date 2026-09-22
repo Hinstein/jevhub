@@ -2,7 +2,7 @@ import { BreadcrumbStructuredData, JsonLd } from "@/components/structured-data";
 import { IdeaValidator } from "@/components/idea-validator/idea-validator";
 import { LocaleLink } from "@/components/locale-link";
 import { IDEA_VALIDATOR_COPY } from "@/i18n/idea-validator-copy";
-import { localizePath, type Locale } from "@/i18n/config";
+import { LANGUAGE_COPY, LOCALE_CONFIG, localizePath, type Locale } from "@/i18n/config";
 import { SITE } from "@/lib/site";
 
 const basePath = "/apps/startup-idea-validator";
@@ -19,7 +19,7 @@ export function IdeaValidatorPage({ locale = "en" }: { locale?: Locale }) {
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
     isAccessibleForFree: true,
-    inLanguage: locale,
+    inLanguage: LOCALE_CONFIG[locale].htmlLang,
     description: copy.description,
     offers: {
       "@type": "Offer",
@@ -32,7 +32,7 @@ export function IdeaValidatorPage({ locale = "en" }: { locale?: Locale }) {
     <>
       <BreadcrumbStructuredData
         items={[
-          { name: locale === "zh" ? "首页" : "Home", path: localizePath("/", locale) },
+          { name: LANGUAGE_COPY[locale].home, path: localizePath("/", locale) },
           { name: copy.title, path: localizedPath },
         ]}
       />
