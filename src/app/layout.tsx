@@ -7,7 +7,6 @@ import { LocaleDocument } from "@/components/locale-document";
 import { AnalyticsRouteTracker } from "@/components/analytics";
 import { SiteStructuredData } from "@/components/structured-data";
 import { LOGO_ASSETS, SITE } from "@/lib/site";
-import { LOCALES, LOCALE_CONFIG, localizePath } from "@/i18n/config";
 
 const HOME_TITLE = "Jev AI Hub: Real Apps, Playground, API Guide & Examples";
 
