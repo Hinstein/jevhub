@@ -4,6 +4,7 @@ import { CodeBlock } from "@/components/code-block";
 import { EcosystemCard } from "@/components/ecosystem-card";
 import { JevDecisionExplainer } from "@/components/jev-decision-explainer";
 import { JevPlayground } from "@/components/playground/jev-playground";
+import { IdeaValidatorPage } from "@/components/idea-validator/idea-validator-page";
 import { JevCostCalculator } from "@/components/calculator/jev-cost-calculator";
 import { LocaleLink } from "@/components/locale-link";
 import { StoreLink } from "@/components/store-link";
@@ -97,6 +98,7 @@ export function InternationalizedEcosystemPage({ locale }: { locale: AddedLocale
 
 export function InternationalizedPage({ locale, path }: { locale: AddedLocale; path: string }) {
   if (path === "/") return <InternationalizedHomePage locale={locale} />;
+  if (path === "/apps/startup-idea-validator") return <IdeaValidatorPage locale={locale} />;
   if (path === "/playground") return <InternationalizedPlaygroundPage locale={locale} />;
   if (path === "/what-is-jev") return <InternationalizedWhatIsJevPage locale={locale} />;
   if (path === "/pricing") return <InternationalizedPricingPage locale={locale} />;
