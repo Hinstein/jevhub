@@ -46,8 +46,8 @@ export default function WhatIsJevPage() {
         <Link className="button-primary" href="/playground">
           Open Jev Playground
         </Link>
-        <Link className="button-secondary" href="/getting-started">
-          Read the SDK quickstart
+        <Link className="button-secondary" href="/apps/startup-idea-validator">
+          Try a real Jev app
         </Link>
       </div>
 
@@ -141,7 +141,9 @@ export default function WhatIsJevPage() {
 
       <h2>Next</h2>
       <p>
-        Run a decision in the <Link href="/playground">Playground</Link>,
+        Try the{" "}
+        <Link href="/apps/startup-idea-validator">Startup Idea Validator</Link>,
+        inspect the raw decisions in the <Link href="/playground">Playground</Link>,
         continue with the <Link href="/getting-started">getting-started guide</Link>,
         estimate usage in the <Link href="/tools/jev-cost-calculator">cost calculator</Link>,
         or browse <Link href="/templates">practical templates</Link>.
