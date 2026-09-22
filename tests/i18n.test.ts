@@ -61,11 +61,12 @@ describe("locale routing", () => {
     );
   });
 
-  it("pre-renders the 17 localized content paths", () => {
+  it("pre-renders all 18 localized content paths", () => {
     const params = generateStaticParams();
 
-    expect(params).toHaveLength(17);
+    expect(params).toHaveLength(18);
     expect(params).toContainEqual({ slug: [] });
+    expect(params).toContainEqual({ slug: ["apps", "startup-idea-validator"] });
     expect(params).toContainEqual({ slug: ["playground"] });
     expect(params).toContainEqual({ slug: ["templates", "refund-detection"] });
   });
@@ -112,5 +113,6 @@ describe("localized content", () => {
       "客服、销售、Agent、审核等 8 个 Jev 模板",
     );
     expect(ZH_PAGE_METADATA["/playground"].title).toContain("Jev Playground");
+    expect(ZH_PAGE_METADATA["/apps/startup-idea-validator"].title).toContain("创业点子评分器");
   });
 });
