@@ -1,6 +1,6 @@
 # JevHub V0.1 Content Spec
 
-本文件规定首版 17 个可索引页面具体写什么。2026-09-21 已批准新增 `/playground`；除此之外不要自行扩大页面数量。
+本文件规定首版 18 个英文可索引页面具体写什么。2026-09-21 已批准新增 `/playground`；2026-09-23 再批准 `/apps/startup-idea-validator`。除此之外不要自行扩大页面数量。
 
 ## 内容总原则
 
@@ -546,3 +546,63 @@ Home
 → Store（次要）
 
 避免孤儿页面。
+
+
+---
+
+# 18. Startup Idea Validator — `/apps/startup-idea-validator`
+
+## Search intent
+
+- startup idea validator
+- AI idea validator
+- business idea validator
+- product idea validator
+- should I build this idea
+
+## 页面定位
+
+这是 JevHub 第一个面向普通用户的 Real App，不是 Template，也不是 Playground preset。
+
+## 页面顺序
+
+1. H1：`Startup Idea Validator`
+2. 一句话解释：输入 startup/product idea，选择目标，Jev 用 8 个结构化 Score 评分
+3. 完整交互
+   - idea textarea
+   - Make money / Open source / Just for fun
+   - Score my idea
+4. 结果
+   - overall 0–100
+   - KILL / FIX / SHIP
+   - 8 个维度
+   - best signal
+   - biggest risk
+   - Try another idea
+   - Share result on X
+5. How the score works
+6. 8 dimensions
+7. KILL / FIX / SHIP 含义
+8. 明确边界：不是独立市场调查
+9. 内链 → Playground / Templates / Getting Started
+
+## SEO / 内容规则
+
+- title 与 H1 不堆关键词。
+- 一页覆盖 startup / business / product / SaaS idea validator 的相邻意图；V0 不复制多个同质 landing pages。
+- 不为每个用户结果创建可索引 URL。
+- 分享链接统一回到主 App 页面。
+- 使用 WebApplication JSON-LD + Breadcrumb。
+- 页面必须至少包含两条相关内部链接。
+
+## Analytics
+
+只发送：
+
+- idea_validator_view
+- idea_validator_submit
+- idea_validator_result
+- idea_validator_retry
+- idea_validator_share
+
+禁止把 idea 原文、完整 prompt 或其他用户文本发到 analytics。
