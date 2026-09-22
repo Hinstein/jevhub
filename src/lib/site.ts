@@ -38,9 +38,7 @@ export const INDEXABLE_ROUTES = [
   "/ecosystem",
 ] as const;
 
-export const LOCALIZED_ROUTES = INDEXABLE_ROUTES.filter(
-  (route) => route !== "/apps/startup-idea-validator",
-);
+export const LOCALIZED_ROUTES = INDEXABLE_ROUTES;
 
 export const NAV_ITEMS = [
   { href: "/apps/startup-idea-validator", label: "Idea Validator" },
