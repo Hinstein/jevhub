@@ -145,7 +145,7 @@ Gate：
 - WebApplication + Breadcrumb structured data
 - 首页第一 CTA 指向 Idea Validator
 - 英文 sitemap 增加第 18 页
-- locale pages 继续 noindex，并暂不生成 Idea Validator locale route
+- 为 Idea Validator 生成 zh-CN / ja-JP / fr-FR / pl-PL locale route；这些页面继续 `noindex,follow`，不进入 sitemap
 
 Gate：
 
