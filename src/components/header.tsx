@@ -63,7 +63,7 @@ export function Header() {
               </Link>
             ))}
             <StoreLink className="store-link" locale={locale} />
-            {showLanguageSwitcher ? <LanguageSwitcher /> : null}
+            <LanguageSwitcher />
           </nav>
         </details>
       </div>
