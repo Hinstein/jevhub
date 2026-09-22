@@ -5,6 +5,7 @@ import { metadata as rootMetadata } from "@/app/layout";
 import robots from "@/app/robots";
 import sitemap from "@/app/sitemap";
 import { GET as storeRedirect } from "@/app/go/store/route";
+import { metadata as ideaValidatorMetadata } from "@/app/apps/startup-idea-validator/page";
 import { metadata as calculatorMetadata } from "@/app/tools/jev-cost-calculator/page";
 import { metadata as ecosystemMetadata } from "@/app/ecosystem/page";
 import { metadata as gettingStartedMetadata } from "@/app/getting-started/page";
@@ -29,7 +30,7 @@ function source(path: string) {
 }
 
 describe("SEO route contract", () => {
-  it("maps the homepage to the Jev AI search intent", () => {
+  it("keeps the homepage on Jev AI while promoting real apps", () => {
     const home = source("src/app/page.tsx");
     const homeTitle =
       typeof rootMetadata.title === "string"
@@ -39,10 +40,11 @@ describe("SEO route contract", () => {
           : undefined;
 
     expect(homeTitle).toContain("Jev AI");
-    expect(rootMetadata.description).toContain("Independent guide");
+    expect(rootMetadata.description).toContain("Independent Jev AI hub");
     expect((home.match(/<h1>/g) ?? []).length).toBe(1);
-    expect(home).toContain("Jev AI — TypeSafe&apos;s System One Model");
+    expect(home).toContain("Learn Jev, try real apps, and build with it.");
     for (const route of [
+      "/apps/startup-idea-validator",
       "/playground",
       "/what-is-jev",
       "/getting-started",
@@ -53,47 +55,42 @@ describe("SEO route contract", () => {
     }
     expect(home).toContain("How much does Jev cost?");
     expect(home).toContain("What is Jev AI?");
-    expect(home).not.toContain("Separate store");
   });
 
-  it("keeps the primary navigation aligned with page search intent", () => {
+  it("keeps the primary navigation focused on top-level user journeys", () => {
     expect(NAV_ITEMS.map((item) => item.href)).toEqual([
+      "/apps/startup-idea-validator",
       "/playground",
       "/what-is-jev",
-      "/getting-started",
-      "/pricing",
       "/templates",
       "/ecosystem",
     ]);
     expect(NAV_ITEMS.map((item) => item.label)).toEqual([
+      "Idea Validator",
       "Playground",
-      "What is Jev",
-      "API",
-      "Pricing",
+      "Learn Jev",
       "Examples",
       "Ecosystem",
     ]);
   });
 
-  it("gives the API and examples pages distinct search-intent headings", () => {
+  it("gives the API, app, and examples pages distinct search intent", () => {
+    const ideaPage = source("src/app/apps/startup-idea-validator/page.tsx");
     const gettingStarted = source("src/app/getting-started/page.tsx");
     const templatesPage = source("src/app/templates/page.tsx");
 
+    expect(ideaPage).toContain("<h1>Startup Idea Validator</h1>");
+    expect(ideaPage).toContain("This is an idea evaluation, not market research.");
     expect(gettingStarted).toContain('title="Jev API quickstart"');
     expect(gettingStarted).toContain("TypeSafe API key");
-    expect(gettingStarted).toContain("official JavaScript SDK");
     expect(templatesPage).toContain(
       'title="Jev examples and decision templates"',
     );
-    expect(templatesPage).toContain("Jev API examples");
-    expect(templatesPage).toContain("Choice examples");
-    expect(templatesPage).toContain("Score examples");
-    expect(templatesPage).toContain("Noul examples");
   });
 
-  it("has exactly 17 unique indexable routes", () => {
-    expect(INDEXABLE_ROUTES).toHaveLength(17);
-    expect(new Set(INDEXABLE_ROUTES).size).toBe(17);
+  it("has exactly 18 unique English indexable routes", () => {
+    expect(INDEXABLE_ROUTES).toHaveLength(18);
+    expect(new Set(INDEXABLE_ROUTES).size).toBe(18);
   });
 
   it("gives every indexable route unique metadata and a self canonical", async () => {
@@ -108,6 +105,7 @@ describe("SEO route contract", () => {
 
     const metadataByRoute = new Map<string, typeof rootMetadata>([
       ["/", rootMetadata],
+      ["/apps/startup-idea-validator", ideaValidatorMetadata],
       ["/playground", playgroundMetadata],
       ["/what-is-jev", whatIsJevMetadata],
       ["/pricing", pricingMetadata],
@@ -142,9 +140,8 @@ describe("SEO route contract", () => {
       expect(title).toBeTruthy();
       expect(description).toBeTruthy();
       expect(metadata.alternates?.canonical).toBe(expectedCanonical);
-      expect(metadata.alternates?.languages).toMatchObject({
+      expect(metadata.alternates?.languages).toEqual({
         en: expectedCanonical,
-        "zh-CN": new URL(`/zh-CN${route === "/" ? "" : route}`, SITE.url).toString(),
         "x-default": expectedCanonical,
       });
 
