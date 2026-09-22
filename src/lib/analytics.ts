@@ -3,6 +3,11 @@ export type AnalyticsEvent =
   | "template_code_copied"
   | "ecosystem_outbound_clicked"
   | "playground_run"
+  | "idea_validator_view"
+  | "idea_validator_submit"
+  | "idea_validator_result"
+  | "idea_validator_retry"
+  | "idea_validator_share"
   | "store_click";
 
 type AnalyticsParams = Record<string, string | number | boolean>;
