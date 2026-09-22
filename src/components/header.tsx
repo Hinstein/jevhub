@@ -23,7 +23,10 @@ export function Header() {
     currentPath !== "/apps/startup-idea-validator";
   const navItems = NAV_ITEMS.map((item) => ({
     ...item,
-    href: localizePath(item.href, locale),
+    href:
+      item.href === "/apps/startup-idea-validator"
+        ? item.href
+        : localizePath(item.href, locale),
     label: NAV_LABELS[locale][item.href],
   }));
 
