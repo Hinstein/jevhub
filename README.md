@@ -1,6 +1,6 @@
 # JevHub
 
-JevHub is an independent Jev learning, tools, templates, and ecosystem site for **jevhub.xyz**.
+JevHub is an independent Jev learning, real apps, tools, templates, and ecosystem site for **jevhub.xyz**.
 
 > JevHub is not affiliated with or endorsed by TypeSafe AI. The commerce site **jevhub.store** is a separate project and is only linked through `/go/store`.
 
@@ -8,9 +8,9 @@ JevHub is an independent Jev learning, tools, templates, and ecosystem site for 
 
 The first release intentionally stays small:
 
-- 17 indexable pages
+- 18 English indexable pages
 - 5 core learning / SEO pages
-- 1 server-side Jev Playground
+- 1 server-side Startup Idea Validator\n- 1 server-side Jev Playground
 - 1 local Jev cost calculator
 - 1 template index + 8 practical template pages
 - 1 curated ecosystem page with 20–30 checked projects
@@ -19,7 +19,7 @@ The first release intentionally stays small:
 - no auth
 - no payments
 - no marketplace
-- no browser-side API keys; the bounded Playground calls TypeSafe only from the server
+- no browser-side API keys; both bounded runtime experiences call TypeSafe only from the server
 
 ## Stack
 
@@ -29,7 +29,7 @@ The first release intentionally stays small:
 - Tailwind CSS 4
 - Vitest
 
-V0.1 uses no runtime database. The public Playground requires a server-side `TYPESAFE_API_KEY`; the key is never sent to the browser.
+V0.1 uses no runtime database. The public Playground and Startup Idea Validator require a server-side `TYPESAFE_API_KEY`; the key is never sent to the browser.
 
 ## Local development
 
@@ -60,7 +60,7 @@ NEXT_PUBLIC_UMAMI_DOMAINS=jevhub.xyz
 The site emits page views and these custom events:
 
 - `page_view`
-- `playground_run`
+- `playground_run`\n- `idea_validator_view`\n- `idea_validator_submit`\n- `idea_validator_result`\n- `idea_validator_retry`\n- `idea_validator_share`
 - `calculator_used`
 - `template_code_copied`
 - `ecosystem_outbound_clicked`
