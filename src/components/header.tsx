@@ -19,14 +19,9 @@ export function Header() {
   const locale = getLocaleFromPathname(pathname);
   const copy = LANGUAGE_COPY[locale];
   const currentPath = withoutLocale(pathname);
-  const showLanguageSwitcher =
-    currentPath !== "/apps/startup-idea-validator";
   const navItems = NAV_ITEMS.map((item) => ({
     ...item,
-    href:
-      item.href === "/apps/startup-idea-validator"
-        ? item.href
-        : localizePath(item.href, locale),
+    href: localizePath(item.href, locale),
     label: NAV_LABELS[locale][item.href],
   }));
 
@@ -52,7 +47,7 @@ export function Header() {
             </Link>
           ))}
           <StoreLink locale={locale} />
-          {showLanguageSwitcher ? <LanguageSwitcher /> : null}
+          <LanguageSwitcher />
         </nav>
 
         <details className="mobile-nav">
