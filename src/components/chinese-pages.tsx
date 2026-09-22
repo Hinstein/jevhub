@@ -4,6 +4,7 @@ import { CodeBlock } from "@/components/code-block";
 import { JevDecisionExplainer } from "@/components/jev-decision-explainer";
 import { JevPlayground } from "@/components/playground/jev-playground";
 import { IdeaValidatorPage } from "@/components/idea-validator/idea-validator-page";
+import { IDEA_VALIDATOR_COPY } from "@/i18n/idea-validator-copy";
 import { EcosystemCard } from "@/components/ecosystem-card";
 import { LocaleLink } from "@/components/locale-link";
 import { JevCostCalculator } from "@/components/calculator/jev-cost-calculator";
@@ -27,6 +28,7 @@ import {
 } from "@/i18n/zh-content";
 
 const locale = "zh" as const;
+const ideaValidatorCopy = IDEA_VALIDATOR_COPY.zh;
 
 const featuredTemplates = [
   "refund-detection",
@@ -107,16 +109,40 @@ export function ChineseHomePage() {
             这里整理 Jev 的入门说明、成本计算器、可复用模板和精选生态项目，帮助你快速理解并上手 TypeSafe AI 的 Jev。
           </p>
           <div className="actions">
-            <LocaleLink className="button-primary" href="/playground" locale={locale}>
-              试用 Jev Playground
+            <LocaleLink className="button-primary" href="/apps/startup-idea-validator" locale={locale}>
+              试用点子评分器
             </LocaleLink>
-            <LocaleLink
-              className="button-secondary"
-              href="/what-is-jev"
-              locale={locale}
-            >
-              什么是 Jev？
+            <LocaleLink className="button-secondary" href="/playground" locale={locale}>
+              打开 Jev Playground
             </LocaleLink>
+          </div>
+        </div>
+      </section>
+
+      <section className="section home-app-section">
+        <div className="shell">
+          <div className="home-app-card">
+            <div>
+              <div className="eyebrow">直接体验一个 Jev 应用</div>
+              <h2>{ideaValidatorCopy.title}</h2>
+              <p>{ideaValidatorCopy.description}</p>
+              <div className="idea-preview-grid home-idea-preview" aria-hidden="true">
+                {Object.values(ideaValidatorCopy.dimensionLabels).map((label) => (
+                  <span key={label}>{label}</span>
+                ))}
+              </div>
+              <div className="actions">
+                <LocaleLink className="button-primary" href="/apps/startup-idea-validator" locale={locale}>
+                  给我的点子评分 →
+                </LocaleLink>
+              </div>
+            </div>
+            <div className="home-app-score" aria-hidden="true">
+              <span>示例</span>
+              <strong>72</strong>
+              <b>SHIP</b>
+              <small>8 个结构化评分 · 1 次 Jev 请求</small>
+            </div>
           </div>
         </div>
       </section>
