@@ -19,7 +19,8 @@
 以下全部可访问：
 
 - [ ] `/`
-- [ ] `/apps/startup-idea-validator`\n- [ ] `/playground`
+- [ ] `/apps/startup-idea-validator`
+- [ ] `/playground`
 - [ ] `/what-is-jev`
 - [ ] `/pricing`
 - [ ] `/getting-started`
@@ -156,7 +157,12 @@
 至少能看到：
 
 - [ ] page views
-- [ ] playground_run\n- [ ] idea_validator_view\n- [ ] idea_validator_submit\n- [ ] idea_validator_result\n- [ ] idea_validator_retry\n- [ ] idea_validator_share
+- [ ] playground_run
+- [ ] idea_validator_view
+- [ ] idea_validator_submit
+- [ ] idea_validator_result
+- [ ] idea_validator_retry
+- [ ] idea_validator_share
 - [ ] calculator_used
 - [ ] template_code_copied
 - [ ] ecosystem_outbound_clicked
