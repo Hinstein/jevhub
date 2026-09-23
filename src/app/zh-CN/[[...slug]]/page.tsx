@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ChinesePage } from "@/components/chinese-pages";
-import { INDEXABLE_ROUTES } from "@/lib/site";
+import { LOCALIZED_ROUTES } from "@/lib/site";
 import { localizedPageMetadata } from "@/lib/metadata";
 import { getTemplateTranslation, ZH_PAGE_METADATA } from "@/i18n/zh-content";
 
@@ -11,7 +11,7 @@ type Props = {
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return INDEXABLE_ROUTES.map((route) => ({
+  return LOCALIZED_ROUTES.map((route) => ({
     slug: route === "/" ? [] : route.slice(1).split("/"),
   }));
 }

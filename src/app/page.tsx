@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { EcosystemCard } from "@/components/ecosystem-card";
 import { JevDecisionExplainer } from "@/components/jev-decision-explainer";
+import { StoreLink } from "@/components/store-link";
 import { TemplateCard } from "@/components/template-card";
 import { ecosystem } from "@/content/ecosystem";
 import { templates } from "@/content/templates";
-import { JEV_PRICING } from "@/data/jev-pricing";
 
 const featuredTemplates = [
   "refund-detection",
@@ -12,15 +12,6 @@ const featuredTemplates = [
   "task-completion",
   "lead-qualification",
 ];
-
-function formatUsd(value: number) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: value < 1 ? 3 : 2,
-    maximumFractionDigits: value < 1 ? 4 : 2,
-  }).format(value);
-}
 
 export default function HomePage() {
   const featured = templates.filter((template) =>
@@ -31,98 +22,67 @@ export default function HomePage() {
     <>
       <section className="hero">
         <div className="shell">
-          <div className="eyebrow">Independent Jev AI resource</div>
-          <h1>Jev AI — TypeSafe&apos;s System One Model</h1>
+          <div className="eyebrow">Independent Jev AI hub</div>
+          <h1>Learn Jev, try real apps, and build with it.</h1>
           <p className="hero-copy">
-            Jev is TypeSafe AI&apos;s System One model for structured decisions.
-            Instead of generating free-form text, Jev returns typed Choice,
-            Score, and Noul decisions with probabilities that software can
-            consume directly. Try Jev online, learn the API, check current
-            pricing, and explore practical examples.
+            Explore TypeSafe AI&apos;s Jev System One model through a real
+            application, an interactive Playground, practical examples, pricing,
+            and API guides for structured decisions.
           </p>
           <div className="actions">
-            <Link className="button-primary" href="/playground">
-              Try Jev Playground
+            <Link
+              className="button-primary"
+              href="/apps/startup-idea-validator"
+            >
+              Try Idea Validator
             </Link>
-            <Link className="button-secondary" href="/what-is-jev">
-              What is Jev?
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <section className="section">
-        <div className="shell">
-          <JevDecisionExplainer compact />
-          <div className="actions">
-            <Link className="button-primary" href="/playground">
-              Try this in Jev Playground →
+            <Link className="button-secondary" href="/playground">
+              Open Jev Playground
             </Link>
           </div>
         </div>
       </section>
 
-      <section className="section">
+      <section className="section home-app-section">
         <div className="shell">
-          <div className="section-heading">
-            <div className="eyebrow">Start with your question</div>
-            <h2>Jev AI guides, API, pricing, and examples.</h2>
-            <p>
-              Choose the page that matches what you need to understand or build
-              next.
-            </p>
-          </div>
-          <div className="grid grid-3">
-            <Link className="card card-link" href="/what-is-jev">
-              <div className="eyebrow">Learn</div>
-              <h3>What is Jev AI?</h3>
+          <div className="home-app-card">
+            <div>
+              <div className="eyebrow">Try a real Jev app</div>
+              <h2>Should you build it?</h2>
               <p>
-                Understand System One, typed decisions, probabilities, and the
-                Choice, Score, and Noul primitives.
+                Describe a startup or product idea. Jev scores eight bounded
+                dimensions in one request, then JevHub calculates a transparent
+                KILL, FIX, or SHIP result.
               </p>
-            </Link>
-            <Link className="card card-link" href="/playground">
-              <div className="eyebrow">Try</div>
-              <h3>Jev Playground</h3>
-              <p>
-                Run a structured decision online and inspect its result and
-                probability distribution.
-              </p>
-            </Link>
-            <Link className="card card-link" href="/getting-started">
-              <div className="eyebrow">Build</div>
-              <h3>Jev API Quickstart</h3>
-              <p>
-                Install the JavaScript SDK, keep your API key on the server,
-                and send a first request.
-              </p>
-            </Link>
-            <article className="card">
-              <div className="eyebrow">Price</div>
-              <h3>
-                <Link className="card-title-link" href="/pricing">
-                  Jev Pricing &amp; Calculator
+              <div className="idea-preview-grid home-idea-preview" aria-hidden="true">
+                {[
+                  "Problem",
+                  "Customer",
+                  "Demand",
+                  "Value",
+                  "Reach",
+                  "Different",
+                  "Buildable",
+                  "Shareable",
+                ].map((label) => (
+                  <span key={label}>{label}</span>
+                ))}
+              </div>
+              <div className="actions">
+                <Link
+                  className="button-primary"
+                  href="/apps/startup-idea-validator"
+                >
+                  Score my idea →
                 </Link>
-              </h3>
-              <p>
-                Check the current input-token price, then estimate usage for
-                your workload.
-              </p>
-              <Link
-                className="button-secondary card-action"
-                href="/tools/jev-cost-calculator"
-              >
-                Open Cost Calculator →
-              </Link>
-            </article>
-            <Link className="card card-link" href="/templates">
-              <div className="eyebrow">Examples</div>
-              <h3>Jev Examples &amp; Templates</h3>
-              <p>
-                Copy practical Choice, Score, and Noul patterns for bounded
-                decisions.
-              </p>
-            </Link>
+              </div>
+            </div>
+            <div className="home-app-score" aria-hidden="true">
+              <span>Example</span>
+              <strong>72</strong>
+              <b>SHIP</b>
+              <small>8 structured scores · 1 Jev request</small>
+            </div>
           </div>
         </div>
       </section>
@@ -130,25 +90,19 @@ export default function HomePage() {
       <section className="section">
         <div className="shell">
           <div className="section-heading">
-            <div className="eyebrow">Jev AI use cases</div>
-            <h2>What can Jev AI do?</h2>
+            <div className="eyebrow">What Jev is good at</div>
+            <h2>Use Jev when the answer space is defined.</h2>
             <p>
-              Jev is designed for decisions with a defined answer space, not
-              for free-form text generation.
+              Jev returns typed decisions and probabilities for bounded tasks.
+              It is not a replacement for open-ended text generation.
             </p>
           </div>
           <div className="grid grid-4">
             {[
               ["Classification", "Choose one label from a defined set."],
-              [
-                "Routing",
-                "Send a request to the right queue, tool, or workflow branch.",
-              ],
-              ["Scoring", "Evaluate state against an ordered rubric."],
-              [
-                "Verification",
-                "Estimate whether supplied evidence supports a yes/no condition.",
-              ],
+              ["Routing", "Choose the next queue, tool, or workflow branch."],
+              ["Scoring", "Evaluate input against an ordered rubric."],
+              ["Verification", "Estimate whether supplied evidence supports a yes/no condition."],
             ].map(([title, text]) => (
               <div className="card" key={title}>
                 <h3>{title}</h3>
@@ -162,11 +116,79 @@ export default function HomePage() {
       <section className="section">
         <div className="shell">
           <div className="section-heading">
-            <div className="eyebrow">Jev examples</div>
-            <h2>Start from a bounded task, not a blank prompt.</h2>
+            <div className="eyebrow">Developer Playground</div>
+            <h2>See the raw Jev decisions behind the apps.</h2>
             <p>
-              These examples show how to define questions and criteria before
-              your application acts on a result.
+              Edit state, Choice, Score, and Noul questions yourself, then
+              inspect typed results and probability distributions.
+            </p>
+          </div>
+          <JevDecisionExplainer compact />
+          <div className="actions">
+            <Link className="button-primary" href="/playground">
+              Open Jev Playground →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="shell">
+          <div className="section-heading">
+            <div className="eyebrow">Learn Jev</div>
+            <h2>Understand the model, API, and cost.</h2>
+            <p>
+              Start with the concept, then move to the server-side API and
+              current TypeSafe pricing.
+            </p>
+          </div>
+          <div className="grid grid-3">
+            <Link className="card card-link" href="/what-is-jev">
+              <div className="eyebrow">Learn</div>
+              <h3>What is Jev AI?</h3>
+              <p>
+                Understand System One, typed decisions, probabilities, Choice,
+                Score, and Noul.
+              </p>
+            </Link>
+            <Link className="card card-link" href="/getting-started">
+              <div className="eyebrow">API</div>
+              <h3>Jev API Quickstart</h3>
+              <p>
+                Keep your TypeSafe API key on the server and send your first
+                structured request.
+              </p>
+            </Link>
+            <article className="card">
+              <div className="eyebrow">Pricing</div>
+              <h3>
+                <Link className="card-title-link" href="/pricing">
+                  Jev Pricing
+                </Link>
+              </h3>
+              <p>
+                Check the current official rate and estimate your own workload
+                with the free calculator.
+              </p>
+              <Link
+                className="button-secondary card-action"
+                href="/tools/jev-cost-calculator"
+              >
+                Open Cost Calculator →
+              </Link>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="shell">
+          <div className="section-heading">
+            <div className="eyebrow">Build with Jev</div>
+            <h2>Start from a bounded pattern, not a blank prompt.</h2>
+            <p>
+              Copy practical Jev examples for support, sales, agents, and
+              moderation, then adapt the criteria to your application.
             </p>
           </div>
           <div className="grid grid-2">
@@ -185,64 +207,11 @@ export default function HomePage() {
       <section className="section">
         <div className="shell">
           <div className="section-heading">
-            <div className="eyebrow">Jev pricing</div>
-            <h2>How much does Jev cost?</h2>
+            <div className="eyebrow">Explore</div>
+            <h2>See what people are building with Jev.</h2>
             <p>
-              The current listed rate is kept in one shared pricing config and
-              linked to the official TypeSafe source.
-            </p>
-          </div>
-          <div className="grid grid-3">
-            <div className="card">
-              <div className="eyebrow">Input</div>
-              <h3>
-                {formatUsd(JEV_PRICING.pricePerMillionInputTokens)} per 1M
-                tokens
-              </h3>
-              <p>Input tokens are the current billed usage unit.</p>
-            </div>
-            <div className="card">
-              <div className="eyebrow">Output</div>
-              <h3>
-                {JEV_PRICING.pricePerMillionOutputTokens === 0
-                  ? "Free to meter"
-                  : formatUsd(JEV_PRICING.pricePerMillionOutputTokens)}
-              </h3>
-              <p>See the pricing page for the source and caveats.</p>
-            </div>
-            <div className="card">
-              <div className="eyebrow">Last verified</div>
-              <h3>{JEV_PRICING.lastVerifiedAt}</h3>
-              <p>Pricing can change; verify before budgeting production use.</p>
-            </div>
-          </div>
-          <p className="small home-source-note">
-            <a href={JEV_PRICING.sourceUrl} target="_blank" rel="noreferrer">
-              Official TypeSafe pricing source ↗
-            </a>
-          </p>
-          <div className="actions">
-            <Link className="button-primary" href="/pricing">
-              See Jev Pricing
-            </Link>
-            <Link
-              className="button-secondary"
-              href="/tools/jev-cost-calculator"
-            >
-              Open Cost Calculator
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <section className="section">
-        <div className="shell">
-          <div className="section-heading">
-            <div className="eyebrow">Ecosystem</div>
-            <h2>Explore Jev tools and integrations.</h2>
-            <p>
-              JevHub curates a small set of projects and checks each original
-              repository before listing it.
+              JevHub checks a small set of SDKs, playgrounds, integrations,
+              agent tools, and open-source projects at their original sources.
             </p>
           </div>
           <div className="grid grid-3">
@@ -260,65 +229,58 @@ export default function HomePage() {
 
       <section className="section">
         <div className="shell">
+          <div className="card home-store-card">
+            <div className="eyebrow">JevHub Store</div>
+            <h2>Need a separate purchase path?</h2>
+            <p>
+              The Store remains a separate site. JevHub stays focused on apps,
+              learning, examples, and the ecosystem.
+            </p>
+            <div className="actions">
+              <StoreLink />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="shell">
           <div className="section-heading">
             <div className="eyebrow">Jev AI FAQ</div>
-            <h2>Questions developers ask before trying Jev.</h2>
+            <h2>Start with the question you actually have.</h2>
           </div>
           <div className="faq-list">
             <div className="faq-item">
               <h3>What is Jev AI?</h3>
               <p>
-                Jev is TypeSafe AI&apos;s first public System One model for
-                structured decisions. It returns typed answers and probabilities
-                that software can consume directly; read{" "}
-                <Link href="/what-is-jev">what Jev is</Link> for the full
-                explanation.
+                Jev is TypeSafe AI&apos;s System One model for typed, probabilistic
+                decisions. Read <Link href="/what-is-jev">What is Jev?</Link>.
               </p>
             </div>
             <div className="faq-item">
-              <h3>Is Jev an LLM?</h3>
+              <h3>Can I try Jev without writing code?</h3>
               <p>
-                Not in the conventional generative-LLM sense. TypeSafe
-                describes Jev as a System One Model, a different model class
-                designed for typed decisions rather than open-ended text
-                generation. The{" "}
-                <Link href="/jev-vs-chatgpt">Jev vs ChatGPT comparison</Link>{" "}
-                explains when each shape is useful.
-              </p>
-            </div>
-            <div className="faq-item">
-              <h3>What is Jev used for?</h3>
-              <p>
-                Use it for bounded classification, routing, scoring, and
-                verification where the allowed outcomes are known in advance.
-                The <Link href="/templates">Jev examples</Link> show common
-                patterns.
-              </p>
-            </div>
-            <div className="faq-item">
-              <h3>How much does Jev cost?</h3>
-              <p>
-                The listed input-token price and output pricing status are
-                maintained on the <Link href="/pricing">Jev pricing page</Link>
-                . Use the{" "}
-                <Link href="/tools/jev-cost-calculator">cost calculator</Link>{" "}
-                for an estimate based on your traffic.
+                Yes. Try the{" "}
+                <Link href="/apps/startup-idea-validator">
+                  Startup Idea Validator
+                </Link>{" "}
+                for a finished app, or the <Link href="/playground">Playground</Link>{" "}
+                to inspect raw decisions.
               </p>
             </div>
             <div className="faq-item">
               <h3>How do I use the Jev API?</h3>
               <p>
-                Install the official JavaScript SDK, keep your TypeSafe API key
-                on the server, and send a first typed request with the{" "}
-                <Link href="/getting-started">Jev API quickstart</Link>.
+                Follow the <Link href="/getting-started">Jev API quickstart</Link>{" "}
+                and keep the TypeSafe API key on your server.
               </p>
             </div>
             <div className="faq-item">
-              <h3>Can I try Jev online?</h3>
+              <h3>How much does Jev cost?</h3>
               <p>
-                Yes. Open the <Link href="/playground">Jev Playground</Link> to
-                run an example in the browser, then use the API guide when you
-                are ready to connect your own server.
+                Check the <Link href="/pricing">Jev pricing page</Link> and use
+                the <Link href="/tools/jev-cost-calculator">cost calculator</Link>{" "}
+                for your own traffic assumptions.
               </p>
             </div>
           </div>

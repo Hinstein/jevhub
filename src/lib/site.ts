@@ -10,7 +10,7 @@ export const SITE = {
   logoPath: LOGO_ASSETS.png,
   socialImagePath: "/opengraph-image",
   description:
-    "Independent guide to TypeSafe AI's Jev System One model. Try the Jev playground, learn the API, check current pricing, and explore practical Choice, Score, and Noul examples.",
+    "Independent Jev AI hub for real apps, an interactive playground, API guides, pricing, examples, and the TypeSafe Jev ecosystem.",
   storeUrl:
     "https://jevhub.store/?utm_source=jevhub.xyz&utm_medium=referral&utm_campaign=store",
   disclaimer:
@@ -19,6 +19,7 @@ export const SITE = {
 
 export const INDEXABLE_ROUTES = [
   "/",
+  "/apps/startup-idea-validator",
   "/playground",
   "/what-is-jev",
   "/pricing",
@@ -37,11 +38,12 @@ export const INDEXABLE_ROUTES = [
   "/ecosystem",
 ] as const;
 
+export const LOCALIZED_ROUTES = INDEXABLE_ROUTES;
+
 export const NAV_ITEMS = [
+  { href: "/apps/startup-idea-validator", label: "Idea Validator" },
   { href: "/playground", label: "Playground" },
-  { href: "/what-is-jev", label: "What is Jev" },
-  { href: "/getting-started", label: "API" },
-  { href: "/pricing", label: "Pricing" },
+  { href: "/what-is-jev", label: "Learn Jev" },
   { href: "/templates", label: "Examples" },
   { href: "/ecosystem", label: "Ecosystem" },
 ] as const;

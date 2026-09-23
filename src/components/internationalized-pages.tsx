@@ -4,6 +4,8 @@ import { CodeBlock } from "@/components/code-block";
 import { EcosystemCard } from "@/components/ecosystem-card";
 import { JevDecisionExplainer } from "@/components/jev-decision-explainer";
 import { JevPlayground } from "@/components/playground/jev-playground";
+import { IdeaValidatorPage } from "@/components/idea-validator/idea-validator-page";
+import { IDEA_VALIDATOR_COPY } from "@/i18n/idea-validator-copy";
 import { JevCostCalculator } from "@/components/calculator/jev-cost-calculator";
 import { LocaleLink } from "@/components/locale-link";
 import { StoreLink } from "@/components/store-link";
@@ -27,9 +29,11 @@ function formatUsd(value: number, locale: AddedLocale) {
 
 export function InternationalizedHomePage({ locale }: { locale: AddedLocale }) {
   const copy = INTL_COPY[locale];
+  const ideaCopy = IDEA_VALIDATOR_COPY[locale];
   const featured = templates.filter((template) => featuredTemplates.includes(template.slug));
   return <>
-    <section className="hero"><div className="shell"><div className="eyebrow">{copy.home.intro.eyebrow}</div><h1>{copy.home.intro.title}</h1><p className="hero-copy">{copy.home.intro.description}</p><div className="actions"><LocaleLink className="button-primary" href="/playground" locale={locale}>{copy.home.primaryCta}</LocaleLink><LocaleLink className="button-secondary" href="/what-is-jev" locale={locale}>{copy.home.secondaryCta}</LocaleLink></div></div></section>
+    <section className="hero"><div className="shell"><div className="eyebrow">{copy.home.intro.eyebrow}</div><h1>{copy.home.intro.title}</h1><p className="hero-copy">{copy.home.intro.description}</p><div className="actions"><LocaleLink className="button-primary" href="/apps/startup-idea-validator" locale={locale}>{ideaCopy.title}</LocaleLink><LocaleLink className="button-secondary" href="/playground" locale={locale}>{copy.common.playground}</LocaleLink></div></div></section>
+    <section className="section home-app-section"><div className="shell"><div className="home-app-card"><div><div className="eyebrow">{ideaCopy.appLabel}</div><h2>{ideaCopy.title}</h2><p>{ideaCopy.description}</p><div className="idea-preview-grid home-idea-preview" aria-hidden="true">{Object.values(ideaCopy.dimensionLabels).map((label) => <span key={label}>{label}</span>)}</div><div className="actions"><LocaleLink className="button-primary" href="/apps/startup-idea-validator" locale={locale}>{ideaCopy.submit} →</LocaleLink></div></div><div className="home-app-score" aria-hidden="true"><span>Jev</span><strong>72</strong><b>SHIP</b><small>{ideaCopy.meta[0]} · {ideaCopy.meta[1]}</small></div></div></div></section>
     <section className="section"><div className="shell"><JevDecisionExplainer locale={locale} compact /><div className="actions"><LocaleLink className="button-primary" href="/playground" locale={locale}>{copy.home.flowCta}</LocaleLink></div></div></section>
     <section className="section"><div className="shell"><div className="section-heading"><div className="eyebrow">{copy.home.startEyebrow}</div><h2>{copy.home.startTitle}</h2><p>{copy.home.startDescription}</p></div><div className="grid grid-3">{copy.home.cards.map((card, index) => { const href = ["/what-is-jev", "/playground", "/getting-started", "/pricing", "/templates"][index]; return <LocaleLink className="card card-link" href={href} locale={locale} key={href}><div className="eyebrow">{card.kicker}</div><h3>{card.title}</h3><p>{card.description}</p></LocaleLink>; })}</div></div></section>
     <section className="section"><div className="shell"><div className="section-heading"><div className="eyebrow">{copy.home.useCasesIntro.eyebrow}</div><h2>{copy.home.useCasesIntro.title}</h2><p>{copy.home.useCasesIntro.description}</p></div><div className="grid grid-4">{copy.home.useCases.map(([title, body]) => <div className="card" key={title}><h3>{title}</h3><p>{body}</p></div>)}</div></div></section>
@@ -97,6 +101,7 @@ export function InternationalizedEcosystemPage({ locale }: { locale: AddedLocale
 
 export function InternationalizedPage({ locale, path }: { locale: AddedLocale; path: string }) {
   if (path === "/") return <InternationalizedHomePage locale={locale} />;
+  if (path === "/apps/startup-idea-validator") return <IdeaValidatorPage locale={locale} />;
   if (path === "/playground") return <InternationalizedPlaygroundPage locale={locale} />;
   if (path === "/what-is-jev") return <InternationalizedWhatIsJevPage locale={locale} />;
   if (path === "/pricing") return <InternationalizedPricingPage locale={locale} />;

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { INDEXABLE_ROUTES } from "@/lib/site";
+import { LOCALIZED_ROUTES } from "@/lib/site";
 import { localizedPageMetadata } from "@/lib/metadata";
 import { INTL_PAGE_METADATA, localizedIntlTemplate, type AddedLocale } from "@/i18n/intl-content";
 import { templateBySlug } from "@/content/templates";
@@ -9,7 +9,7 @@ export function intlRoutePath(slug?: string[]) {
 }
 
 export function intlStaticParams() {
-  return INDEXABLE_ROUTES.map((route) => ({
+  return LOCALIZED_ROUTES.map((route) => ({
     slug: route === "/" ? [] : route.slice(1).split("/"),
   }));
 }

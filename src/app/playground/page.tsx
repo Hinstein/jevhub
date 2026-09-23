@@ -50,7 +50,12 @@ export default function PlaygroundPage() {
               Read <Link href="/what-is-jev">What is Jev?</Link> to understand
               Choice, Noul, and Score, then use the{" "}
               <Link href="/templates">template library</Link> for real use
-              cases.
+              cases. Want to see the same idea packaged as a finished product?
+              Try the{" "}
+              <Link href="/apps/startup-idea-validator">
+                Startup Idea Validator
+              </Link>
+              .
             </p>
           </div>
         </div>

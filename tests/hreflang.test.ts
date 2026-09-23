@@ -1,37 +1,28 @@
 import { describe, expect, it } from "vitest";
 import { generateMetadata } from "@/app/zh-CN/[[...slug]]/page";
-import {
-  LOCALES,
-  LOCALE_CONFIG,
-  localizePath,
-} from "@/i18n/config";
-import { INDEXABLE_ROUTES, SITE } from "@/lib/site";
+import { pageMetadata } from "@/lib/metadata";
+import { SITE } from "@/lib/site";
 
-describe("hreflang route contract", () => {
-  it("emits reciprocal alternates for every supported locale", async () => {
-    for (const route of INDEXABLE_ROUTES) {
-      const slug = route === "/" ? [] : route.slice(1).split("/");
-      const metadata = await generateMetadata({
-        params: Promise.resolve({ slug }),
-      });
-      const alternates = metadata.alternates as {
-        canonical: string;
-        languages: Record<string, string>;
-      };
-      const localizedUrls = Object.fromEntries(
-        LOCALES.map((locale) => [
-          LOCALE_CONFIG[locale].hrefLang,
-          locale === "en" && route === "/"
-            ? SITE.url
-            : new URL(localizePath(route, locale), SITE.url).toString(),
-        ]),
-      );
+describe("localized SEO contract", () => {
+  it("does not advertise noindex locale pages as hreflang alternates", async () => {
+    const metadata = await generateMetadata({
+      params: Promise.resolve({ slug: ["pricing"] }),
+    });
 
-      expect(alternates.canonical).toBe(localizedUrls["zh-CN"]);
-      expect(alternates.languages).toEqual({
-        ...localizedUrls,
-        "x-default": localizedUrls.en,
-      });
-    }
+    expect(metadata.robots).toEqual({ index: false, follow: true });
+    expect(metadata.alternates?.canonical).toBe(
+      "https://jevhub.xyz/zh-CN/pricing",
+    );
+    expect(metadata.alternates?.languages).toBeUndefined();
+  });
+
+  it("keeps English pages self-canonical with English x-default", () => {
+    const metadata = pageMetadata("Pricing", "Pricing", "/pricing");
+
+    expect(metadata.alternates?.canonical).toBe(`${SITE.url}/pricing`);
+    expect(metadata.alternates?.languages).toEqual({
+      en: `${SITE.url}/pricing`,
+      "x-default": `${SITE.url}/pricing`,
+    });
   });
 });

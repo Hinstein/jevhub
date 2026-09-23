@@ -136,14 +136,16 @@ export const LANGUAGE_COPY = {
 
 export const NAV_LABELS = {
   en: {
+    "/apps/startup-idea-validator": "Idea Validator",
     "/playground": "Playground",
-    "/what-is-jev": "What is Jev",
+    "/what-is-jev": "Learn Jev",
     "/getting-started": "API",
     "/pricing": "Pricing",
     "/templates": "Examples",
     "/ecosystem": "Ecosystem",
   },
   zh: {
+    "/apps/startup-idea-validator": "点子评分",
     "/playground": "Playground",
     "/what-is-jev": "了解 Jev",
     "/getting-started": "API",
@@ -152,6 +154,7 @@ export const NAV_LABELS = {
     "/ecosystem": "生态目录",
   },
   ja: {
+    "/apps/startup-idea-validator": "Idea Validator",
     "/playground": "Playground",
     "/what-is-jev": "Jevとは",
     "/getting-started": "API",
@@ -160,16 +163,18 @@ export const NAV_LABELS = {
     "/ecosystem": "エコシステム",
   },
   fr: {
+    "/apps/startup-idea-validator": "Idea Validator",
     "/playground": "Playground",
-    "/what-is-jev": "Qu’est-ce que Jev",
+    "/what-is-jev": "Découvrir Jev",
     "/getting-started": "API",
     "/pricing": "Tarifs",
     "/templates": "Exemples",
     "/ecosystem": "Écosystème",
   },
   pl: {
+    "/apps/startup-idea-validator": "Idea Validator",
     "/playground": "Playground",
-    "/what-is-jev": "Czym jest Jev",
+    "/what-is-jev": "Poznaj Jev",
     "/getting-started": "API",
     "/pricing": "Cennik",
     "/templates": "Przykłady",

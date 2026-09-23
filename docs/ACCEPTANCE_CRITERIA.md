@@ -4,12 +4,12 @@
 
 ## A. Scope Gate
 
-- [ ] 只有 17 个英文页面可索引；`/zh-CN/...` 中文本地化页面可访问但统一 noindex，不进入 sitemap
+- [ ] 只有 18 个英文页面可索引；`/zh-CN/...` 中文本地化页面可访问但统一 noindex，不进入 sitemap
 - [ ] 无数据库
 - [ ] 无用户登录
 - [ ] 无 Dashboard/Admin
 - [ ] 无支付/订单/充值/兑换码逻辑
-- [ ] `/playground` 是唯一在线 Jev runtime 页面，浏览器不暴露 API Key
+- [ ] 只有 `/playground` 与 `/apps/startup-idea-validator` 两个批准的在线 Jev runtime 页面，浏览器不暴露 API Key
 - [ ] 无 API Key 输入/保存
 - [ ] 无 Marketplace
 - [ ] jevhub.store 只通过外部跳转连接
@@ -19,6 +19,7 @@
 以下全部可访问：
 
 - [ ] `/`
+- [ ] `/apps/startup-idea-validator`
 - [ ] `/playground`
 - [ ] `/what-is-jev`
 - [ ] `/pricing`
@@ -65,7 +66,24 @@
 - [ ] API 错误不会向浏览器泄露上游认证信息
 - [ ] Playground 在 375px 宽度下可用
 
-## E. Calculator Gate
+## E. Idea Validator Gate
+
+- [ ] 输入只接受 idea + goal，不接受用户自定义上游 URL / model / questions
+- [ ] 服务端一次 Jev 请求包含 exactly 8 个 Score questions
+- [ ] Jev 返回结构化 score；总分和 verdict 在 JevHub 代码中计算
+- [ ] KILL < 50；FIX 50–64；SHIP >= 65
+- [ ] API Key 不进入浏览器
+- [ ] 有 idea 长度上限、timeout 与 per-IP rate limit
+- [ ] 不保存 idea 历史
+- [ ] Analytics 不包含 idea 原文
+- [ ] 页面明确说明它不是市场调查
+- [ ] 语言切换器在 Idea Validator 页面保持可用
+- [ ] zh-CN / ja-JP / fr-FR / pl-PL 均能打开同一 App 的本地化版本
+- [ ] 非英文 App 页面继续 noindex,follow 且不进入 sitemap
+- [ ] 375px 宽度可用
+- [ ] 有 WebApplication 与 Breadcrumb structured data
+
+## F. Calculator Gate
 
 - [ ] per-request cost 正确
 - [ ] daily cost 正确
@@ -77,7 +95,7 @@
 - [ ] calculator 不发送用户输入到服务端
 - [ ] pricing config 改动会自动影响 calculator 结果
 
-## F. Template Gate
+## G. Template Gate
 
 - [ ] Exactly 8 templates
 - [ ] slug 全部唯一
@@ -90,7 +108,7 @@
 - [ ] Copy Code 可用
 - [ ] 没把“model decision”写成“authorized action”
 
-## G. Ecosystem Gate
+## H. Ecosystem Gate
 
 - [ ] 20–30 个条目
 - [ ] 每个条目已回原项目核验
@@ -101,9 +119,9 @@
 - [ ] 无虚假评分/排名
 - [ ] 不自动复制 awesome-jev 全库
 
-## H. SEO Gate
+## I. SEO Gate
 
-- [ ] 17 个页面 title 唯一
+- [ ] 18 个英文页面 title 唯一
 - [ ] description 唯一
 - [ ] canonical 正确
 - [ ] sitemap 只含允许索引的路由
@@ -113,7 +131,7 @@
 - [ ] 没有空 tag/category/search 参数页被索引
 - [ ] external Store link 带外链提示
 
-## I. UX / Accessibility Gate
+## J. UX / Accessibility Gate
 
 - [ ] 375px 宽度无横向滚动
 - [ ] Header mobile menu 可键盘操作
@@ -124,7 +142,7 @@
 - [ ] code blocks 在手机上可横向滚动而不破布局
 - [ ] dark mode 若未完整实现则不在 V0.1 暴露 toggle
 
-## J. Engineering Gate
+## K. Engineering Gate
 
 必须全部通过：
 
@@ -135,14 +153,19 @@
 - [ ] route/SEO tests
 - [ ] 无 TypeScript errors
 - [ ] 无未使用的 auth/payment/database dependency
-- [ ] production build 中只有批准的 `/api/playground` runtime API route
+- [ ] production build 中只有批准的 `/api/playground` 与 `/api/idea-validator` runtime API routes
 
-## K. Analytics Gate
+## L. Analytics Gate
 
 至少能看到：
 
 - [ ] page views
 - [ ] playground_run
+- [ ] idea_validator_view
+- [ ] idea_validator_submit
+- [ ] idea_validator_result
+- [ ] idea_validator_retry
+- [ ] idea_validator_share
 - [ ] calculator_used
 - [ ] template_code_copied
 - [ ] ecosystem_outbound_clicked
@@ -150,7 +173,7 @@
 
 不要求自建后台。
 
-## L. Release Gate
+## M. Release Gate
 
 - [ ] Production domain 指向 jevhub.xyz
 - [ ] HTTPS 正常

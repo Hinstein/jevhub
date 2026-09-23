@@ -61,30 +61,28 @@ describe("locale routing", () => {
     );
   });
 
-  it("pre-renders the 17 localized content paths", () => {
+  it("pre-renders all 18 localized content paths", () => {
     const params = generateStaticParams();
 
-    expect(params).toHaveLength(17);
+    expect(params).toHaveLength(18);
     expect(params).toContainEqual({ slug: [] });
+    expect(params).toContainEqual({ slug: ["apps", "startup-idea-validator"] });
     expect(params).toContainEqual({ slug: ["playground"] });
     expect(params).toContainEqual({ slug: ["templates", "refund-detection"] });
   });
 
-  it("marks localized pages noindex while keeping self canonicals and hreflang", async () => {
+  it("marks localized pages noindex with self canonicals but no hreflang", async () => {
     const metadata = await generateMetadata({
       params: Promise.resolve({ slug: ["pricing"] }),
     });
     const alternates = metadata.alternates as {
       canonical: string;
-      languages: Record<string, string>;
+      languages?: Record<string, string>;
     };
 
     expect(metadata.robots).toEqual({ index: false, follow: true });
     expect(alternates.canonical).toBe("https://jevhub.xyz/zh-CN/pricing");
-    expect(alternates.languages.en).toBe("https://jevhub.xyz/pricing");
-    expect(alternates.languages["zh-CN"]).toBe(
-      "https://jevhub.xyz/zh-CN/pricing",
-    );
+    expect(alternates.languages).toBeUndefined();
     expect(sitemap().map((entry) => entry.url)).not.toContain(
       `${SITE.url}/zh-CN/pricing`,
     );
@@ -115,5 +113,6 @@ describe("localized content", () => {
       "客服、销售、Agent、审核等 8 个 Jev 模板",
     );
     expect(ZH_PAGE_METADATA["/playground"].title).toContain("Jev Playground");
+    expect(ZH_PAGE_METADATA["/apps/startup-idea-validator"].title).toContain("创业点子评分器");
   });
 });

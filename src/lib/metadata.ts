@@ -1,10 +1,5 @@
 import type { Metadata } from "next";
-import {
-  LOCALES,
-  LOCALE_CONFIG,
-  localizePath,
-  type Locale,
-} from "@/i18n/config";
+import { localizePath, type Locale } from "@/i18n/config";
 import { SITE } from "@/lib/site";
 
 function absoluteUrl(path: string) {
@@ -19,20 +14,13 @@ export function pageMetadata(
   const canonical = absoluteUrl(path);
   const socialImage = new URL(SITE.socialImagePath, SITE.url).toString();
 
-  const languages = Object.fromEntries(
-    LOCALES.map((locale) => [
-      LOCALE_CONFIG[locale].hrefLang,
-      absoluteUrl(localizePath(path, locale)),
-    ]),
-  );
-
   return {
     title,
     description,
     alternates: {
       canonical,
       languages: {
-        ...languages,
+        en: canonical,
         "x-default": canonical,
       },
     },
@@ -70,23 +58,12 @@ export function localizedPageMetadata(
   const canonical = absoluteUrl(localizedPath);
   const socialImage = new URL(SITE.socialImagePath, SITE.url).toString();
 
-  const languages = Object.fromEntries(
-    LOCALES.map((targetLocale) => [
-      LOCALE_CONFIG[targetLocale].hrefLang,
-      absoluteUrl(localizePath(path, targetLocale)),
-    ]),
-  );
-
   return {
     title,
     description,
     robots: locale !== "en" ? { index: false, follow: true } : undefined,
     alternates: {
       canonical,
-      languages: {
-        ...languages,
-        "x-default": absoluteUrl(path),
-      },
     },
     openGraph: {
       type: "website",

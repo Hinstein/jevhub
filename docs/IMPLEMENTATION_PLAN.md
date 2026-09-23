@@ -2,7 +2,7 @@
 
 原则：先搭最小可验证架构，再写内容，再上工具，最后做 SEO/性能审计。禁止边做边加入 V0.2 功能。
 
-2026-09-21 scope amendment：用户明确批准新增公开 Jev Playground。它是 V0.1 唯一允许的 Jev runtime 路径，并必须保持服务端密钥、受限 payload、基础限流和无持久化。
+2026-09-21 scope amendment：批准公开 Jev Playground。2026-09-23 再批准 Startup Idea Validator。两者都是受限 runtime：服务端密钥、固定边界、基础限流、无用户内容持久化。
 
 ## Phase 0 — Bootstrap
 
@@ -130,6 +130,32 @@ Gate：
 - build
 
 ---
+
+## Phase 2.4 — Startup Idea Validator（approved amendment）
+
+实现：
+
+- `/apps/startup-idea-validator`
+- `POST /api/idea-validator`
+- 输入只允许 idea + goal
+- 服务端固定 8 个 Score questions
+- 本地加权、0–100 与 KILL/FIX/SHIP
+- 无数据库、无登录、无结果详情页
+- Analytics 只记录 funnel 元数据，不记录 idea 原文
+- WebApplication + Breadcrumb structured data
+- 首页第一 CTA 指向 Idea Validator
+- 英文 sitemap 增加第 18 页
+- 为 Idea Validator 生成 zh-CN / ja-JP / fr-FR / pl-PL locale route；这些页面继续 `noindex,follow`，不进入 sitemap
+
+Gate：
+
+- unit tests：validation / question count / goal variants / weighted score / thresholds
+- API Key 不进入 client bundle
+- rate limit / timeout / upstream error fail closed
+- 375px 可用
+- title / description / canonical 唯一
+- idea 原文不出现在 analytics payload
+- build / typecheck / lint
 
 ## Phase 2.5 — Public Jev Playground（approved amendment）
 
@@ -335,7 +361,7 @@ Gate：
 
 SEO：
 
-- exactly 17 indexable pages
+- exactly 18 English indexable pages
 - unique title/description
 - canonical
 - sitemap only contains allowed routes
@@ -391,7 +417,7 @@ Gate：
 
 # 上线前停止条件
 
-当 17 个页面和验收 Gate 全过：
+当 18 个英文页面和验收 Gate 全过：
 
 **STOP.**
 
