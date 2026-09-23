@@ -1,4 +1,5 @@
 import type { InboxEmail } from "@/content/inbox-demo";
+import { LOCALES, type Locale } from "@/i18n/config";
 
 export const INBOX_LIMITS = {
   customCharacters: 3_000,
@@ -14,7 +15,7 @@ export const MESSAGE_TYPES = [
 
 export type MessageType = (typeof MESSAGE_TYPES)[number];
 export type InboxQueue = "needs_reply" | "review" | "read_later";
-export type InboxRequest = { mode: "demo" } | { mode: "custom"; text: string };
+export type InboxRequest = { mode: "demo"; locale: Locale } | { mode: "custom"; text: string };
 
 export type InboxEmailResult = {
   id: string;
@@ -58,10 +59,14 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 export function validateInboxRequest(input: unknown): ValidationResult {
   if (!isRecord(input)) return { ok: false, error: "Request body must be an object." };
   if (input.mode === "demo") {
-    if (Object.keys(input).length !== 1) {
-      return { ok: false, error: "Demo accepts no other fields." };
+    if (Object.keys(input).some((key) => key !== "mode" && key !== "locale")) {
+      return { ok: false, error: "Demo accepts only a supported locale." };
     }
-    return { ok: true, value: { mode: "demo" } };
+    const locale = input.locale ?? "en";
+    if (typeof locale !== "string" || !(LOCALES as readonly string[]).includes(locale)) {
+      return { ok: false, error: "Demo locale is not supported." };
+    }
+    return { ok: true, value: { mode: "demo", locale: locale as Locale } };
   }
   if (input.mode !== "custom" || Object.keys(input).some((key) => key !== "mode" && key !== "text")) {
     return { ok: false, error: "Use demo or one custom text message." };
@@ -79,11 +84,12 @@ export function validateInboxRequest(input: unknown): ValidationResult {
 
 export function buildInboxQuestions(emails: readonly InboxEmail[]): Record<string, InboxQuestion> {
   const questions: Record<string, InboxQuestion> = {};
+  const languageNote = "The email may be written in any language; judge its meaning as written.";
   for (const [index] of emails.entries()) {
     const target = `\`emails[${index}]\``;
     questions[`email_${index}_type`] = {
       type: "choice",
-      instructions: `What is the main type of ${target}? Use only the visible sender, subject, and body. If none fits, choose other.`,
+      instructions: `What is the main type of ${target}? Use only the visible sender, subject, and body. ${languageNote} If none fits, choose other.`,
       criteria: {
         conversation: "A message specifically continuing a personal, customer, or colleague conversation.",
         account_update: "An automated account, security, payment, order, or delivery update.",
@@ -96,11 +102,11 @@ export function buildInboxQuestions(emails: readonly InboxEmail[]): Record<strin
     };
     questions[`email_${index}_reply`] = {
       type: "noul",
-      instructions: `Does ${target} clearly ask the recipient for a direct response to a specific request or existing conversation? Do not count generic marketing or unsolicited sales invitations as needing a reply.`,
+      instructions: `Does ${target} clearly ask the recipient for a direct response to a specific request or existing conversation? ${languageNote} Do not count generic marketing or unsolicited sales invitations as needing a reply.`,
     };
     questions[`email_${index}_time`] = {
       type: "score",
-      instructions: `How much explicit time pressure does ${target} express for the recipient to review or respond? Judge only the supplied text, not guessed deadlines.`,
+      instructions: `How much explicit time pressure does ${target} express for the recipient to review or respond? ${languageNote} Judge only the supplied text, not guessed deadlines.`,
       criteria: [
         "No stated time pressure or deadline.",
         "A response or review is requested within several days or a week.",

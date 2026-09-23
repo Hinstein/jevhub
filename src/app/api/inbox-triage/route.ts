@@ -1,4 +1,4 @@
-import { DEMO_EMAILS, type InboxEmail } from "@/content/inbox-demo";
+import { getDemoEmails, type InboxEmail } from "@/content/inbox-demo";
 import {
   buildInboxQuestions,
   composeInboxResult,
@@ -98,7 +98,7 @@ export async function POST(request: Request) {
   if (!validated.ok) return json({ error: validated.error }, { status: 400 });
 
   const emails: readonly InboxEmail[] = validated.value.mode === "demo"
-    ? DEMO_EMAILS
+    ? getDemoEmails(validated.value.locale)
     : [{ id: "custom", from: "", subject: "", body: validated.value.text }];
   const rate = consumeRateLimit(request, emails.length);
   if (!rate.allowed) {

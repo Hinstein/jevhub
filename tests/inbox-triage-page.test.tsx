@@ -4,7 +4,8 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { InboxTriagePage } from "@/components/inbox-triage/inbox-triage-page";
 import { LOCALES } from "@/i18n/config";
-import { DEMO_EMAILS, DEMO_PREVIEW } from "@/content/inbox-demo";
+import { INBOX_TRIAGE_COPY } from "@/i18n/inbox-triage-copy";
+import { DEMO_EMAILS, DEMO_PREVIEW, getDemoEmails } from "@/content/inbox-demo";
 
 describe("Inbox Triage public page", () => {
   it("keeps the keyless preview complete and free of fabricated Jev scores", () => {
@@ -19,9 +20,10 @@ describe("Inbox Triage public page", () => {
 
   it.each(LOCALES)("renders one headline, six visible samples, and a custom entry in %s", (locale) => {
     const markup = renderToStaticMarkup(<InboxTriagePage locale={locale} />);
+    const emails = getDemoEmails(locale);
     expect((markup.match(/<h1>/g) ?? []).length).toBe(1);
-    for (const email of DEMO_EMAILS) expect(markup).toContain(email.subject.replaceAll("'", "&#x27;"));
-    expect(markup).toContain("02 / YOUR EMAIL");
+    for (const email of emails) expect(markup).toContain(email.subject.replaceAll("'", "&#x27;"));
+    expect(markup).toContain(INBOX_TRIAGE_COPY[locale].customStep);
     expect(markup).toContain("WebApplication");
     expect(markup).toContain("/templates/support-routing");
   });
