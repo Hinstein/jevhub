@@ -9,6 +9,7 @@ import { metadata as ideaValidatorMetadata } from "@/app/apps/startup-idea-valid
 import { metadata as calculatorMetadata } from "@/app/tools/jev-cost-calculator/page";
 import { metadata as ecosystemMetadata } from "@/app/ecosystem/page";
 import { metadata as gettingStartedMetadata } from "@/app/getting-started/page";
+import { IDEA_VALIDATOR_COPY } from "@/i18n/idea-validator-copy";
 import { metadata as comparisonMetadata } from "@/app/jev-vs-chatgpt/page";
 import { metadata as pricingMetadata } from "@/app/pricing/page";
 import { metadata as playgroundMetadata } from "@/app/playground/page";
@@ -79,8 +80,11 @@ describe("SEO route contract", () => {
     const gettingStarted = source("src/app/getting-started/page.tsx");
     const templatesPage = source("src/app/templates/page.tsx");
 
-    expect(ideaPage).toContain("<h1>Startup Idea Validator</h1>");
-    expect(ideaPage).toContain("This is an idea evaluation, not market research.");
+    expect(ideaPage).toContain('return <IdeaValidatorPage locale="en" />;');
+    expect(IDEA_VALIDATOR_COPY.en.title).toBe("Startup Idea Validator");
+    expect(IDEA_VALIDATOR_COPY.en.limitTitle).toBe(
+      "This is an idea evaluation, not market research.",
+    );
     expect(gettingStarted).toContain('title="Jev API quickstart"');
     expect(gettingStarted).toContain("TypeSafe API key");
     expect(templatesPage).toContain(
