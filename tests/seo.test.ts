@@ -76,11 +76,13 @@ describe("SEO route contract", () => {
   });
 
   it("gives the API, app, and examples pages distinct search intent", () => {
-    const ideaPage = source("src/app/apps/startup-idea-validator/page.tsx");
+    const ideaRoute = source("src/app/apps/startup-idea-validator/page.tsx");
+    const ideaPage = source("src/components/idea-validator/idea-validator-page.tsx");
     const gettingStarted = source("src/app/getting-started/page.tsx");
     const templatesPage = source("src/app/templates/page.tsx");
 
-    expect(ideaPage).toContain('return <IdeaValidatorPage locale="en" />;');
+    expect(ideaRoute).toContain('return <IdeaValidatorPage locale="en" />;');
+    expect(ideaPage).toContain("<h1>{copy.title}</h1>");
     expect(IDEA_VALIDATOR_COPY.en.title).toBe("Startup Idea Validator");
     expect(IDEA_VALIDATOR_COPY.en.limitTitle).toBe(
       "This is an idea evaluation, not market research.",

@@ -1,6 +1,6 @@
 # JevHub V0.1 Content Spec
 
-本文件规定首版 18 个英文可索引页面具体写什么。2026-09-21 已批准新增 `/playground`；2026-09-23 再批准 `/apps/startup-idea-validator`。除此之外不要自行扩大页面数量。
+本文件规定首版 19 个英文可索引页面具体写什么。2026-09-21 已批准新增 `/playground`；2026-09-23 再批准 `/apps/startup-idea-validator` 与 `/apps/inbox-triage`。除此之外不要自行扩大页面数量。
 
 ## 内容总原则
 
@@ -606,3 +606,31 @@ Home
 - idea_validator_share
 
 禁止把 idea 原文、完整 prompt 或其他用户文本发到 analytics。
+
+# 19. Inbox Triage — `/apps/inbox-triage`
+
+## Search intent
+
+- AI email triage demo
+- email prioritization demo
+- sort emails by action
+
+## 页面顺序
+
+1. H1 `Inbox Triage`，一行说明真实 Jev 分拣和无 Gmail 连接。
+2. 六封虚构邮件预览和唯一主按钮 `Sort sample inbox`。
+3. 真实调用后展示 Needs reply / Review / Read later 队列；每封可展开查看 Choice 概率、Noul 回复请求概率与 Score 时间紧迫度。
+4. `Try one of your emails` 入口；一次一封纯文本输入，提交前展示 TypeSafe 处理与不保存说明。
+5. How it works：三个固定判断，代码负责组合队列；结果是建议，不是邮件操作或安全验证。
+6. Playground、Support Routing 模板内链，以及独立站说明。
+
+## SEO 与内容规则
+
+- 独有 title、description、自 canonical；英文页进入 sitemap。
+- 不说连接 Gmail，不承诺整理 1000 封或引用 Jevmail 社区 benchmark 为官方结论。
+- 不把没有解释文本的 Jev 结果包装成模型生成的理由。
+- zh-CN / ja-JP / fr-FR / pl-PL 共用组件，本地化页 noindex,follow。
+
+## Analytics
+
+仅记录 view、demo submit/result、custom open/submit/result、locale 和数量，不记录邮件内容。

@@ -2,7 +2,7 @@
 
 原则：先搭最小可验证架构，再写内容，再上工具，最后做 SEO/性能审计。禁止边做边加入 V0.2 功能。
 
-2026-09-21 scope amendment：批准公开 Jev Playground。2026-09-23 再批准 Startup Idea Validator。两者都是受限 runtime：服务端密钥、固定边界、基础限流、无用户内容持久化。
+2026-09-21 scope amendment：批准公开 Jev Playground。2026-09-23 再批准 Startup Idea Validator 与 Inbox Triage。三者都是受限 runtime：服务端密钥、固定边界、基础限流、无用户内容持久化。
 
 ## Phase 0 — Bootstrap
 
@@ -361,7 +361,7 @@ Gate：
 
 SEO：
 
-- exactly 18 English indexable pages
+- exactly 19 English indexable pages
 - unique title/description
 - canonical
 - sitemap only contains allowed routes
@@ -382,7 +382,7 @@ Accessibility：
 
 Performance：
 
-- avoid client components except Calculator/Copy/Analytics
+- avoid client components except interactive tools and approved Real Apps
 - no large UI libs beyond required shadcn pieces
 - optimize fonts/images
 - no third-party script bloat
@@ -396,6 +396,21 @@ Gate：
 - route audit
 - optional Playwright smoke
 - Lighthouse/manual performance review
+
+---
+
+## Phase 9 — Inbox Triage（approved amendment）
+
+严格按 `docs/superpowers/plans/2026-09-23-inbox-triage.md` 执行，先通过每一阶段的测试再进入下一阶段：
+
+1. 同步 scope、内容、SEO、验收文档并修复旧 SEO 测试。
+2. 测试先行，建立六封虚构邮件、输入校验、固定 Choice/Noul/Score 问题与队列组合纯函数。
+3. 测试先行，建立受限 `/api/inbox-triage`，服务端调用 TypeSafe，限制请求量和邮件量。
+4. 建立英文页与四种 noindex 本地化镜像，完成一键示例与单封自有邮件试玩。
+5. 首页展示两个 App；核验 19 页 sitemap、canonical、metadata、分析事件、移动端、lint、typecheck、测试和 build。
+6. 本地启动并验证后，再部署到用户确定的平台。
+
+不接 Gmail、上传、账户、数据库或 Apps marketplace。
 
 ---
 
@@ -417,7 +432,7 @@ Gate：
 
 # 上线前停止条件
 
-当 18 个英文页面和验收 Gate 全过：
+当 19 个英文页面和验收 Gate 全过：
 
 **STOP.**
 
