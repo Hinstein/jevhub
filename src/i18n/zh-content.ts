@@ -330,6 +330,10 @@ export const ZH_PAGE_METADATA: Record<
     description:
       "输入创业、SaaS 或产品想法，选择赚钱、开源或兴趣目标，让 Jev 从 8 个维度快速评分。无需注册。",
   },
+  "/apps/inbox-triage": {
+    title: "Jev 邮件速分：一键整理示例邮件",
+    description: "用 Jev 把 6 封虚构邮件分成待回复、需检查和稍后阅读，再试玩自己的一封邮件。无需注册或连接 Gmail。",
+  },
   "/playground": {
     title: "Jev Playground：在线尝试 Choice、Noul 与 Score",
     description:

@@ -71,5 +71,13 @@ describe("V02 public copy contract", () => {
     expect(ideaRoute).toContain("TYPESAFE_API_KEY");
     expect(ideaRoute).toContain("JEV_IDEA_VALIDATOR_RATE_LIMIT");
     expect(ideaRoute).toContain("JEV_IDEA_VALIDATOR_TIMEOUT_MS");
+    const inbox = source("src/components/inbox-triage/inbox-triage.tsx");
+    const inboxRoute = source("src/app/api/inbox-triage/route.ts");
+    expect(inbox).toContain('fetch("/api/inbox-triage"');
+    expect(inbox).not.toContain("TYPESAFE_API_KEY");
+    expect(inboxRoute).toContain("TYPESAFE_API_KEY");
+    expect(inboxRoute).toContain("JEV_INBOX_RATE_LIMIT");
+    expect(inboxRoute).toContain("JEV_INBOX_EMAIL_LIMIT");
+    expect(inbox).not.toContain('trackEvent("inbox_triage_custom_submit", { text');
   });
 });

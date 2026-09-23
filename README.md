@@ -8,9 +8,10 @@ JevHub is an independent Jev learning, real apps, tools, templates, and ecosyste
 
 The first release intentionally stays small:
 
-- 18 English indexable pages
+- 19 English indexable pages
 - 5 core learning / SEO pages
 - 1 server-side Startup Idea Validator
+- 1 server-side Inbox Triage with six synthetic samples and a one-email trial
 - 1 server-side Jev Playground
 - 1 local Jev cost calculator
 - 1 template index + 8 practical template pages
@@ -20,7 +21,7 @@ The first release intentionally stays small:
 - no auth
 - no payments
 - no marketplace
-- no browser-side API keys; both bounded runtime experiences call TypeSafe only from the server
+- no browser-side API keys; all three bounded runtime experiences call TypeSafe only from the server
 
 ## Stack
 
@@ -30,7 +31,7 @@ The first release intentionally stays small:
 - Tailwind CSS 4
 - Vitest
 
-V0.1 uses no runtime database. The public Playground and Startup Idea Validator require a server-side `TYPESAFE_API_KEY`; the key is never sent to the browser.
+V0.1 uses no runtime database. Playground, Startup Idea Validator, and Inbox Triage require a server-side `TYPESAFE_API_KEY`; the key is never sent to the browser. Inbox Triage does not connect to Gmail or save user messages.
 
 ## Local development
 
@@ -67,6 +68,12 @@ The site emits page views and these custom events:
 - `idea_validator_result`
 - `idea_validator_retry`
 - `idea_validator_share`
+- `inbox_triage_view`
+- `inbox_triage_demo_submit`
+- `inbox_triage_demo_result`
+- `inbox_triage_custom_open`
+- `inbox_triage_custom_submit`
+- `inbox_triage_custom_result`
 - `calculator_used`
 - `template_code_copied`
 - `ecosystem_outbound_clicked`

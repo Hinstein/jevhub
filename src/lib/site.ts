@@ -20,6 +20,7 @@ export const SITE = {
 export const INDEXABLE_ROUTES = [
   "/",
   "/apps/startup-idea-validator",
+  "/apps/inbox-triage",
   "/playground",
   "/what-is-jev",
   "/pricing",
