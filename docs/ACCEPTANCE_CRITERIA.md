@@ -4,12 +4,12 @@
 
 ## A. Scope Gate
 
-- [ ] 只有 18 个英文页面可索引；`/zh-CN/...` 中文本地化页面可访问但统一 noindex，不进入 sitemap
+- [ ] 只有 19 个英文页面可索引；非英文镜像可访问但统一 noindex,follow，不进入 sitemap
 - [ ] 无数据库
 - [ ] 无用户登录
 - [ ] 无 Dashboard/Admin
 - [ ] 无支付/订单/充值/兑换码逻辑
-- [ ] 只有 `/playground` 与 `/apps/startup-idea-validator` 两个批准的在线 Jev runtime 页面，浏览器不暴露 API Key
+- [ ] 只有 `/playground`、`/apps/startup-idea-validator`、`/apps/inbox-triage` 三个批准的在线 Jev runtime 页面，浏览器不暴露 API Key
 - [ ] 无 API Key 输入/保存
 - [ ] 无 Marketplace
 - [ ] jevhub.store 只通过外部跳转连接
@@ -20,6 +20,7 @@
 
 - [ ] `/`
 - [ ] `/apps/startup-idea-validator`
+- [ ] `/apps/inbox-triage`
 - [ ] `/playground`
 - [ ] `/what-is-jev`
 - [ ] `/pricing`
@@ -83,6 +84,18 @@
 - [ ] 375px 宽度可用
 - [ ] 有 WebApplication 与 Breadcrumb structured data
 
+## E2. Inbox Triage Gate
+
+- [ ] 首屏显示六封虚构邮件，一次点击调用真实 Jev 完成示例分拣
+- [ ] 自有邮件一次仅提交一封纯文本，长度与请求体有硬上限
+- [ ] 服务器固定 Choice/Noul/Score 问题、模型与上游 URL，忽略或拒绝客户端自定义字段
+- [ ] 不接 Gmail、不保存正文、不在 analytics 中记录发件人/主题/正文
+- [ ] 自有邮件提交前清楚说明内容会发给 TypeSafe，并链接隐私政策
+- [ ] 可疑或低确定性结果进入 Review，不自动操作邮件
+- [ ] 错误、缺密钥、限流和超时有安全且清楚的状态
+- [ ] 五种语言共用一个 App 页面；非英文页 noindex,follow、不进 sitemap
+- [ ] 375px 宽度可用；有 WebApplication 和 Breadcrumb 数据
+
 ## F. Calculator Gate
 
 - [ ] per-request cost 正确
@@ -121,7 +134,7 @@
 
 ## I. SEO Gate
 
-- [ ] 18 个英文页面 title 唯一
+- [ ] 19 个英文页面 title 唯一
 - [ ] description 唯一
 - [ ] canonical 正确
 - [ ] sitemap 只含允许索引的路由
@@ -153,7 +166,7 @@
 - [ ] route/SEO tests
 - [ ] 无 TypeScript errors
 - [ ] 无未使用的 auth/payment/database dependency
-- [ ] production build 中只有批准的 `/api/playground` 与 `/api/idea-validator` runtime API routes
+- [ ] production build 中只有批准的 `/api/playground`、`/api/idea-validator` 与 `/api/inbox-triage` runtime API routes
 
 ## L. Analytics Gate
 

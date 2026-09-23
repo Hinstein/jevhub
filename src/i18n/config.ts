@@ -137,6 +137,7 @@ export const LANGUAGE_COPY = {
 export const NAV_LABELS = {
   en: {
     "/apps/startup-idea-validator": "Idea Validator",
+    "/apps/inbox-triage": "Inbox Triage",
     "/playground": "Playground",
     "/what-is-jev": "Learn Jev",
     "/getting-started": "API",
@@ -146,6 +147,7 @@ export const NAV_LABELS = {
   },
   zh: {
     "/apps/startup-idea-validator": "点子评分",
+    "/apps/inbox-triage": "邮件速分",
     "/playground": "Playground",
     "/what-is-jev": "了解 Jev",
     "/getting-started": "API",
@@ -155,6 +157,7 @@ export const NAV_LABELS = {
   },
   ja: {
     "/apps/startup-idea-validator": "Idea Validator",
+    "/apps/inbox-triage": "メール仕分け",
     "/playground": "Playground",
     "/what-is-jev": "Jevとは",
     "/getting-started": "API",
@@ -164,6 +167,7 @@ export const NAV_LABELS = {
   },
   fr: {
     "/apps/startup-idea-validator": "Idea Validator",
+    "/apps/inbox-triage": "Tri des e-mails",
     "/playground": "Playground",
     "/what-is-jev": "Découvrir Jev",
     "/getting-started": "API",
@@ -173,6 +177,7 @@ export const NAV_LABELS = {
   },
   pl: {
     "/apps/startup-idea-validator": "Idea Validator",
+    "/apps/inbox-triage": "Sortowanie poczty",
     "/playground": "Playground",
     "/what-is-jev": "Poznaj Jev",
     "/getting-started": "API",
@@ -181,6 +186,10 @@ export const NAV_LABELS = {
     "/ecosystem": "Ekosystem",
   },
 } as const satisfies Record<Locale, Record<string, string>>;
+
+export const APPS_NAV_LABEL: Record<Locale, string> = {
+  en: "Apps", zh: "应用", ja: "アプリ", fr: "Applications", pl: "Aplikacje",
+};
 
 export function getLocaleFromPathname(pathname: string): Locale {
   for (const locale of LOCALES) {

@@ -2,6 +2,25 @@
 
 Date: 2026-09-21
 
+## Inbox Triage update (2026-09-23)
+
+The current branch has **19** indexable English routes. `/apps/inbox-triage` is
+the new search landing page for an AI email triage demo; the four localized
+mirrors are `noindex,follow` and absent from the sitemap. The homepage links to
+both real apps. The Inbox Triage page has a unique title and description,
+self-canonical, one H1, `WebApplication` and breadcrumb structured data, an
+explanation of the fixed Choice/Noul/Score flow, limitations, and crawlable
+links to Playground and the support-routing template.
+
+Local evidence: `npm run check` passed on 2026-09-23 (71 tests, lint,
+typecheck, production build), the running sitemap exposed 19 `<loc>` entries,
+and the page was inspected at desktop and 375 px width without horizontal
+overflow. The live Jev request and production URL checks remain pending until
+the deployment host and server-side `TYPESAFE_API_KEY` are available.
+
+The 17-route observations below record the original 2026-09-21 audit and are
+retained as historical context.
+
 > Scope note (2026-09-21): the local code and CI define 17 indexable English
 > routes, including the approved public `/playground`. Re-run the live
 > production URL/Lighthouse checks for all 17 routes after deployment.

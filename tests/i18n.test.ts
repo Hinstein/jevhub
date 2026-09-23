@@ -33,6 +33,7 @@ describe("locale routing", () => {
     expect(getLocaleFromPathname("/zh-CN")).toBe("zh");
     expect(getLocaleFromPathname("/pricing")).toBe("en");
     expect(localizePath("/go/store", "zh")).toBe("/zh-CN/go/store");
+    expect(localizePath("/apps/inbox-triage", "zh")).toBe("/zh-CN/apps/inbox-triage");
   });
 
   it("maps the current page for each added locale", () => {
@@ -61,12 +62,13 @@ describe("locale routing", () => {
     );
   });
 
-  it("pre-renders all 18 localized content paths", () => {
+  it("pre-renders all 19 localized content paths", () => {
     const params = generateStaticParams();
 
-    expect(params).toHaveLength(18);
+    expect(params).toHaveLength(19);
     expect(params).toContainEqual({ slug: [] });
     expect(params).toContainEqual({ slug: ["apps", "startup-idea-validator"] });
+    expect(params).toContainEqual({ slug: ["apps", "inbox-triage"] });
     expect(params).toContainEqual({ slug: ["playground"] });
     expect(params).toContainEqual({ slug: ["templates", "refund-detection"] });
   });
@@ -86,6 +88,12 @@ describe("locale routing", () => {
     expect(sitemap().map((entry) => entry.url)).not.toContain(
       `${SITE.url}/zh-CN/pricing`,
     );
+    const inboxMetadata = await generateMetadata({
+      params: Promise.resolve({ slug: ["apps", "inbox-triage"] }),
+    });
+    expect(inboxMetadata.robots).toEqual({ index: false, follow: true });
+    expect(inboxMetadata.alternates?.canonical).toBe(`${SITE.url}/zh-CN/apps/inbox-triage`);
+    expect(sitemap().map((entry) => entry.url)).not.toContain(`${SITE.url}/zh-CN/apps/inbox-triage`);
   });
 });
 
@@ -114,5 +122,6 @@ describe("localized content", () => {
     );
     expect(ZH_PAGE_METADATA["/playground"].title).toContain("Jev Playground");
     expect(ZH_PAGE_METADATA["/apps/startup-idea-validator"].title).toContain("创业点子评分器");
+    expect(ZH_PAGE_METADATA["/apps/inbox-triage"].title).toContain("邮件速分");
   });
 });

@@ -4,6 +4,7 @@ import { CodeBlock } from "@/components/code-block";
 import { JevDecisionExplainer } from "@/components/jev-decision-explainer";
 import { JevPlayground } from "@/components/playground/jev-playground";
 import { IdeaValidatorPage } from "@/components/idea-validator/idea-validator-page";
+import { InboxTriagePage } from "@/components/inbox-triage/inbox-triage-page";
 import { IDEA_VALIDATOR_COPY } from "@/i18n/idea-validator-copy";
 import { EcosystemCard } from "@/components/ecosystem-card";
 import { LocaleLink } from "@/components/locale-link";
@@ -143,6 +144,20 @@ export function ChineseHomePage() {
               <b>SHIP</b>
               <small>8 个结构化评分 · 1 次 Jev 请求</small>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section home-app-section">
+        <div className="shell">
+          <div className="home-app-card home-inbox-card">
+            <div>
+              <div className="eyebrow">第二个 Jev 真实应用</div>
+              <h2>哪些邮件值得先看？</h2>
+              <p>用一次 Jev 请求把 6 封虚构邮件分成待回复、需检查和稍后阅读。也可以试自己的一封，不用连接邮箱。</p>
+              <div className="actions"><LocaleLink className="button-primary" href="/apps/inbox-triage" locale={locale}>试用邮件速分 →</LocaleLink></div>
+            </div>
+            <div className="home-inbox-preview" aria-hidden="true"><span>INBOX / 06</span><strong>↗ <small>待回复</small></strong><strong>◇ <small>需检查</small></strong><strong>↓ <small>稍后阅读</small></strong></div>
           </div>
         </div>
       </section>
@@ -905,6 +920,7 @@ export function ChineseEcosystemPage() {
 export function ChinesePage({ path }: { path: string }) {
   if (path === "/") return <ChineseHomePage />;
   if (path === "/apps/startup-idea-validator") return <IdeaValidatorPage locale="zh" />;
+  if (path === "/apps/inbox-triage") return <InboxTriagePage locale="zh" />;
   if (path === "/playground") return <ChinesePlaygroundPage />;
   if (path === "/what-is-jev") return <ChineseWhatIsJevPage />;
   if (path === "/pricing") return <ChinesePricingPage />;

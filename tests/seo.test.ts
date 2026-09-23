@@ -6,6 +6,7 @@ import robots from "@/app/robots";
 import sitemap from "@/app/sitemap";
 import { GET as storeRedirect } from "@/app/go/store/route";
 import { metadata as ideaValidatorMetadata } from "@/app/apps/startup-idea-validator/page";
+import { metadata as inboxTriageMetadata } from "@/app/apps/inbox-triage/page";
 import { metadata as calculatorMetadata } from "@/app/tools/jev-cost-calculator/page";
 import { metadata as ecosystemMetadata } from "@/app/ecosystem/page";
 import { metadata as gettingStartedMetadata } from "@/app/getting-started/page";
@@ -20,7 +21,7 @@ import {
 } from "@/app/templates/[slug]/page";
 import { templates } from "@/content/templates";
 import { pageMetadata } from "@/lib/metadata";
-import { INDEXABLE_ROUTES, NAV_ITEMS, SITE } from "@/lib/site";
+import { APP_NAV_ITEMS, INDEXABLE_ROUTES, NAV_ITEMS, SITE } from "@/lib/site";
 import {
   breadcrumbStructuredData,
   siteStructuredData,
@@ -46,6 +47,7 @@ describe("SEO route contract", () => {
     expect(home).toContain("Learn Jev, try real apps, and build with it.");
     for (const route of [
       "/apps/startup-idea-validator",
+      "/apps/inbox-triage",
       "/playground",
       "/what-is-jev",
       "/getting-started",
@@ -60,27 +62,31 @@ describe("SEO route contract", () => {
 
   it("keeps the primary navigation focused on top-level user journeys", () => {
     expect(NAV_ITEMS.map((item) => item.href)).toEqual([
-      "/apps/startup-idea-validator",
       "/playground",
       "/what-is-jev",
       "/templates",
       "/ecosystem",
     ]);
     expect(NAV_ITEMS.map((item) => item.label)).toEqual([
-      "Idea Validator",
       "Playground",
       "Learn Jev",
       "Examples",
       "Ecosystem",
     ]);
+    expect(APP_NAV_ITEMS.map((item) => item.href)).toEqual([
+      "/apps/startup-idea-validator",
+      "/apps/inbox-triage",
+    ]);
   });
 
   it("gives the API, app, and examples pages distinct search intent", () => {
-    const ideaPage = source("src/app/apps/startup-idea-validator/page.tsx");
+    const ideaRoute = source("src/app/apps/startup-idea-validator/page.tsx");
+    const ideaPage = source("src/components/idea-validator/idea-validator-page.tsx");
     const gettingStarted = source("src/app/getting-started/page.tsx");
     const templatesPage = source("src/app/templates/page.tsx");
 
-    expect(ideaPage).toContain('return <IdeaValidatorPage locale="en" />;');
+    expect(ideaRoute).toContain('return <IdeaValidatorPage locale="en" />;');
+    expect(ideaPage).toContain("<h1>{copy.title}</h1>");
     expect(IDEA_VALIDATOR_COPY.en.title).toBe("Startup Idea Validator");
     expect(IDEA_VALIDATOR_COPY.en.limitTitle).toBe(
       "This is an idea evaluation, not market research.",
@@ -92,9 +98,9 @@ describe("SEO route contract", () => {
     );
   });
 
-  it("has exactly 18 unique English indexable routes", () => {
-    expect(INDEXABLE_ROUTES).toHaveLength(18);
-    expect(new Set(INDEXABLE_ROUTES).size).toBe(18);
+  it("has exactly 19 unique English indexable routes", () => {
+    expect(INDEXABLE_ROUTES).toHaveLength(19);
+    expect(new Set(INDEXABLE_ROUTES).size).toBe(19);
   });
 
   it("gives every indexable route unique metadata and a self canonical", async () => {
@@ -110,6 +116,7 @@ describe("SEO route contract", () => {
     const metadataByRoute = new Map<string, typeof rootMetadata>([
       ["/", rootMetadata],
       ["/apps/startup-idea-validator", ideaValidatorMetadata],
+      ["/apps/inbox-triage", inboxTriageMetadata],
       ["/playground", playgroundMetadata],
       ["/what-is-jev", whatIsJevMetadata],
       ["/pricing", pricingMetadata],

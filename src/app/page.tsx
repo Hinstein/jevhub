@@ -26,7 +26,7 @@ export default function HomePage() {
           <h1>Learn Jev, try real apps, and build with it.</h1>
           <p className="hero-copy">
             Explore TypeSafe AI&apos;s Jev System One model through a real
-            application, an interactive Playground, practical examples, pricing,
+            applications, an interactive Playground, practical examples, pricing,
             and API guides for structured decisions.
           </p>
           <div className="actions">
@@ -83,6 +83,20 @@ export default function HomePage() {
               <b>SHIP</b>
               <small>8 structured scores · 1 Jev request</small>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section home-app-section">
+        <div className="shell">
+          <div className="home-app-card home-inbox-card">
+            <div>
+              <div className="eyebrow">Second real Jev app</div>
+              <h2>What needs your attention?</h2>
+              <p>Sort six synthetic emails into Needs reply, Review, and Read later in one Jev request. Then try one message of your own without connecting an inbox.</p>
+              <div className="actions"><Link className="button-primary" href="/apps/inbox-triage">Try Inbox Triage →</Link></div>
+            </div>
+            <div className="home-inbox-preview" aria-hidden="true"><span>INBOX / 06</span><strong>↗ <small>reply</small></strong><strong>◇ <small>review</small></strong><strong>↓ <small>later</small></strong></div>
           </div>
         </div>
       </section>
@@ -264,8 +278,9 @@ export default function HomePage() {
                 <Link href="/apps/startup-idea-validator">
                   Startup Idea Validator
                 </Link>{" "}
-                for a finished app, or the <Link href="/playground">Playground</Link>{" "}
-                to inspect raw decisions.
+                 to score an idea, <Link href="/apps/inbox-triage">Inbox Triage</Link>{" "}
+                 to sort sample emails, or the <Link href="/playground">Playground</Link>{" "}
+                 to inspect raw decisions.
               </p>
             </div>
             <div className="faq-item">
