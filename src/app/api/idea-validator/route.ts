@@ -1,8 +1,10 @@
+import { isIP } from "node:net";
 import {
   buildIdeaValidatorQuestions,
   composeIdeaValidatorResult,
   validateIdeaValidatorInput,
 } from "@/lib/idea-validator";
+import { saveIdeaValidatorSubmission } from "@/lib/server/idea-submissions";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -27,8 +29,11 @@ function positiveInteger(value: string | undefined, fallback: number) {
 
 function clientAddress(request: Request) {
   const forwarded = request.headers.get("x-forwarded-for");
-  if (forwarded) return forwarded.split(",")[0]?.trim() || "unknown";
-  return request.headers.get("x-real-ip")?.trim() || "unknown";
+  const candidates = [
+    ...(forwarded ? [forwarded.split(",")[0]?.trim()] : []),
+    request.headers.get("x-real-ip")?.trim(),
+  ];
+  return candidates.find((address) => Boolean(address && isIP(address))) || "unknown";
 }
 
 function consumeRateLimit(request: Request) {
@@ -100,6 +105,15 @@ export async function POST(request: Request) {
     return json({ error: "Request body must be valid JSON." }, { status: 400 });
   }
 
+  const consentValue =
+    typeof body === "object" && body !== null && !Array.isArray(body)
+      ? (body as Record<string, unknown>).consentToRetention
+      : undefined;
+  if (consentValue !== undefined && typeof consentValue !== "boolean") {
+    return json({ error: "The data retention choice must be true or false." }, { status: 400 });
+  }
+  const consentToRetention = consentValue === true;
+
   const validated = validateIdeaValidatorInput(body);
   if (!validated.ok) {
     return json({ error: validated.error }, { status: 400 });
@@ -154,10 +168,31 @@ export async function POST(request: Request) {
         validated.value.goal,
         data as Parameters<typeof composeIdeaValidatorResult>[1],
       );
-      return json(result, {
-        status: 200,
-        headers: { "X-RateLimit-Remaining": String(rate.remaining) },
-      });
+
+      let retentionStatus: "saved" | "unavailable" | undefined;
+      if (consentToRetention) {
+        try {
+          const address = clientAddress(request);
+          await saveIdeaValidatorSubmission({
+            idea: validated.value.idea,
+            goal: validated.value.goal,
+            result,
+            ipAddress: address === "unknown" ? null : address,
+          });
+          retentionStatus = "saved";
+        } catch {
+          console.error("Idea Validator opt-in persistence failed.");
+          retentionStatus = "unavailable";
+        }
+      }
+
+      return json(
+        { ...result, ...(retentionStatus ? { retentionStatus } : {}) },
+        {
+          status: 200,
+          headers: { "X-RateLimit-Remaining": String(rate.remaining) },
+        },
+      );
     } catch {
       return json(
         { error: "Jev returned an incomplete score set. Please try again." },

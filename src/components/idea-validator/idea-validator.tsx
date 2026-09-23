@@ -11,6 +11,10 @@ import {
   type IdeaValidatorResult,
 } from "@/lib/idea-validator";
 
+type IdeaValidatorApiResult = IdeaValidatorResult & {
+  retentionStatus?: "saved" | "unavailable";
+};
+
 function scoreBucket(score: number) {
   if (score < 50) return "0_49";
   if (score < 65) return "50_64";
@@ -25,6 +29,8 @@ export function IdeaValidator({ locale = "en" }: { locale?: Locale }) {
   const [result, setResult] = useState<IdeaValidatorResult | null>(null);
   const [error, setError] = useState("");
   const [running, setRunning] = useState(false);
+  const [consentToRetention, setConsentToRetention] = useState(false);
+  const [retentionMessage, setRetentionMessage] = useState("");
 
   useEffect(() => {
     trackEvent("idea_validator_view", { locale });
@@ -40,16 +46,17 @@ export function IdeaValidator({ locale = "en" }: { locale?: Locale }) {
     trackEvent("idea_validator_submit", { goal, locale });
     setRunning(true);
     setError("");
+    setRetentionMessage("");
 
     try {
       const response = await fetch("/api/idea-validator", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ idea: trimmed, goal }),
+        body: JSON.stringify({ idea: trimmed, goal, consentToRetention }),
       });
 
       const data = (await response.json().catch(() => ({}))) as
-        | IdeaValidatorResult
+        | IdeaValidatorApiResult
         | { error?: string };
 
       if (!response.ok || !("dimensions" in data)) {
@@ -57,6 +64,13 @@ export function IdeaValidator({ locale = "en" }: { locale?: Locale }) {
       }
 
       setResult(data);
+      setRetentionMessage(
+        data.retentionStatus === "saved"
+          ? copy.retentionSaved
+          : data.retentionStatus === "unavailable"
+            ? copy.retentionUnavailable
+            : "",
+      );
       trackEvent("idea_validator_result", {
         goal,
         locale,
@@ -139,6 +153,7 @@ export function IdeaValidator({ locale = "en" }: { locale?: Locale }) {
                   onChange={() => {
                     setGoal(item);
                     setResult(null);
+                    setRetentionMessage("");
                   }}
                 />
                 <strong>{copy.goals[item].title}</strong>
@@ -147,6 +162,27 @@ export function IdeaValidator({ locale = "en" }: { locale?: Locale }) {
             ))}
           </div>
         </fieldset>
+
+        <p className="idea-privacy">
+          {copy.privacy}{" "}
+          <a
+            href="https://typesafe.ai/legal/privacy-policy"
+            target="_blank"
+            rel="noreferrer"
+          >
+            {copy.typeSafePrivacyPolicy} ↗
+          </a>
+        </p>
+
+        <label className="idea-retention-consent">
+          <input
+            type="checkbox"
+            checked={consentToRetention}
+            onChange={(event) => setConsentToRetention(event.target.checked)}
+            disabled={running}
+          />
+          <span>{copy.retentionConsent}</span>
+        </label>
 
         {error ? (
           <div className="playground-error" role="alert">
@@ -163,7 +199,11 @@ export function IdeaValidator({ locale = "en" }: { locale?: Locale }) {
           {running ? copy.running : copy.submit}
         </button>
 
-        <p className="idea-privacy">{copy.privacy}</p>
+        {retentionMessage ? (
+          <p className="idea-retention-status" role="status">
+            {retentionMessage}
+          </p>
+        ) : null}
       </div>
 
       <div className="idea-result-card" aria-live="polite">

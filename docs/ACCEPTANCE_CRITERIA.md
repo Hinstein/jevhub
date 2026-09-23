@@ -5,7 +5,7 @@
 ## A. Scope Gate
 
 - [ ] 只有 19 个英文页面可索引；非英文镜像可访问但统一 noindex,follow，不进入 sitemap
-- [ ] 无数据库
+- [ ] 无通用数据库、用户内容历史或管理后台；唯一例外是 Startup Idea Validator 的明确 opt-in PostgreSQL 记录
 - [ ] 无用户登录
 - [ ] 无 Dashboard/Admin
 - [ ] 无支付/订单/充值/兑换码逻辑
@@ -75,7 +75,7 @@
 - [ ] KILL < 50；FIX 50–64；SHIP >= 65
 - [ ] API Key 不进入浏览器
 - [ ] 有 idea 长度上限、timeout 与 per-IP rate limit
-- [ ] 不保存 idea 历史
+- [ ] 未同意时不保存 idea；同意后只保留本次记录，且没有面向用户的历史记录页面
 - [ ] Analytics 不包含 idea 原文
 - [ ] 页面明确说明它不是市场调查
 - [ ] 语言切换器在 Idea Validator 页面保持可用
@@ -165,8 +165,11 @@
 - [ ] `npm run build`
 - [ ] route/SEO tests
 - [ ] 无 TypeScript errors
-- [ ] 无未使用的 auth/payment/database dependency
+- [ ] 无未使用的 auth/payment/database dependency；`postgres` 仅用于明确同意后的 Idea Validator 记录
 - [ ] production build 中只有批准的 `/api/playground`、`/api/idea-validator` 与 `/api/inbox-triage` runtime API routes
+- [ ] Idea Validator 未勾选同意时不写数据库；勾选时只保存点子、目标、完整结果、请求 IP 和同意记录
+- [ ] Idea Validator 五种语言均在提交前展示未预选的清楚告知，注明用途和 30 天保留
+- [ ] 过期 Idea Validator 记录的每日清理操作已文档化
 
 ## L. Analytics Gate
 

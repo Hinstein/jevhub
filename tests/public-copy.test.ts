@@ -68,9 +68,12 @@ describe("V02 public copy contract", () => {
     expect(route).toContain("JEV_PLAYGROUND_TIMEOUT_MS");
     expect(ideaValidator).not.toContain("TYPESAFE_API_KEY");
     expect(ideaValidator).toContain("IDEA_VALIDATOR_COPY");
+    expect(ideaValidator).toContain("checked={consentToRetention}");
+    expect(ideaValidator).toContain("body: JSON.stringify({ idea: trimmed, goal, consentToRetention })");
     expect(ideaRoute).toContain("TYPESAFE_API_KEY");
     expect(ideaRoute).toContain("JEV_IDEA_VALIDATOR_RATE_LIMIT");
     expect(ideaRoute).toContain("JEV_IDEA_VALIDATOR_TIMEOUT_MS");
+    expect(ideaRoute).toContain("if (consentToRetention)");
     const inbox = source("src/components/inbox-triage/inbox-triage.tsx");
     const inboxRoute = source("src/app/api/inbox-triage/route.ts");
     expect(inbox).toContain('fetch("/api/inbox-triage"');

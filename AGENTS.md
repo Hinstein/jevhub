@@ -10,7 +10,7 @@
 
 V0.1 禁止引入：
 
-- Supabase / PostgreSQL / SQLite / ORM
+- Supabase / SQLite / ORM；数据库唯一例外是 Startup Idea Validator 的用户明确同意记录，使用 PostgreSQL，保留 30 天，不提供历史或管理页面
 - 用户注册、登录、Session、Auth
 - Dashboard / Admin
 - 支付、订单、充值、兑换码、余额、账本
@@ -104,3 +104,13 @@ V0.1 禁止引入：
 - 任何 Store 内部业务
 
 V0.1 上线并取得真实数据后再决定。
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

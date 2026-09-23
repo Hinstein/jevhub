@@ -18,6 +18,10 @@ export type IdeaValidatorCopy = {
   running: string;
   submit: string;
   privacy: string;
+  retentionConsent: string;
+  retentionSaved: string;
+  retentionUnavailable: string;
+  typeSafePrivacyPolicy: string;
   scoreEyebrow: string;
   verdict: Record<IdeaVerdict, string>;
   bestSignal: string;
@@ -59,7 +63,7 @@ export const IDEA_VALIDATOR_COPY: Record<Locale, IdeaValidatorCopy> = {
     title: "Startup Idea Validator",
     description:
       "Describe a startup, SaaS, developer tool, or product idea. Choose what you want from it, then let Jev score eight practical dimensions in one structured decision request.",
-    meta: ["8 structured scores", "1 Jev request", "No saved idea history"],
+    meta: ["8 structured scores", "1 Jev request", "Optional 30-day storage"],
     inputLabel: "Describe your startup or product idea",
     placeholder:
       "Example: A tool that monitors public Reddit discussions for repeated workflow complaints, groups similar pain points, and helps indie developers find product ideas worth researching.",
@@ -75,7 +79,13 @@ export const IDEA_VALIDATOR_COPY: Record<Locale, IdeaValidatorCopy> = {
     running: "Jev is scoring your idea…",
     submit: "Score my idea",
     privacy:
-      "No signup. The idea is sent only to the Jev scoring endpoint for this request and is not included in analytics events.",
+      "Your idea is sent to TypeSafe AI’s Jev service to produce this score. Do not enter trade secrets or confidential details you are not comfortable sharing. JevHub analytics receives only event details, not your idea text, full score result, or IP address. Our server temporarily uses your IP address for rate limiting; it is not written to the database unless you choose the optional consent below.",
+    retentionConsent:
+      "Optional: I agree that JevHub may save my idea, selected goal, full scoring result, and IP address in its database for product improvement and abuse prevention. Saved records are deleted within 30 days. You can use the evaluator without saving.",
+    retentionSaved: "Saved. JevHub will delete this record within 30 days.",
+    retentionUnavailable:
+      "Your score is ready, but JevHub could not save it. No record was stored.",
+    typeSafePrivacyPolicy: "TypeSafe AI Privacy Policy",
     scoreEyebrow: "Jev idea score",
     verdict: {
       SHIP: "The description has a strong enough shape to justify a small first build or test.",
@@ -140,7 +150,7 @@ export const IDEA_VALIDATOR_COPY: Record<Locale, IdeaValidatorCopy> = {
     title: "创业点子评分器",
     description:
       "输入你的创业、SaaS、开发者工具或产品想法，选择目标，让 Jev 在一次结构化决策请求中从 8 个维度进行评分。",
-    meta: ["8 个结构化评分", "1 次 Jev 请求", "不保存点子历史"],
+    meta: ["8 个结构化评分", "1 次 Jev 请求", "可选保存 30 天"],
     inputLabel: "描述你的创业或产品想法",
     placeholder:
       "例如：监控 Reddit 公开讨论里的重复工作流抱怨，把相似痛点聚类，帮助独立开发者找到值得研究的产品机会。",
@@ -156,7 +166,13 @@ export const IDEA_VALIDATOR_COPY: Record<Locale, IdeaValidatorCopy> = {
     running: "Jev 正在评分…",
     submit: "给我的点子评分",
     privacy:
-      "无需注册。你的点子只会在本次请求中发送到 Jev 评分接口，不会写入 Analytics 事件。",
+      "你的点子会发送到 TypeSafe AI 的 Jev 服务以完成评分。请勿输入不愿分享给 TypeSafe AI 的商业机密或保密信息。JevHub Analytics 只接收事件信息，不会收到点子原文、完整评分结果或 IP 地址。服务器会临时使用 IP 地址进行限流；只有你勾选下面的可选同意项后，JevHub 才会将其写入数据库。",
+    retentionConsent:
+      "可选：我同意 JevHub 将我的点子、所选目标、完整评分结果和 IP 地址保存到数据库，用于改进产品和防止恶意调用。保存的数据会在 30 天内删除。不保存也可以正常评分。",
+    retentionSaved: "已保存。JevHub 会在 30 天内删除这条记录。",
+    retentionUnavailable:
+      "评分已完成，但 JevHub 暂时无法保存；这次没有写入记录。",
+    typeSafePrivacyPolicy: "TypeSafe AI 隐私政策",
     scoreEyebrow: "Jev 点子评分",
     verdict: {
       SHIP: "当前描述已经足够完整，可以考虑做一个小版本或开始验证。",
@@ -221,7 +237,7 @@ export const IDEA_VALIDATOR_COPY: Record<Locale, IdeaValidatorCopy> = {
     title: "スタートアップアイデア評価",
     description:
       "スタートアップ、SaaS、開発者ツール、製品アイデアを入力し、目的を選ぶと、Jev が 1 回の構造化リクエストで 8 つの観点を評価します。",
-    meta: ["8 つの構造化スコア", "Jev リクエスト 1 回", "アイデア履歴は保存しません"],
+    meta: ["8 つの構造化スコア", "Jev リクエスト 1 回", "任意で 30 日間保存"],
     inputLabel: "スタートアップまたは製品アイデアを説明してください",
     placeholder: "例：Reddit の公開投稿から繰り返し出る業務上の不満を集め、似た課題をまとめ、個人開発者が調査すべき製品アイデアを見つけるツール。",
     characters: "文字",
@@ -235,7 +251,11 @@ export const IDEA_VALIDATOR_COPY: Record<Locale, IdeaValidatorCopy> = {
     genericError: "現在評価できません。もう一度お試しください。",
     running: "Jev が評価しています…",
     submit: "アイデアを評価",
-    privacy: "登録不要。入力内容はこの評価リクエストにのみ使用され、Analytics には送信されません。",
+    privacy: "入力したアイデアは採点のため TypeSafe AI の Jev サービスに送信されます。共有したくない企業秘密や機密情報は入力しないでください。JevHub の Analytics にアイデア本文、採点結果全体、IP アドレスは送信されず、イベント情報のみ送信されます。サーバーはレート制限のため IP アドレスを一時的に使いますが、下の任意の同意にチェックしない限りデータベースには保存しません。",
+    retentionConsent: "任意：製品改善と不正利用の防止を目的に、アイデア、選択した目標、採点結果全体、IP アドレスを JevHub のデータベースに保存することに同意します。保存データは 30 日以内に削除されます。保存に同意しなくても評価を使えます。",
+    retentionSaved: "保存しました。この記録は 30 日以内に削除されます。",
+    retentionUnavailable: "評価は完了しましたが保存できませんでした。記録は保存されていません。",
+    typeSafePrivacyPolicy: "TypeSafe AI プライバシーポリシー",
     scoreEyebrow: "Jev アイデアスコア",
     verdict: { SHIP: "小さな初期版や検証を進める価値がある形です。", FIX: "可能性はありますが、弱い観点を先に明確にする必要があります。", KILL: "現状の説明では重要な根拠が不足しています。大きく投資する前に見直してください。" },
     bestSignal: "最も強い点",
@@ -267,7 +287,7 @@ export const IDEA_VALIDATOR_COPY: Record<Locale, IdeaValidatorCopy> = {
     appLabel: "Application Jev gratuite · Sans inscription",
     title: "Validateur d’idée de startup",
     description: "Décrivez une idée de startup, SaaS, outil développeur ou produit. Choisissez votre objectif et Jev évalue huit dimensions en une seule requête structurée.",
-    meta: ["8 scores structurés", "1 requête Jev", "Aucun historique enregistré"],
+    meta: ["8 scores structurés", "1 requête Jev", "Conservation facultative 30 jours"],
     inputLabel: "Décrivez votre idée de startup ou de produit",
     placeholder: "Exemple : un outil qui repère les plaintes récurrentes dans les discussions Reddit publiques, regroupe les problèmes similaires et aide les indépendants à trouver des idées de produit à étudier.",
     characters: "caractères",
@@ -277,7 +297,11 @@ export const IDEA_VALIDATOR_COPY: Record<Locale, IdeaValidatorCopy> = {
     genericError: "Impossible d’évaluer l’idée pour le moment.",
     running: "Jev évalue votre idée…",
     submit: "Évaluer mon idée",
-    privacy: "Sans inscription. L’idée est envoyée uniquement au point d’évaluation Jev pour cette requête et n’est pas incluse dans les événements Analytics.",
+    privacy: "Votre idée est envoyée au service Jev de TypeSafe AI pour produire ce score. N’incluez pas de secret commercial ou d’information confidentielle que vous ne souhaitez pas partager. Les Analytics de JevHub ne reçoivent ni le texte de l’idée, ni le résultat complet, ni votre adresse IP : seuls des détails d’événement sont transmis. Notre serveur utilise temporairement votre IP pour limiter le débit ; elle n’est pas enregistrée en base sauf si vous cochez le consentement facultatif ci-dessous.",
+    retentionConsent: "Facultatif : j’accepte que JevHub enregistre dans sa base de données mon idée, mon objectif, le résultat complet et mon adresse IP, afin d’améliorer le produit et de prévenir les abus. Les données enregistrées sont supprimées sous 30 jours. L’évaluation fonctionne sans cet enregistrement.",
+    retentionSaved: "Enregistré. JevHub supprimera cette fiche sous 30 jours.",
+    retentionUnavailable: "Votre score est prêt, mais JevHub n’a pas pu l’enregistrer. Aucune fiche n’a été conservée.",
+    typeSafePrivacyPolicy: "Politique de confidentialité de TypeSafe AI",
     scoreEyebrow: "Score Jev de l’idée",
     verdict: { SHIP: "La description est assez solide pour justifier une petite première version ou un test.", FIX: "Il y a quelque chose d’intéressant, mais les dimensions les plus faibles doivent être clarifiées.", KILL: "La description manque de signaux importants. Retravaillez l’idée avant d’investir davantage." },
     bestSignal: "Meilleur signal",
@@ -309,7 +333,7 @@ export const IDEA_VALIDATOR_COPY: Record<Locale, IdeaValidatorCopy> = {
     appLabel: "Darmowa aplikacja Jev · Bez rejestracji",
     title: "Walidator pomysłu na startup",
     description: "Opisz pomysł na startup, SaaS, narzędzie dla deweloperów lub produkt. Wybierz cel, a Jev oceni osiem wymiarów w jednym ustrukturyzowanym żądaniu.",
-    meta: ["8 ustrukturyzowanych ocen", "1 żądanie Jev", "Brak zapisywanej historii"],
+    meta: ["8 ustrukturyzowanych ocen", "1 żądanie Jev", "Opcjonalny zapis na 30 dni"],
     inputLabel: "Opisz pomysł na startup lub produkt",
     placeholder: "Przykład: narzędzie, które śledzi powtarzające się skargi dotyczące pracy w publicznych dyskusjach Reddit, grupuje podobne problemy i pomaga niezależnym twórcom znaleźć pomysły warte zbadania.",
     characters: "znaków",
@@ -319,7 +343,11 @@ export const IDEA_VALIDATOR_COPY: Record<Locale, IdeaValidatorCopy> = {
     genericError: "Nie można teraz ocenić pomysłu.",
     running: "Jev ocenia pomysł…",
     submit: "Oceń mój pomysł",
-    privacy: "Bez rejestracji. Pomysł jest wysyłany tylko do endpointu oceny Jev dla tego żądania i nie trafia do zdarzeń Analytics.",
+    privacy: "Pomysł jest wysyłany do usługi Jev firmy TypeSafe AI, aby przygotować ocenę. Nie wpisuj tajemnic handlowych ani poufnych informacji, których nie chcesz udostępniać. Analityka JevHub otrzymuje tylko dane zdarzeń, bez treści pomysłu, pełnego wyniku ani adresu IP. Serwer tymczasowo używa IP do limitowania żądań; zapisze je w bazie tylko wtedy, gdy zaznaczysz poniższą opcjonalną zgodę.",
+    retentionConsent: "Opcjonalnie: zgadzam się, aby JevHub zapisał w bazie danych mój pomysł, wybrany cel, pełny wynik oceny i adres IP w celu ulepszania produktu i zapobiegania nadużyciom. Zapisane dane zostaną usunięte w ciągu 30 dni. Możesz skorzystać z oceny bez zapisywania danych.",
+    retentionSaved: "Zapisano. JevHub usunie ten wpis w ciągu 30 dni.",
+    retentionUnavailable: "Ocena jest gotowa, ale JevHub nie mógł jej zapisać. Żaden wpis nie został zachowany.",
+    typeSafePrivacyPolicy: "Polityka prywatności TypeSafe AI",
     scoreEyebrow: "Ocena pomysłu Jev",
     verdict: { SHIP: "Opis jest wystarczająco mocny, aby uzasadnić małą pierwszą wersję lub test.", FIX: "Pomysł ma potencjał, ale najsłabsze wymiary wymagają doprecyzowania.", KILL: "W obecnym opisie brakuje zbyt wielu ważnych sygnałów. Popraw pomysł przed większą inwestycją." },
     bestSignal: "Najmocniejszy sygnał",

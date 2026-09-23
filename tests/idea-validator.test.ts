@@ -17,6 +17,16 @@ describe("startup idea validator", () => {
     expect(IDEA_VALIDATOR_COPY.pl.submit.length).toBeGreaterThan(0);
   });
 
+  it("discloses optional idea, result, and IP retention with a 30-day period in every locale", () => {
+    for (const copy of Object.values(IDEA_VALIDATOR_COPY)) {
+      expect(copy.privacy).toMatch(/IP/i);
+      expect(copy.retentionConsent).toMatch(/30/);
+      expect(copy.retentionSaved.length).toBeGreaterThan(0);
+      expect(copy.retentionUnavailable.length).toBeGreaterThan(0);
+      expect(copy.typeSafePrivacyPolicy.length).toBeGreaterThan(0);
+    }
+  });
+
   it("accepts a bounded idea and builds exactly eight score questions", () => {
     const input = validateIdeaValidatorInput({
       idea: "A developer tool that groups repeated support complaints into product opportunities.",

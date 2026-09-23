@@ -17,7 +17,8 @@ The first release intentionally stays small:
 - 1 template index + 8 practical template pages
 - 1 curated ecosystem page with 20–30 checked projects
 - 1 noindex redirect to `jevhub.store`
-- no database
+- no general-purpose database, user accounts, or saved-history UI
+- one narrow exception: users may opt in to save Startup Idea Validator submissions for 30 days
 - no auth
 - no payments
 - no marketplace
@@ -31,7 +32,7 @@ The first release intentionally stays small:
 - Tailwind CSS 4
 - Vitest
 
-V0.1 uses no runtime database. Playground, Startup Idea Validator, and Inbox Triage require a server-side `TYPESAFE_API_KEY`; the key is never sent to the browser. Inbox Triage does not connect to Gmail or save user messages.
+The only runtime database is PostgreSQL storage for Startup Idea Validator submissions when the user explicitly opts in. It stores the idea text, selected goal, full score result, request IP, and consent record for 30 days. Playground state and Inbox Triage messages are never stored. Apply the SQL migration in `db/migrations` and schedule daily expiry cleanup as described in `db/README.md`. Playground, Startup Idea Validator, and Inbox Triage require a server-side `TYPESAFE_API_KEY`; the key is never sent to the browser.
 
 ## Local development
 

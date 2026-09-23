@@ -2,7 +2,7 @@
 
 原则：先搭最小可验证架构，再写内容，再上工具，最后做 SEO/性能审计。禁止边做边加入 V0.2 功能。
 
-2026-09-21 scope amendment：批准公开 Jev Playground。2026-09-23 再批准 Startup Idea Validator 与 Inbox Triage。三者都是受限 runtime：服务端密钥、固定边界、基础限流、无用户内容持久化。
+2026-09-21 scope amendment：批准公开 Jev Playground。2026-09-23 再批准 Startup Idea Validator 与 Inbox Triage。三者都是受限 runtime：服务端密钥、固定边界、基础限流。2026-09-23 再批准 Startup Idea Validator 的显式同意后 PostgreSQL 保存；Playground state 和 Inbox Triage 邮件仍不持久化。
 
 ## Phase 0 — Bootstrap
 
@@ -140,7 +140,8 @@ Gate：
 - 输入只允许 idea + goal
 - 服务端固定 8 个 Score questions
 - 本地加权、0–100 与 KILL/FIX/SHIP
-- 无数据库、无登录、无结果详情页
+- 默认不持久化；用户单独勾选后才保存点子、目标、完整结果和 IP，最多保留 30 天
+- 无登录、无结果详情页、无管理后台
 - Analytics 只记录 funnel 元数据，不记录 idea 原文
 - WebApplication + Breadcrumb structured data
 - 首页第一 CTA 指向 Idea Validator
@@ -152,6 +153,9 @@ Gate：
 - unit tests：validation / question count / goal variants / weighted score / thresholds
 - API Key 不进入 client bundle
 - rate limit / timeout / upstream error fail closed
+- no-consent route test proves there is no database write; consented writes store the idea, result and request IP
+- user sees explicit localized data, purpose and retention notice before opting in
+- expired rows have a documented daily cleanup operation
 - 375px 可用
 - title / description / canonical 唯一
 - idea 原文不出现在 analytics payload

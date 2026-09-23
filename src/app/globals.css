@@ -1577,6 +1577,40 @@ td {
   margin: 12px 0 0;
 }
 
+.idea-retention-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  margin-top: 18px;
+  padding: 13px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+  cursor: pointer;
+}
+
+.idea-retention-consent input {
+  flex: 0 0 auto;
+  width: 17px;
+  height: 17px;
+  margin: 2px 0 0;
+  accent-color: var(--accent);
+}
+
+.idea-retention-consent span {
+  min-width: 0;
+}
+
+.idea-retention-status {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
 .idea-result-empty {
   min-height: 520px;
   display: grid;
