@@ -1,13 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { DEMO_EMAILS } from "@/content/inbox-demo";
+import { DEMO_EMAILS, DEMO_PREVIEW } from "@/content/inbox-demo";
 import { INBOX_TRIAGE_COPY } from "@/i18n/inbox-triage-copy";
 import type { Locale } from "@/i18n/config";
 import { trackEvent } from "@/lib/analytics";
 import { INBOX_LIMITS, type InboxEmailResult, type InboxQueue, type InboxResult } from "@/lib/inbox-triage";
 
 const QUEUES: InboxQueue[] = ["needs_reply", "review", "read_later"];
+type PreviewEmail = (typeof DEMO_PREVIEW)[number];
+type DisplayResult =
+  | { source: "jev"; mode: "demo" | "custom"; data: InboxResult }
+  | { source: "preview"; mode: "demo"; data: { emails: readonly PreviewEmail[]; summary: Record<InboxQueue, number> } };
+
+function samplePreview(): DisplayResult {
+  const summary: Record<InboxQueue, number> = { needs_reply: 0, review: 0, read_later: 0 };
+  for (const email of DEMO_PREVIEW) summary[email.queue] += 1;
+  return { source: "preview", mode: "demo", data: { emails: DEMO_PREVIEW, summary } };
+}
 
 function percentage(value: number) {
   return `${Math.round(value * 100)}%`;
@@ -18,14 +28,34 @@ export function InboxTriage({ locale }: { locale: Locale }) {
   const [customOpen, setCustomOpen] = useState(false);
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
+  const [liveAvailable, setLiveAvailable] = useState<boolean | null>(null);
   const [error, setError] = useState("");
   const [lastMode, setLastMode] = useState<"demo" | "custom">("demo");
-  const [result, setResult] = useState<{ mode: "demo" | "custom"; data: InboxResult } | null>(null);
+  const [result, setResult] = useState<DisplayResult | null>(null);
 
   useEffect(() => { trackEvent("inbox_triage_view", { locale }); }, [locale]);
+  useEffect(() => {
+    const controller = new AbortController();
+    void fetch("/api/inbox-triage", { cache: "no-store", signal: controller.signal })
+      .then(async (response) => response.ok ? response.json() as Promise<{ available?: unknown }> : { available: false })
+      .then((status) => { if (!controller.signal.aborted) setLiveAvailable(status.available === true); })
+      .catch(() => { if (!controller.signal.aborted) setLiveAvailable(false); });
+    return () => controller.abort();
+  }, []);
+
+  function showPreview() {
+    setError("");
+    setResult(samplePreview());
+    trackEvent("inbox_triage_preview", { locale });
+  }
 
   async function run(mode: "demo" | "custom") {
     if (busy) return;
+    if (!liveAvailable) {
+      if (mode === "demo") showPreview();
+      else setError(copy.liveUnavailable);
+      return;
+    }
     if (mode === "custom" && (!text.trim() || text.trim().length > INBOX_LIMITS.customCharacters)) return;
     setBusy(true);
     setLastMode(mode);
@@ -41,13 +71,14 @@ export function InboxTriage({ locale }: { locale: Locale }) {
       });
       const payload: unknown = await response.json();
       if (!response.ok) {
-        const message = typeof payload === "object" && payload !== null && "error" in payload && typeof payload.error === "string" ? payload.error : copy.error;
-        throw new Error(message);
+        const unavailable = typeof payload === "object" && payload !== null && "code" in payload && payload.code === "inbox_unavailable";
+        if (unavailable) setLiveAvailable(false);
+        throw new Error(unavailable ? copy.liveUnavailable : copy.error);
       }
       if (typeof payload !== "object" || payload === null || !("emails" in payload) || !Array.isArray(payload.emails)) throw new Error(copy.error);
       const data = payload as InboxResult;
       if (data.emails.length !== (mode === "demo" ? DEMO_EMAILS.length : 1)) throw new Error(copy.error);
-      setResult({ mode, data });
+      setResult({ source: "jev", mode, data });
       trackEvent(mode === "demo" ? "inbox_triage_demo_result" : "inbox_triage_custom_result", { locale, mode, count: data.emails.length, success: true });
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : copy.error);
@@ -57,7 +88,7 @@ export function InboxTriage({ locale }: { locale: Locale }) {
     }
   }
 
-  function card(email: InboxEmailResult, mode: "demo" | "custom") {
+  function card(email: InboxEmailResult | PreviewEmail, mode: "demo" | "custom") {
     const sample = mode === "demo" ? DEMO_EMAILS.find((item) => item.id === email.id) : undefined;
     return <article className="inbox-result-card" key={email.id}>
       <div className="inbox-result-head">
@@ -68,7 +99,7 @@ export function InboxTriage({ locale }: { locale: Locale }) {
         <span className="badge">{copy.types[email.messageType]}</span>
       </div>
       {sample && <p className="inbox-message-text">{sample.body}</p>}
-      <details className="inbox-signals">
+      {"categoryConfidence" in email && <details className="inbox-signals">
         <summary>{copy.details}</summary>
         <dl>
           <div><dt>{copy.typeLabel}</dt><dd>{copy.types[email.messageType]}</dd></div>
@@ -77,7 +108,7 @@ export function InboxTriage({ locale }: { locale: Locale }) {
           <div><dt>{copy.timeLabel}</dt><dd>{email.timeSensitivity.toFixed(1)} / 2</dd></div>
           <div><dt>{copy.timeConfidence}</dt><dd>{percentage(email.timeConfidence)}</dd></div>
         </dl>
-      </details>
+      </details>}
     </article>;
   }
 
@@ -88,19 +119,22 @@ export function InboxTriage({ locale }: { locale: Locale }) {
           <div className="eyebrow">01 / DEMO</div>
           <h2>{copy.sampleTitle}</h2>
           <p>{copy.sampleBody}</p>
-          <button className="button-primary" type="button" onClick={() => void run("demo")} disabled={busy}>{busy ? copy.loading : copy.sampleButton} →</button>
+          <button className="button-primary" type="button" onClick={() => liveAvailable ? void run("demo") : showPreview()} disabled={busy}>{busy ? copy.loading : liveAvailable ? copy.sampleButton : copy.previewButton} →</button>
+          {liveAvailable === null && <p className="small" role="status">{copy.liveChecking}</p>}
+          {liveAvailable === false && <p className="small">{copy.liveUnavailable}</p>}
         </div>
         <div className="card inbox-custom-card">
           <div className="eyebrow">02 / YOUR EMAIL</div>
           <h2>{copy.customTitle}</h2>
           <p>{copy.customBody}</p>
-          {!customOpen && <button className="button-secondary" type="button" onClick={() => { setCustomOpen(true); trackEvent("inbox_triage_custom_open", { locale }); }}>{copy.customOpen} →</button>}
+          {!customOpen && <><button className="button-secondary" type="button" disabled={liveAvailable !== true} onClick={() => { setCustomOpen(true); trackEvent("inbox_triage_custom_open", { locale }); }}>{copy.customOpen} →</button>{liveAvailable === false && <p className="small" role="status">{copy.liveUnavailable}</p>}</>}
           {customOpen && <div className="inbox-custom-input">
             <label htmlFor="inbox-custom-text">{copy.customTitle}</label>
             <textarea id="inbox-custom-text" value={text} onChange={(event) => setText(event.target.value)} maxLength={INBOX_LIMITS.customCharacters} rows={8} placeholder={copy.customPlaceholder} />
             <div className="inbox-char-count">{text.length} / {INBOX_LIMITS.customCharacters}</div>
             <p className="inbox-privacy">{copy.privacy} <a href="https://typesafe.ai/privacy" target="_blank" rel="noreferrer">TypeSafe AI Privacy Policy ↗</a></p>
-            <div className="actions"><button className="button-primary" type="button" disabled={busy || !text.trim()} onClick={() => void run("custom")}>{busy ? copy.loading : copy.customButton}</button><button className="button-secondary" type="button" onClick={() => setCustomOpen(false)}>{copy.customClose}</button></div>
+            {liveAvailable === false && <p className="small" role="status">{copy.liveUnavailable}</p>}
+            <div className="actions"><button className="button-primary" type="button" disabled={busy || !text.trim() || liveAvailable !== true} onClick={() => void run("custom")}>{busy ? copy.loading : copy.customButton}</button><button className="button-secondary" type="button" onClick={() => setCustomOpen(false)}>{copy.customClose}</button></div>
           </div>}
         </div>
       </div>
@@ -114,7 +148,7 @@ export function InboxTriage({ locale }: { locale: Locale }) {
       {error && <div className="callout inbox-error" role="alert"><strong>{copy.error}</strong><p>{error}</p><button className="button-secondary" type="button" onClick={() => void run(lastMode)}>{copy.retry}</button></div>}
 
       {result && <section className="inbox-results" aria-live="polite">
-        <div className="section-heading"><div className="eyebrow">JEV / RESULT</div><h2>{copy.resultTitle}</h2><p>{copy.resultDescription}</p></div>
+        <div className="section-heading"><div className="eyebrow">{result.source === "jev" ? "JEV / RESULT" : "SAMPLE / PREVIEW"}</div><h2>{copy.resultTitle}</h2><p>{result.source === "jev" ? copy.resultDescription : copy.previewNotice}</p></div>
         <div className="inbox-queue-grid">{QUEUES.map((queue) => <section className={`inbox-queue inbox-queue-${queue}`} key={queue} aria-label={copy.queues[queue].title}>
           <div className="inbox-queue-heading"><h3>{copy.queues[queue].title}</h3><span>{result.data.summary[queue]}</span></div>
           <p>{copy.queues[queue].description}</p>

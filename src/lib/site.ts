@@ -42,9 +42,13 @@ export const INDEXABLE_ROUTES = [
 export const LOCALIZED_ROUTES = INDEXABLE_ROUTES;
 
 export const NAV_ITEMS = [
-  { href: "/apps/startup-idea-validator", label: "Idea Validator" },
   { href: "/playground", label: "Playground" },
   { href: "/what-is-jev", label: "Learn Jev" },
   { href: "/templates", label: "Examples" },
   { href: "/ecosystem", label: "Ecosystem" },
+] as const;
+
+export const APP_NAV_ITEMS = [
+  { href: "/apps/startup-idea-validator", label: "Idea Validator" },
+  { href: "/apps/inbox-triage", label: "Inbox Triage" },
 ] as const;

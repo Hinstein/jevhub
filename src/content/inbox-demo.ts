@@ -43,3 +43,13 @@ export const DEMO_EMAILS: readonly InboxEmail[] = [
     body: "Your account will close unless you send your password and card number in a reply. Do not contact support. Act now.",
   },
 ];
+
+// Editorial examples for the keyless preview. These are not Jev responses.
+export const DEMO_PREVIEW = [
+  { id: "refund", messageType: "conversation", queue: "needs_reply" },
+  { id: "security", messageType: "account_update", queue: "review" },
+  { id: "newsletter", messageType: "newsletter", queue: "read_later" },
+  { id: "sales", messageType: "sales_outreach", queue: "review" },
+  { id: "friend", messageType: "conversation", queue: "needs_reply" },
+  { id: "suspicious", messageType: "suspected_junk", queue: "review" },
+] as const;

@@ -122,6 +122,14 @@ summary:focus-visible {
   padding: 24px 0;
 }
 
+.apps-menu { position: relative; }
+.apps-menu summary { cursor: pointer; list-style: none; }
+.apps-menu summary::-webkit-details-marker { display: none; }
+.apps-menu-panel { position: absolute; top: 100%; left: -14px; z-index: 40; min-width: 190px; display: grid; gap: 3px; padding: 7px; border: 1px solid var(--border); border-radius: 12px; background: #091511; box-shadow: 0 18px 45px rgba(0, 0, 0, 0.4); }
+.apps-menu-panel a { padding: 10px 12px; border-radius: 8px; white-space: nowrap; }
+.apps-menu-panel a:hover, .apps-menu-panel a[aria-current="page"] { background: var(--surface); color: var(--text); }
+.mobile-apps-label { padding: 9px 10px 2px; color: var(--muted); font-size: 12px; font-weight: 750; }
+
 .nav-active {
   color: var(--text) !important;
 }

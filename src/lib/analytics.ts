@@ -9,6 +9,7 @@ export type AnalyticsEvent =
   | "idea_validator_retry"
   | "idea_validator_share"
   | "inbox_triage_view"
+  | "inbox_triage_preview"
   | "inbox_triage_demo_submit"
   | "inbox_triage_demo_result"
   | "inbox_triage_custom_open"

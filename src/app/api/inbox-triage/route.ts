@@ -27,6 +27,10 @@ function json(data: unknown, init: ResponseInit = {}) {
   return Response.json(data, { ...init, headers });
 }
 
+export async function GET() {
+  return json({ available: Boolean(process.env.TYPESAFE_API_KEY?.trim()) });
+}
+
 function clientAddress(request: Request) {
   const forwarded = request.headers.get("x-forwarded-for");
   return forwarded?.split(",")[0]?.trim() || request.headers.get("x-real-ip")?.trim() || "unknown";

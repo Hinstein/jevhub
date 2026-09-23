@@ -4,9 +4,19 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { InboxTriagePage } from "@/components/inbox-triage/inbox-triage-page";
 import { LOCALES } from "@/i18n/config";
-import { DEMO_EMAILS } from "@/content/inbox-demo";
+import { DEMO_EMAILS, DEMO_PREVIEW } from "@/content/inbox-demo";
 
 describe("Inbox Triage public page", () => {
+  it("keeps the keyless preview complete and free of fabricated Jev scores", () => {
+    expect(DEMO_PREVIEW.map((item) => item.id).sort()).toEqual(DEMO_EMAILS.map((item) => item.id).sort());
+    expect(new Set(DEMO_PREVIEW.map((item) => item.id)).size).toBe(DEMO_EMAILS.length);
+    expect(new Set(DEMO_PREVIEW.map((item) => item.queue))).toEqual(new Set(["needs_reply", "review", "read_later"]));
+    for (const item of DEMO_PREVIEW) {
+      expect(item).not.toHaveProperty("confidence");
+      expect(item).not.toHaveProperty("replyProbability");
+    }
+  });
+
   it.each(LOCALES)("renders one headline, six visible samples, and a custom entry in %s", (locale) => {
     const markup = renderToStaticMarkup(<InboxTriagePage locale={locale} />);
     expect((markup.match(/<h1>/g) ?? []).length).toBe(1);

@@ -21,7 +21,7 @@ import {
 } from "@/app/templates/[slug]/page";
 import { templates } from "@/content/templates";
 import { pageMetadata } from "@/lib/metadata";
-import { INDEXABLE_ROUTES, NAV_ITEMS, SITE } from "@/lib/site";
+import { APP_NAV_ITEMS, INDEXABLE_ROUTES, NAV_ITEMS, SITE } from "@/lib/site";
 import {
   breadcrumbStructuredData,
   siteStructuredData,
@@ -62,18 +62,20 @@ describe("SEO route contract", () => {
 
   it("keeps the primary navigation focused on top-level user journeys", () => {
     expect(NAV_ITEMS.map((item) => item.href)).toEqual([
-      "/apps/startup-idea-validator",
       "/playground",
       "/what-is-jev",
       "/templates",
       "/ecosystem",
     ]);
     expect(NAV_ITEMS.map((item) => item.label)).toEqual([
-      "Idea Validator",
       "Playground",
       "Learn Jev",
       "Examples",
       "Ecosystem",
+    ]);
+    expect(APP_NAV_ITEMS.map((item) => item.href)).toEqual([
+      "/apps/startup-idea-validator",
+      "/apps/inbox-triage",
     ]);
   });
 

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { POST } from "@/app/api/inbox-triage/route";
+import { GET, POST } from "@/app/api/inbox-triage/route";
 
 const types = [
   "conversation", "account_update", "newsletter", "promotion",
@@ -48,10 +48,23 @@ describe("POST /api/inbox-triage", () => {
 
   it("returns an honest unavailable response without a server key", async () => {
     delete process.env.TYPESAFE_API_KEY;
+    const status = await GET();
+    expect(status.status).toBe(200);
+    expect(status.headers.get("cache-control")).toBe("no-store");
+    expect(await status.json()).toEqual({ available: false });
     const response = await POST(request({ mode: "demo" }));
     expect(response.status).toBe(503);
     expect(response.headers.get("cache-control")).toBe("no-store");
     expect(await response.text()).not.toContain("server-secret");
+  });
+
+  it("reports whether live Jev is configured without exposing its key", async () => {
+    const response = await GET();
+    expect(response.status).toBe(200);
+    expect(response.headers.get("cache-control")).toBe("no-store");
+    const body = await response.text();
+    expect(JSON.parse(body)).toEqual({ available: true });
+    expect(body).not.toContain("server-secret");
   });
 
   it("rejects oversized, blank, and caller-controlled payloads before upstream", async () => {
