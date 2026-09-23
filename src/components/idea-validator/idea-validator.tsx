@@ -37,10 +37,6 @@ export function IdeaValidator({ locale = "en" }: { locale?: Locale }) {
       return;
     }
 
-    if (result) {
-      trackEvent("idea_validator_retry", { goal, locale });
-    }
-
     trackEvent("idea_validator_submit", { goal, locale });
     setRunning(true);
     setError("");
@@ -118,6 +114,7 @@ export function IdeaValidator({ locale = "en" }: { locale?: Locale }) {
             maxLength={IDEA_VALIDATOR_LIMITS.maxIdeaCharacters}
             rows={7}
             placeholder={copy.placeholder}
+            disabled={running}
           />
           <small>
             {idea.length.toLocaleString()} /{" "}
@@ -126,7 +123,7 @@ export function IdeaValidator({ locale = "en" }: { locale?: Locale }) {
           </small>
         </label>
 
-        <fieldset className="idea-goals">
+        <fieldset className="idea-goals" disabled={running}>
           <legend>{copy.goalLegend}</legend>
           <div className="idea-goal-grid">
             {IDEA_GOALS.map((item) => (
@@ -218,8 +215,10 @@ export function IdeaValidator({ locale = "en" }: { locale?: Locale }) {
                 type="button"
                 className="button-primary"
                 onClick={() => {
+                  trackEvent("idea_validator_retry", { goal, locale });
                   setResult(null);
                   setIdea("");
+                  setError("");
                 }}
               >
                 {copy.tryAnother}
