@@ -166,9 +166,9 @@ export const IDEA_VALIDATOR_COPY: Record<Locale, IdeaValidatorCopy> = {
     running: "Jev 正在评分…",
     submit: "给我的点子评分",
     privacy:
-      "你的点子会发送到 TypeSafe AI 的 Jev 服务以完成评分。请勿输入不愿分享给 TypeSafe AI 的商业机密或保密信息。JevHub Analytics 只接收事件信息，不会收到点子原文、完整评分结果或 IP 地址。服务器会临时使用 IP 地址进行限流；只有你勾选下面的可选同意项后，JevHub 才会将其写入数据库。",
+      "点子会发送给 TypeSafe AI 的 Jev 服务评分，请勿输入机密信息。JevHub Analytics 不接收点子内容、完整评分或 IP。服务器临时使用 IP 限流；勾选下方选项后才会保存数据 30 天。",
     retentionConsent:
-      "可选：我同意 JevHub 将我的点子、所选目标、完整评分结果和 IP 地址保存到数据库，用于改进产品和防止恶意调用。保存的数据会在 30 天内删除。不保存也可以正常评分。",
+      "可选：同意 JevHub 保存我的点子、目标、完整评分和 IP，用于改进产品与防滥用，30 天内删除。不勾选也可评分。",
     retentionSaved: "已保存。JevHub 会在 30 天内删除这条记录。",
     retentionUnavailable:
       "评分已完成，但 JevHub 暂时无法保存；这次没有写入记录。",
