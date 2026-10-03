@@ -49,6 +49,13 @@ npm run check
 
 That runs lint, typecheck, unit/content tests, and a production build.
 
+## Production operations
+
+Each production release must contain its own dependencies and build output.
+Run the read-only `scripts/release-guard.mjs` before switching releases or
+approving old-release cleanup. See [production operations](docs/PRODUCTION_OPERATIONS.md)
+for the startup gate, cleanup sequence, rollback, and HTTP verification.
+
 ## Optional analytics
 
 Set either a GA4 measurement ID or a self-hosted Umami website:

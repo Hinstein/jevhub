@@ -105,6 +105,19 @@ V0.1 禁止引入：
 
 V0.1 上线并取得真实数据后再决定。
 
+## 10. 生产部署与清理
+
+- 只部署用户指定远程分支中已推送的固定 commit；记录完整 SHA，禁止把未提交工作区文件混入部署包。
+- 每次部署先检查磁盘可用空间，在新 release 内按锁文件安装依赖并通过完整质量检查；不得覆盖运行中的 release。
+- 保留的 release 必须自带运行依赖和构建产物；禁止将 `node_modules` 或 `.next` 链接到其他 release。
+- 部署切换前必须运行 `scripts/release-guard.mjs check PROJECT_ROOT --release RELEASE_ID`，失败即停止。
+- 保留 JevHub 的 systemd 启动前检查；原子切换 `current` 后只重启目标服务，本机/公网 HTTP 和进程稳定性验证通过前不得删除上一版本，失败先回滚。
+- 清理前必须运行 `cleanup-plan PROJECT_ROOT`，并确认候选目录没有运行进程或服务引用；脚本仅生成只读计划，不授权删除。
+- 同一项目的部署与清理必须串行；不得使用过期清理计划或未经用户批准的删除范围。
+- 清理后再次检查文件依赖，再重启受影响的应用并验证本机/公网 HTTP；仅 `systemctl active` 不足以确认安全。
+- `tests/release-guard.test.ts` 必须保留在 `npm run check` 和现有 CI 的测试范围内，不得绕过失败的质量检查或启动检查。
+- 参照 `docs/PRODUCTION_OPERATIONS.md`；不得清理 `shared/`、环境变量、数据库、备份或未获批准的其他项目。
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 # This is NOT the Next.js you know

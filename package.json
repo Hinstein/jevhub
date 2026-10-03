@@ -12,6 +12,7 @@
     "lint": "eslint --rule \"react-hooks/preserve-manual-memoization: off\"",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "ops:release": "node scripts/release-guard.mjs",
     "db:purge-expired-ideas": "node scripts/purge-expired-idea-submissions.mjs",
     "check": "npm run lint && npm run typecheck && npm run test && npm run build"
   },
