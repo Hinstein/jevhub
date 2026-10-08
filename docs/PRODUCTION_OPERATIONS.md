@@ -305,3 +305,24 @@ backend upgrade must explicitly preserve volumes and update this snapshot.
 
 See [incident registry](PRODUCTION_INCIDENTS.md) for reproduced failures,
 root causes, verification and the boundary of each automatic remedy.
+
+## Local business logging (2026-10-08)
+
+The owner chose existing local components and declined a Web log UI. Preserve
+the root-owned logging drop-ins and namespace configurations independently of
+code releases. See [the rollout, budgets and pending work](PRODUCTION_LOG_LOCAL_SETUP.md).
+Source configurations are in `deploy/logging/`, with regression coverage in
+`tests/logging-config.test.ts`. Existing processes need an approved restart to
+enter a namespace; `LogNamespace` alone is not evidence of actual log delivery.
+
+Use `journalctl --namespace=ops -u jevhub-ops.service` for new worker output,
+and `--namespace='*'` when old/default and new business records are both needed.
+PID 1 management messages remain in the default pool. Safe health JSON and
+incident/action paths are unchanged; existing timer/Result checks still apply.
+
+`logrotate.timer` now checks hourly. Never delete or truncate Docker-managed
+logs externally or recreate a DB/payment/message container just to apply the
+capacity plan. Six existing containers still have unbounded json-file output;
+the plan is not an effective fleet-wide quota or Docker age TTL. Old code release
+cleanup must continue to protect logs/runtime data; this separate logging
+approval does not expand the operations worker's deletion allowlist.

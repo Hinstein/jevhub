@@ -77,6 +77,20 @@ export function buildCompose(items) {
       networks: { backend: { aliases: item.NetworkSettings.Networks["jev-mvp_jev-backend"].Aliases ?? [service] } },
     };
     restrictions(item.HostConfig, data);
+    const logging = item.HostConfig.LogConfig;
+    if (logging != null) {
+      if (!logging || typeof logging !== "object" || Array.isArray(logging) ||
+          typeof logging.Type !== "string" || !/^[a-z][a-z0-9-]*$/.test(logging.Type) ||
+          !logging.Config || typeof logging.Config !== "object" || Array.isArray(logging.Config) ||
+          Object.entries(logging.Config).some(([key, value]) => !/^[a-z][a-z0-9.-]*$/.test(key) || typeof value !== "string" || /[\0\r\n]/.test(value))) {
+        throw new Error("Unsupported runtime logging configuration");
+      }
+      // Keep old default-json snapshots compatible, but never discard actual
+      // rotation settings or a non-default driver during runtime reconstruction.
+      if (logging.Type !== "json-file" || Object.keys(logging.Config).length) {
+        data.logging = { driver: logging.Type, options: Object.fromEntries(Object.entries(logging.Config).map(([key, value]) => [key, escaped(value)])) };
+      }
+    }
     if (item.Config.WorkingDir) data.working_dir = item.Config.WorkingDir;
     if (item.Config.User) data.user = item.Config.User;
     if (item.Config.StopSignal) data.stop_signal = item.Config.StopSignal;

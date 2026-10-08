@@ -92,3 +92,61 @@ No release, environment file, database, backup or business data was removed in
 this rollout. Record any later automatic removals from the per-release action
 log. Do not clear the InboxRevamp dependency or disk-pressure incidents merely
 because the monitoring service is healthy.
+
+## Owner-approved historical data removal — 2026-10-08
+
+At 17:26 Asia/Shanghai, the owner separately authorized one-time deletion of
+Arc Observer observations and Ordo historical experimental runs. This exception
+does not expand the automatic operations policy: future observations/run data
+remain protected without new authorization.
+
+- Rechecked stopped producers, the disabled/inactive Arc unit, process
+  cwd/argv/maps/open-file references, target filesystem boundaries, and all
+  Docker container mounts. No active producer or data mount was found.
+- Held the global ops lock plus the two data-cleanup locks. Checked directory
+  and regular-file identities again before deletion; rejected symlinks,
+  cross-filesystem entries, protected filenames, and multiple hardlinks.
+- Removed 122 `observations.ndjson*` files from `/var/lib/arc-arb-observer`
+  (6,386,429,952 allocated bytes). Preserved its 4 KiB `status.json` and directory.
+- Removed 18 historical JSON/NDJSON run files from
+  `/home/ubuntu/ordofi-b2/data/runs` (5,462,761,472 allocated bytes). Preserved
+  its empty directories, code/releases, other data such as audits, and config.
+- Intent and completion are recorded under journal tag
+  `jevhub-manual-cleanup`; 140 files deleted, 11,849,191,424 bytes (about
+  11.0 GiB) freed. No backup/archive was created; the deleted files cannot be
+  recovered from a backup made by this operation.
+- Root usage decreased from 71% to 51%, with about 27.7 GiB available. The nine
+  checked application/proxy/bot PIDs remained unchanged; no service was restarted.
+  JevHub, InboxRevamp, Store, and VIP local HTTP returned 200; the three configured
+  public main sites returned 200. VIP public verification remains unconfigured.
+- Databases, WAL/backups, environment files, payment/message state, and the
+  existing installed ops code/policy were not changed. Logging retention was
+  only inventoried and proposed in `PRODUCTION_LOG_RETENTION_PLAN.md`, not applied.
+
+## Owner-approved local logging — 2026-10-08
+
+The owner later approved business-isolated local logging and declined a Web UI.
+See [implementation receipt](PRODUCTION_LOG_LOCAL_SETUP.md) for exact budgets,
+installed-versus-pending status, measurements and log-loss/config rollback bounds.
+
+- Installed ordinary journal limits totalling 488 MiB across all configured
+  pools, 14-day maximum retention targets and small file rotation granularity.
+  Main Web/task/ops pools are active; some service mappings await an approved
+  restart. Capacity/rotation may retain less than 14 days.
+- Preserved plain task stdout/stderr at notice while filtering routine info-level
+  PID 1 lifecycle noise. A synthetic success/failure canary proved visibility;
+  real Gmail timers/frequency and successful task outcomes were unchanged.
+- Existing logrotate checks hourly; actual 19:40 run succeeded. Standard rotation
+  reduced the old syslog/journal footprint, without deleting DB/WAL/backups or
+  changing OAuth, business records or container volumes. Deleted historical
+  logs have no backup made by this operation; only old small configs are saved.
+- Five Web services were migrated one at a time, preserving current code and
+  checking guard where applicable, local/public HTTP and stable PID. No DB,
+  Bot, payment, VIP or container restart. A concurrent InboxRevamp release was
+  respected, not reverted or attributed to this logging change.
+- All seven containers remain running; six still lack log capacity options.
+  Container recreation and remaining native-file age/capacity controls are
+  not complete. Do not report a strict full-server 1 GiB/14-day guarantee.
+- Added seven local logging config tests; full local check passed (184 tests,
+  one optional integration skip). No application code or ops worker upgrade
+  was deployed by this logging rollout; local config/docs/tests are not pushed.

@@ -64,6 +64,38 @@ describe("Store Compose runtime snapshot", () => {
     const noPid = containers(); noPid[0].State.Pid = 0;
     expect(snapshot(noPid).status).toBe(2);
   });
+  it("preserves bounded logging options without changing pinned images, volumes or other settings", () => {
+    const items = containers();
+    items[0].HostConfig.LogConfig = { Type: "json-file", Config: { "compress": "true", "max-file": "3", "max-size": "5m" } };
+    const original = JSON.parse(snapshot(containers()).stdout);
+    const changed = JSON.parse(snapshot(items).stdout);
+    expect(changed.services["new-api"].logging).toEqual({ driver: "json-file", options: { "compress": "true", "max-file": "3", "max-size": "5m" } });
+    delete changed.services["new-api"].logging;
+    expect(changed).toEqual(original);
+  });
+  it("keeps existing unbounded default-json snapshots compatible", () => {
+    const items = containers();
+    for (const item of items) item.HostConfig.LogConfig = { Type: "json-file", Config: {} };
+    expect(snapshot(items).stdout).toBe(snapshot(containers()).stdout);
+  });
+  it("includes log-option drift in snapshot equality and escapes Compose interpolation", () => {
+    const items = containers();
+    items[0].HostConfig.LogConfig = { Type: "syslog", Config: { tag: "fixture-$service" } };
+    const before = snapshot(items);
+    expect(JSON.parse(before.stdout).services["new-api"].logging.options.tag).toBe("fixture-$$service");
+    items[0].HostConfig.LogConfig = { Type: "syslog", Config: { tag: "changed" } };
+    expect(snapshot(items).stdout).not.toBe(before.stdout);
+  });
+  it.each([
+    { Type: "json-file", Config: { "max-file": 3 } },
+    { Type: "json-file", Config: null },
+    { Type: "json-file", Config: { tag: "bad\nvalue" } },
+    { Type: "json-file", Config: { "bad key": "value" } },
+    { Type: "bad/driver", Config: {} },
+  ])("rejects malformed logging settings rather than discarding them", (logging) => {
+    const items = containers(); items[0].HostConfig.LogConfig = logging;
+    expect(snapshot(items).status).toBe(2);
+  });
   it("keeps default resource and security fields omitted for the installed snapshot", () => {
     const omitted = containers();
     for (const item of omitted) item.HostConfig = { RestartPolicy: item.HostConfig.RestartPolicy, PortBindings: item.HostConfig.PortBindings };
