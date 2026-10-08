@@ -144,6 +144,8 @@ Automatic mutations are limited to:
   must remain. The operations worker has a 30-minute cooldown and at most two
   recovery attempts per application per rolling 24 hours, including failures.
   Running services with HTTP-only failures are reported, not restarted blindly.
+  VIP currently has no configured public HTTP route, so its mutation flags are
+  disabled. Missing public verification must never be treated as success.
 - Remove unused code releases for those same four project roots after the
   approved current-only retention policy passes all checks. Cleanup needs two
   observations of the same release/PID/restart count, at least two minutes of
@@ -154,10 +156,19 @@ Automatic mutations are limited to:
   are skipped. Cleanup normally runs at most once per six hours, or sooner when
   disk use is at least 85%. Re-run the guard, restart only the cleaned Web
   application, and verify local/public HTTP and stable PID/restart count.
+  Each batch removes at most two releases and stops admitting deletions after
+  two minutes. Log intent before removal. A partial deletion or journal failure
+  must still enter the post-cleanup guard/HTTP/stability finalization; a failed
+  guard forbids restart. Nested secrets/database markers and parent Docker
+  mounts are protected too, including files within generated dependencies.
 - Restore exactly two legacy Store Compose pointers, but only when the
   root-only persistent Compose snapshot still matches the live four containers.
   This operation never runs `docker compose up/down`, restarts a database, or
   changes an image, credential, network or volume.
+  Store must be explicitly present in policy and its project lock must be held.
+  Re-inspect live containers and filesystem entries before pointer writes;
+  exclusively create the marker without following symlinks. Resource/security
+  restrictions must be preserved or rejected, never silently discarded.
 
 The remaining units, containers and public websites are read-only checks.
 Successful idle oneshots are normal; `bot.jevhub.store` is expected to return

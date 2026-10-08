@@ -4,6 +4,6 @@
     { "key": "jevhub", "recover": true, "cleanup": true },
     { "key": "inboxrevamp", "recover": true, "cleanup": true },
     { "key": "store", "recover": true, "cleanup": true },
-    { "key": "vip", "recover": true, "cleanup": true }
+    { "key": "vip", "recover": false, "cleanup": false }
   ]
 }

@@ -5,7 +5,7 @@ import { existsSync, readFileSync, readdirSync, readlinkSync, realpathSync, lsta
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseEnv } from "node:util";
-import { candidateDecision, httpHealthy, incidentKey, restartDecision, unitHealthy, timerHealthy } from "./server-ops-policy.mjs";
+import { candidateDecision, diskSummary, httpHealthy, incidentKey, restartDecision, unitHealthy, timerHealthy } from "./server-ops-policy.mjs";
 
 const script = fileURLToPath(import.meta.url);
 const guard = "/usr/local/lib/jevhub-ops/release-guard.mjs";
@@ -62,7 +62,7 @@ function unit(unitName) {
   return Object.fromEntries(result.stdout.trim().split("\n").map((line) => { const i = line.indexOf("="); return [line.slice(0, i), line.slice(i + 1)]; }));
 }
 function http(url, expected = [200]) {
-  if (!url) return { skipped: true, healthy: true };
+  if (!url) return { skipped: true, healthy: false };
   const result = exec("curl", ["--silent", "--show-error", "--location", "--max-redirs", "6", "--cookie-jar", "/dev/null", "--connect-timeout", "5", "--max-time", "15", "--output", "/dev/null", "--write-out", "%{http_code}", url], { timeout: 17000 });
   const status = Number(result.stdout.trim());
   return { status, healthy: result.status === 0 && httpHealthy(status, expected) };
@@ -72,8 +72,8 @@ function releaseCheck(root, mode = "check") {
   const paths = mode === "cleanup-plan" ? result.stdout.split("\n").filter((line) => line.startsWith("candidate=")).map((line) => line.slice(10)) : [];
   return { passed: result.status === 0, candidates: paths };
 }
-function freeBytes() { const disk = statfsSync("/"); return Number(disk.bavail) * Number(disk.bsize); }
-function diskUse() { const disk = statfsSync("/"); return Math.round(100 * (1 - Number(disk.bfree) / Number(disk.blocks))); }
+function freeBytes() { return diskSummary(statfsSync("/")).availableBytes; }
+function diskUse() { return diskSummary(statfsSync("/")).usedPercent; }
 function containerState() {
   const list = exec("docker", ["ps", "-aq"]);
   if (list.status !== 0) throw new Error("Docker inspection failed");
@@ -87,13 +87,14 @@ function containerState() {
     health: item.State.Health?.Status ?? "none", restarts: item.RestartCount,
     oomKilled: item.State.OOMKilled,
     references: [...(item.Config.Labels?.["com.docker.compose.project.config_files"] ?? "").split(","), item.Config.Labels?.["com.docker.compose.project.working_dir"], ...item.Mounts.map((mount) => mount.Source)].filter(Boolean),
+    mountReferences: item.Mounts.map((mount) => mount.Source),
   }));
 }
 
 function references() {
   const refs = []; const roots = Object.values(fixed).map((row) => join(row[0], "releases"));
   const add = (source, path) => {
-    if (typeof path === "string" && roots.some((root) => path === root || path.startsWith(root + "/"))) refs.push({ source, path: path.replace(/ \(deleted\)$/, "") });
+    if (typeof path === "string" && roots.some((root) => path === root || path.startsWith(root + "/") || (source === "docker-mount" && (path === "/" || root.startsWith(path + "/"))))) refs.push({ source, path: path.replace(/ \(deleted\)$/, "") });
   };
   for (const entry of readdirSync("/proc")) {
     if (!/^\d+$/.test(entry)) continue;
@@ -132,12 +133,12 @@ function references() {
     if (loaded.status !== 0) throw new Error("Incomplete loaded service inspection");
     for (const candidate of loaded.stdout.match(/\/(?:home|opt|var|usr)\/[A-Za-z0-9_./%-]+/g) ?? []) add("loaded-systemd", candidate);
   }
-  for (const container of containerState()) for (const path of container.references) add("docker-config-or-mount", path);
+  for (const container of containerState()) for (const path of container.references) add(container.mountReferences.includes(path) ? "docker-mount" : "docker-config", path);
   return refs;
 }
 
 async function recover(project, state, observed, root, unitName, localUrl, publicUrl) {
-  const decision = restartDecision({ allowed: project.recover && observed.UnitFileState === "enabled", reason: "unit", activeState: observed.ActiveState, guardPassed: releaseCheck(root).passed, diskBytes: freeBytes(), now: Date.now(), attempts: state.restartAttempts ?? [] });
+  const decision = restartDecision({ allowed: project.recover && observed.UnitFileState === "enabled", reason: "unit", activeState: observed.ActiveState, guardPassed: releaseCheck(root).passed, publicAvailable: Boolean(publicUrl), diskBytes: freeBytes(), now: Date.now(), attempts: state.restartAttempts ?? [] });
   if (!decision.allowed) return { action: "not-restarted", reason: decision.reason };
   // Persist the budget before attempting a restart, including failed attempts.
   state.restartAttempts = [...(state.restartAttempts ?? []).filter((time) => time > Date.now() - 86400_000), Date.now()];
@@ -170,7 +171,8 @@ async function projectRun(project, mutate) {
     if (!unitHealthy(observed)) issues.push(issue(project.key, "web-unit-failed"));
   }
   const local = http(localUrl), publicHttp = http(publicUrl);
-  if (!local.healthy || !publicHttp.healthy) issues.push(issue(project.key, "http-failed", { local: local.status, public: publicHttp.status }));
+  if (!publicUrl) issues.push(issue(project.key, "public-verification-unconfigured"));
+  if (!local.healthy || (publicUrl && !publicHttp.healthy)) issues.push(issue(project.key, "http-failed", { local: local.status, public: publicHttp.status }));
   const upSeconds = Math.floor(Number(readFileSync("/proc/uptime", "utf8").split(" ")[0]) - Number(observed.ActiveEnterTimestampMonotonic) / 1e6);
   const stable = state.lastPid === observed.MainPID && state.lastRestarts === observed.NRestarts && state.current === selected && upSeconds >= 120;
   const cleanupDue = Date.now() - (state.lastCleanup ?? 0) >= 6 * 3600_000 || diskUse() >= 85;
@@ -179,7 +181,11 @@ async function projectRun(project, mutate) {
     if (!plan.passed) issues.push(issue(project.key, "cleanup-plan-failed"));
     else {
       const removed = [], skipped = [];
-      for (const candidate of plan.candidates) {
+      let cleanupChanged = false;
+      const cleanupStarted = Date.now();
+      try { for (const candidate of plan.candidates) {
+        // Small batches keep final verification within the worker deadline.
+        if (removed.length >= 2 || Date.now() - cleanupStarted > 120000) break;
         if (Date.now() - statSync(candidate).mtimeMs < 3600_000) { skipped.push({ release: candidate.split("/").at(-1), reason: "recent-release" }); continue; }
         const refs = references();
         const decision = candidateDecision(root, candidate, selected, refs);
@@ -190,14 +196,25 @@ async function projectRun(project, mutate) {
         if (!freshPlan.passed || !freshPlan.candidates.includes(candidate) || realpathSync(join(root, "current")) !== selected) throw new Error("Selection changed during cleanup");
         const lastCheck = candidateDecision(root, candidate, selected, references());
         if (!lastCheck.allowed) { skipped.push({ release: candidate.split("/").at(-1), reason: lastCheck.reason }); continue; }
+        const live = unit(unitName);
+        if (live.MainPID !== observed.MainPID || live.NRestarts !== observed.NRestarts || !unitHealthy(live) || existsSync("/etc/jevhub-ops/maintenance")) throw new Error("Runtime changed during cleanup");
+        // Fail before deletion when the audit log cannot be written. Once a
+        // deletion is attempted, even a partial rm must enter finalization.
+        appendFileSync(join(stateRoot, "actions.jsonl"), JSON.stringify({ time: new Date().toISOString(), project: project.key, action: "cleanup-start", release: candidate.split("/").at(-1) }) + "\n", { mode: 0o600 });
+        cleanupChanged = true;
         rmSync(candidate, { recursive: true, force: false });
         removed.push(candidate.split("/").at(-1));
         // Journal every individual removal before any following operation.
         appendFileSync(join(stateRoot, "actions.jsonl"), JSON.stringify({ time: new Date().toISOString(), project: project.key, action: "removed-unused-release", release: candidate.split("/").at(-1) }) + "\n", { mode: 0o600 });
-      }
+      } } catch {
+        issues.push(issue(project.key, "cleanup-interrupted", { removed }));
+      } finally {
       state.lastCleanup = Date.now();
-      if (removed.length) {
-        if (!releaseCheck(root).passed) throw new Error("Post-cleanup guard failed; do not restart");
+      if (cleanupChanged) {
+        if (!releaseCheck(root).passed) {
+          issues.push(issue(project.key, "post-cleanup-guard-failed"));
+          actions.push({ action: "cleanup", removed, restartVerified: false });
+        } else {
         const restarted = exec("systemctl", ["restart", unitName], { timeout: 100000 });
         await pause(5000);
         const before = unit(unitName); const localAfter = http(localUrl), publicAfter = http(publicUrl);
@@ -206,6 +223,8 @@ async function projectRun(project, mutate) {
         actions.push({ action: "cleanup", removed, restartVerified: verified });
         if (!verified) issues.push(issue(project.key, "post-cleanup-http-or-process-failed"));
         observed = after;
+        }
+      }
       }
       if (skipped.length) issues.push(issue(project.key, "cleanup-blocked", skipped));
     }
@@ -247,9 +266,10 @@ async function main() {
     console.log(JSON.stringify(await projectRun(project, true))); return;
   }
   const reports = [];
-  if (mutate && !existsSync("/etc/jevhub-ops/maintenance")) {
-    const repair = exec(process.execPath, [join(dirname(script), "store-compose.mjs"), "repair-aliases"]);
-    if (repair.status !== 0) reports.push({ project: "store-compose", issues: [issue("store-compose", "configuration-repair-blocked")], actions: [] });
+  if (mutate && policy.projects.some((entry) => entry.key === "store") && !existsSync("/etc/jevhub-ops/maintenance")) {
+    const repair = exec("flock", ["-n", "-E", "75", "/run/lock/jev-store-new-api-release.lock", process.execPath, join(dirname(script), "store-compose.mjs"), "repair-aliases"]);
+    if (repair.status === 75) reports.push({ project: "store-compose", issues: [], actions: [], skipped: "deployment-or-cleanup-lock" });
+    else if (repair.status !== 0) reports.push({ project: "store-compose", issues: [issue("store-compose", "configuration-repair-blocked")], actions: [] });
     else {
       const data = JSON.parse(repair.stdout);
       if (data.repairedAliases.length) reports.push({ project: "store-compose", issues: [], actions: [{ action: "restored-compose-aliases", paths: data.repairedAliases }] });
@@ -270,7 +290,7 @@ async function main() {
   const timers = readOnlyTimers.map(([name, maxLagSeconds]) => {
     const output = exec("systemctl", ["show", name, "-p", "ActiveState", "-p", "UnitFileState", "-p", "LastTriggerUSecMonotonic"]);
     const data = Object.fromEntries(output.stdout.trim().split("\n").map((line) => line.split("=")));
-    const healthy = output.status === 0 && timerHealthy({ activeState: data.ActiveState, enabled: data.UnitFileState === "enabled", lastTriggerSeconds: Number(data.LastTriggerUSecMonotonic) / 1e6, uptimeSeconds: uptime, maxLagSeconds });
+    const healthy = output.status === 0 && timerHealthy({ activeState: data.ActiveState, enabled: data.UnitFileState === "enabled", lastTriggerMonotonic: data.LastTriggerUSecMonotonic, uptimeSeconds: uptime, maxLagSeconds });
     return { name, healthy, active: data.ActiveState, enabled: data.UnitFileState === "enabled" };
   });
   const containers = containerState(); const gmail = await gmailHealth();

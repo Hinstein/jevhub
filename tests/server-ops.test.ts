@@ -32,17 +32,21 @@ describe("bounded server operations policy", () => {
     expect(evaluate("httpHealthy", 401, [200])).toBe(false);
   });
   it("never restarts on expired Gmail credentials or HTTP-only failures", () => {
-    const base = { allowed: true, activeState: "failed", guardPassed: true, diskBytes: 4e9, now: 1_800_000_000_000, attempts: [] };
+    const base = { allowed: true, activeState: "failed", guardPassed: true, publicAvailable: true, diskBytes: 4e9, now: 1_800_000_000_000, attempts: [] };
     expect(evaluate("restartDecision", { ...base, reason: "oauth-required" }).allowed).toBe(false);
     expect(evaluate("restartDecision", { ...base, reason: "http" }).allowed).toBe(false);
     expect(evaluate("restartDecision", { ...base, reason: "unit", activeState: "active" }).allowed).toBe(false);
   });
   it("requires allowlist, guard, free disk, cooldown and a bounded daily budget", () => {
-    const base = { allowed: true, reason: "unit", activeState: "failed", guardPassed: true, diskBytes: 4e9, now: 1_800_000_000_000, attempts: [] };
+    const base = { allowed: true, reason: "unit", activeState: "failed", guardPassed: true, publicAvailable: true, diskBytes: 4e9, now: 1_800_000_000_000, attempts: [] };
     expect(evaluate("restartDecision", base).allowed).toBe(true);
     for (const override of [{ allowed: false }, { guardPassed: false }, { diskBytes: 1e8 }, { attempts: [base.now - 1_000] }, { attempts: [base.now - 3_600_000, base.now - 7_200_000] }]) {
       expect(evaluate("restartDecision", { ...base, ...override }).allowed).toBe(false);
     }
+  });
+  it("cannot recover a Web service without a configured public verification target", () => {
+    const base = { allowed: true, reason: "unit", activeState: "failed", guardPassed: true, publicAvailable: false, diskBytes: 4e9, now: 1_800_000_000_000, attempts: [] };
+    expect(evaluate("restartDecision", base).allowed).toBe(false);
   });
   it("rejects current, traversal, symlinked releases and stale selection", () => {
     const root = project();
@@ -81,12 +85,25 @@ describe("bounded server operations policy", () => {
     expect(evaluate("incidentKey", a)).toBe(evaluate("incidentKey", a));
     expect(evaluate("incidentKey", a)).not.toBe(evaluate("incidentKey", [{ key: "gmail", code: "healthy" }]));
   });
+  it("includes reserved filesystem blocks in user-visible disk pressure", () => {
+    const result = evaluate("diskSummary", { blocks: 63290032128, bfree: 5592363008, bavail: 2891530240, bsize: 1 });
+    expect(result.availableBytes).toBe(2891530240);
+    expect(result.usedPercent).toBe(96);
+  });
   it("detects disabled/stale timers without flagging successful idle jobs", () => {
     const input = { activeState: "active", enabled: true, uptimeSeconds: 100000, lastTriggerSeconds: 99000, maxLagSeconds: 36 * 3600 };
     expect(evaluate("timerHealthy", input)).toBe(true);
     expect(evaluate("timerHealthy", { ...input, enabled: false })).toBe(false);
     expect(evaluate("timerHealthy", { ...input, lastTriggerSeconds: 1, maxLagSeconds: 600 })).toBe(false);
     expect(evaluate("timerHealthy", { ...input, uptimeSeconds: 100, lastTriggerSeconds: 0 })).toBe(true);
+  });
+  it("recognizes healthy timers with systemd's formatted monotonic trigger time", () => {
+    const input = { activeState: "active", enabled: true, uptimeSeconds: 729923.13, lastTriggerMonotonic: "1w 1d 10h 45min 22.282778s", maxLagSeconds: 600 };
+    expect(evaluate("timerHealthy", input)).toBe(true);
+    expect(evaluate("timerHealthy", { ...input, lastTriggerMonotonic: "1w" })).toBe(false);
+    expect(evaluate("timerHealthy", { ...input, lastTriggerMonotonic: "unexpected" })).toBe(false);
+    expect(evaluate("timerHealthy", { ...input, lastTriggerMonotonic: "0", uptimeSeconds: 100 })).toBe(true);
+    expect(evaluate("timerHealthy", { ...input, lastTriggerMonotonic: "729922282778" })).toBe(true);
   });
   it("does not invoke the Gmail cron endpoint that also prunes retained data", () => {
     const source = readFileSync(resolve("scripts/server-ops.mjs"), "utf8");
@@ -101,5 +118,16 @@ describe("bounded server operations policy", () => {
     rmSync(join(old, "prisma", "runtime.sqlite"));
     mkdirSync(join(old, "public", "uploads"), { recursive: true });
     expect(evaluate("candidateDecision", root, old, current, []).allowed).toBe(false);
+  });
+  it.each(["src/config/.env.production", "internal/data/PG_VERSION", "internal/shared/token-cache", ".next/cache/mail.sqlite", "node_modules/cache/runtime.db"])("does not delete protected content at %s", (name) => {
+    const root = project(); const old = join(root, "releases", "old"); const current = join(root, "releases", "current");
+    const file = join(old, name); mkdirSync(resolve(file, ".."), { recursive: true }); writeFileSync(file, "protected-fixture");
+    const result = evaluate("candidateDecision", root, old, current, []);
+    expect(result.allowed).toBe(false);
+    expect(JSON.stringify(result)).not.toContain("protected-fixture");
+  });
+  it.each(["", "releases", "/"])("does not delete releases visible through a parent Docker mount (%s)", (suffix) => {
+    const root = project(); const old = join(root, "releases", "old"); const current = join(root, "releases", "current");
+    expect(evaluate("candidateDecision", root, old, current, [{ source: "docker-mount", path: suffix === "/" ? "/" : join(root, suffix) }]).allowed).toBe(false);
   });
 });
