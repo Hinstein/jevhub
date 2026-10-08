@@ -101,6 +101,18 @@ describe("local business logging configuration", () => {
     }
   });
 
+  it("disables only NewAPI's duplicate diagnostic file through its existing CLI", () => {
+    expect(JSON.parse(read("compose-store-stdout.json"))).toEqual({ services: { "new-api": { command: ["--log-dir", ""] } } });
+  });
+
+  it("ages relay archives with an existing component while excluding live files", () => {
+    const rules = read("tmpfiles-x-relay.conf").split("\n").filter((line) => /^[a-zA-Z] /.test(line));
+    expect(rules).toContain("e /home/ubuntu/x-telegram-push/logs - - - mM:14d -");
+    expect(rules).toContain("x /home/ubuntu/x-telegram-push/logs/*.log - - - - -");
+    expect(rules.every((line) => /^[ex] \/home\/ubuntu\/x-telegram-push\/logs(?: |\/)/.test(line))).toBe(true);
+    expect(rules.some((line) => /^[rRDfFL]/.test(line))).toBe(false);
+  });
+
   it("does not truncate the Bot's delivery diagnostics or rotate its database", () => {
     const config = read("logrotate-goofish.conf");
     expect(config).toContain("/home/ubuntu/GoofishCredentialsBot/logs/*/*.log");
