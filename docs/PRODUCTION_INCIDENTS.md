@@ -172,6 +172,13 @@ installed-versus-pending status, measurements and log-loss/config rollback bound
   differences still fail closed. Retry requires fresh runtime/HTTP verification.
   The first Umami Web mismatch was not reproduced and is not assigned a guessed
   root cause; its verified retry preserved the live parameters and fixed image.
+- Store Adapter recreation also failed its initial network invariant and rolled
+  back; runtime HTTP stayed healthy. Fresh inspection reproduced only duplicate
+  aliases: the same two DNS names appeared four times, with no changed alias set
+  or network. Snapshot reconstruction now deduplicates names while preserving
+  custom aliases. A regression test first failed on duplicate growth and also
+  checks that an actually added alias still changes the snapshot; the runtime
+  gate compares unique names, not ignored networks or guessed exceptions.
 - BEpusdt's native logger has no size setting: two hardcoded 300 MB log families
   can exceed the ordinary-log budget. Only its journal migration is complete;
   a same-version, logging-only source rebuild still requires explicit approval.

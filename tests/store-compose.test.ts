@@ -53,6 +53,20 @@ describe("Store Compose runtime snapshot", () => {
     expect(data.services["new-api"].environment.PASSWORD).toBe("fixture-secret");
     expect(data.services["new-api"].command).toEqual(["run", "--password", "fixture-secret"]);
   });
+  it("deduplicates repeated Compose DNS aliases without discarding custom aliases", () => {
+    const items = containers();
+    const network = items[1].NetworkSettings.Networks["jev-mvp_jev-backend"];
+    network.Aliases.push("custom-backend");
+    const original = JSON.parse(snapshot(items).stdout);
+    network.Aliases.push(...network.Aliases);
+    const rebuilt = JSON.parse(snapshot(items).stdout);
+    expect(rebuilt).toEqual(original);
+    expect(rebuilt.services["jev-adapter"].networks.backend.aliases).toEqual([
+      "jev-mvp-jev-adapter-1", "jev-adapter", "custom-backend",
+    ]);
+    network.Aliases.push("different-backend");
+    expect(JSON.parse(snapshot(items).stdout)).not.toEqual(original);
+  });
   it("fails closed for missing, duplicate or foreign containers and unsupported mounts", () => {
     expect(snapshot(containers().slice(1)).status).toBe(2);
     expect(snapshot([...containers(), containers()[0]]).status).toBe(2);

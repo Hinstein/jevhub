@@ -94,7 +94,7 @@ export function buildCompose(items) {
       image: item.Image, pull_policy: "never", container_name: item.Name.replace(/^\//, ""),
       restart: item.HostConfig.RestartPolicy.Name, environment,
       command: escaped(item.Config.Cmd), entrypoint: escaped(item.Config.Entrypoint),
-      networks: { backend: { aliases: item.NetworkSettings.Networks["jev-mvp_jev-backend"].Aliases ?? [service] } },
+      networks: { backend: { aliases: [...new Set(item.NetworkSettings.Networks["jev-mvp_jev-backend"].Aliases ?? [service])] } },
     };
     restrictions(item.HostConfig, data);
     const logging = item.HostConfig.LogConfig;
