@@ -1,0 +1,22 @@
+[Unit]
+Description=InboxRevamp web application
+After=network-online.target postgresql.service
+Wants=network-online.target
+StartLimitIntervalSec=300
+StartLimitBurst=3
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/jev-email/current
+EnvironmentFile=/home/ubuntu/jev-email/shared/.env.production
+Environment=NODE_ENV=production
+Environment=NEXT_TELEMETRY_DISABLED=1
+ExecStartPre=/usr/local/bin/node /usr/local/lib/jevhub-ops/release-guard.mjs check /home/ubuntu/jev-email
+ExecStart=/usr/local/bin/npm run start -- --hostname 127.0.0.1 --port 3500
+Restart=on-failure
+RestartSec=10
+KillSignal=SIGTERM
+
+[Install]
+WantedBy=multi-user.target

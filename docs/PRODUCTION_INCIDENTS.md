@@ -1,0 +1,94 @@
+# Production incident registry
+
+Server: `43.135.155.97`. Record only operational metadata; no credentials,
+mailbox/account identifiers, user text or raw environment/Docker output.
+
+| Incident | Evidence and cause | Prevention / bounded response |
+| --- | --- | --- |
+| 2026-10-03 Store frontend failed after cleanup/reboot | Retained `fcbbd3a/node_modules` referred to removed `5ebd735`. A running process hid the missing startup files. | Independent lockfile installs; recursive release guard; startup gate; real HTTP and PID stability checks before/after cleanup. |
+| 2026-10-08 Gmail synchronization alarm | Initially one connection was `NEEDS_REAUTH / GMAIL_AUTH_REVOKED`; last successful sync 2026-10-06. An actual Google refresh attempt returned `400 invalid_grant` (expired/revoked). Later read-only verification confirmed reconnection and successful sync; see the recovery receipt below. | Automatically detect and deduplicate owner-action incidents. Reconnect Gmail in the existing dashboard. Never falsify ACTIVE/sync timestamps, send mail, delete a connection or repeatedly restart the Web app. Google OAuth Testing's seven-day limit is a possible cause, not a verified console setting. |
+| 2026-10-08 InboxRevamp old-release dependency | Running release `2d57d00-main-20261005` had 659 cross-release symlinks into `75dfbcb-proxyfix` and `b0c230e-main-old-label-choice`. No current pointer; 20 sequential release drop-ins. | Build an independent release from an owner-approved pushed fixed commit after all quality/security gates. Canonical current/unit/startup guard. Cleanup is blocked until independence and all references pass; the original locked dependencies currently fail the security gate. |
+| 2026-10-08 disk pressure | 59 GiB root volume, 93% used, about 4.1 GiB available before repair. InboxRevamp kept roughly 15 GiB of old code releases. | Automatic cleanup of unreferenced, verified old code releases only, under project locks and the current-only retention policy. Protect DBs/backups/real env files, Arc observations and OrdoFi run data. |
+| 2026-10-08 Store missing Compose entry points | Four healthy containers' labels referred to deleted `4e286dd`/`26857b6` backend Compose paths. They survived because Docker retained runtime configuration. | Root-only persistent, image-pinned Compose snapshot outside releases; exact volume/network preservation; validated compatibility pointers. Auto restore missing pointers only if snapshot still matches. No container/DB restart for this repair. |
+| 2026-10-08 build configuration access | Ubuntu Node could not read shared `.env.production`: file exists as root:root `600`; systemd can read it. | Preserve permissions. Root build runner reads configuration into memory and passes values to the build user, never in argv/output. Failed quality checks leave production unchanged. |
+| 2026-10-08 TypeScript build heap limit | Original server typecheck exhausted Node's roughly 1.9 GiB default heap. Other Web services remained active. | Build in an explicit CPU/memory/swap-limited scope after checking headroom. Do not skip quality gates or let build OOM affect unrelated services. |
+| 2026-10-08 misleading Gmail metrics endpoint | Source inspection showed the metrics GET also calls application retention pruning. Earlier diagnostic GETs did not capture pruning counts. | The monitor must not call this endpoint. Use an enforced READ ONLY aggregate query and inspect existing timer results; original application retention stays in its own scheduled task. |
+| 2026-10-08 InboxRevamp dependency security gate | Fresh `npm audit --omit=dev` reported one critical and two high production-dependency findings, including locked Next.js 16.3.5. Existing CI gates production audit at high. | Record and request explicit dependency-update authority. Do not suppress audit, upgrade automatically or mark the tests-only independent release ready while this gate fails. Keep production unchanged pending approval and complete clean verification. |
+
+## Gmail recovery verification
+
+Before activation on 2026-10-08, an enforced READ ONLY query confirmed the
+connection was `ACTIVE`, with a new connection time of 10:23 and a successful
+sync at 10:43. Completed `HISTORY_SYNC` and `LABEL_VERIFY` jobs were present;
+there were no pending jobs or current connection errors. The existing metrics
+cron also reported success. No token refresh or connection-state mutation was
+performed by this recheck. This verifies reconnection and synchronization, not
+every mail/label business behavior or a change in Google's publishing settings.
+
+If authorization fails again, use [Reconnect Gmail](https://inboxrevamp.com/dashboard).
+The monitor detects and deduplicates the owner-action requirement; it cannot
+reauthorize Google. Never infer connection health from the homepage alone.
+
+## Repair verification log
+
+The bounded automatic-operations installation is enabled; the independent
+InboxRevamp application rollout is still blocked pending dependency-update
+authority:
+
+- CI-passed ops SHA `8e449b2f5bfdeabab8a5f080db5539b81e050917` is installed outside
+  releases. Source hashes and root ownership are recorded in
+  `/etc/jevhub-ops/INSTALL.json`. Its systemd maintenance-mode test completed
+  with `Result=success / ExecMainStatus=0` before activation.
+- At 10:55 China time, the installer removed only its own known maintenance
+  marker, enabled `jevhub-ops.timer`, and loaded startup guards/bounded failure
+  restart settings for JevHub, Store frontend and VIP. It held the global and
+  affected-project locks throughout. No healthy Web application was restarted
+  by installation. InboxRevamp cannot receive its canonical startup guard until
+  its independent runtime is ready; VIP automatic mutations remain disabled.
+- The first enabled run at 10:55 completed successfully. JevHub, InboxRevamp
+  and Store returned local/public HTTP 200; VIP returned local HTTP 200 and
+  explicitly skipped public verification. Their PIDs and restart counters were
+  unchanged. Guard failed only for the known dependent InboxRevamp runtime.
+  No cleanup or recovery action was taken. Store's two newly created Compose
+  compatibility directories were skipped, as required, and must remain protected.
+- The remaining read-only Web checks passed (the protected bot correctly
+  returned 401), all seven Docker containers were running, and backup/Gmail/
+  retention timers passed freshness checks. Root disk remained about 96% used,
+  with 2.7 GiB available; this is still an unresolved disk-pressure incident.
+- Final verification at 11:09 China time confirmed installed source hashes
+  matched the fixed SHA, the receipt was `enabled`, maintenance was absent,
+  the timer was enabled/active and the latest service execution was successful.
+  Its automatically refreshed 11:08:55 report was six seconds old. The worker
+  emitted `changed:false`, confirming meaningful-issue deduplication. All four
+  Web PIDs/restart counters still matched pre-install observations, and the
+  release-removal action count remained zero. InboxRevamp's shared environment
+  file retained mode `600`.
+- A separate hourly thread heartbeat named `生产服务器异常跟进` was created for
+  read-only meaningful-change notifications. Existing automations were not
+  modified. Unchanged known blockers and expected protected compatibility
+  directories are not repeated alerts. Server recovery remains the systemd
+  timer's responsibility, not the notification heartbeat's.
+- Store's persistent root-only Compose configuration and two legacy pointers
+  were validated. The four container PIDs, existing network and volumes were
+  unchanged; no container recreation/restart was performed.
+- InboxRevamp tests-only repair is pushed on `codex/runtime-release-quality-20261008`
+  at `dddd4cc61fba9e3cd4834faf9650af1a4ea0e714`. Full tests: 950 passed, 74 existing
+  skips; lint/typecheck passed. Application/schema/lockfile remain unchanged.
+  Production stays on the prior release because its dependency security gate
+  fails and dependency-upgrade authority is still pending.
+- First read-only audit exposed systemd's formatted monotonic timer values;
+  regression fixtures now parse formatted and numeric values without marking
+  healthy timers stale. Disk pressure uses available unreserved blocks, matching
+  `df` (about 96% used / 2.7 GiB free at this stage), rather than understating
+  pressure by including root-reserved space.
+- Safety review produced real deletion/pointer/finalization counterexamples.
+  They are covered by behavioral fixtures before mutation enablement. Complete
+  JevHub checks passed (177 tests, one optional DB integration skip), and clean
+  remote CI passed for the installed SHA. A fresh targeted guard/ops/Compose
+  rerun passed all 98 tests. VIP is read-only until a public verification target
+  is deliberately configured.
+
+No release, environment file, database, backup or business data was removed in
+this rollout. Record any later automatic removals from the per-release action
+log. Do not clear the InboxRevamp dependency or disk-pressure incidents merely
+because the monitoring service is healthy.
