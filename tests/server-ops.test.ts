@@ -94,4 +94,12 @@ describe("bounded server operations policy", () => {
     expect(source).toContain("BEGIN READ ONLY;");
     expect(source).not.toMatch(/(?:DELETE FROM|UPDATE \\\"GmailConnection|refresh_token|encryptedRefreshToken)/i);
   });
+  it("protects database files and nested uploads outside generated dependencies", () => {
+    const root = project(); const old = join(root, "releases", "old"); const current = join(root, "releases", "current");
+    mkdirSync(join(old, "prisma")); writeFileSync(join(old, "prisma", "runtime.sqlite"), "fixture");
+    expect(evaluate("candidateDecision", root, old, current, []).reason).toBe("protected-database-or-runtime-data");
+    rmSync(join(old, "prisma", "runtime.sqlite"));
+    mkdirSync(join(old, "public", "uploads"), { recursive: true });
+    expect(evaluate("candidateDecision", root, old, current, []).allowed).toBe(false);
+  });
 });

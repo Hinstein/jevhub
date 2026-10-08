@@ -59,13 +59,23 @@ export function candidateDecision(root, candidate, expectedCurrent, references) 
     const currentLink = join(root, "current");
     if (!lstatSync(currentLink).isSymbolicLink() || realpathSync(currentLink) !== expectedCurrent) return deny("current-changed");
     if (candidate === expectedCurrent) return deny("current-release");
+    function protectedContents(path) {
+      for (const entry of readdirSync(path, { withFileTypes: true })) {
+        const full = join(path, entry.name);
+        if (entry.isFile() && /\.(?:db|sqlite3?|dump|pgdump|bak|log)$/i.test(entry.name)) return true;
+        if (entry.isDirectory() && /^(uploads|backups?|storage|runtime|logs)$/i.test(entry.name)) return true;
+        if (entry.isDirectory() && !["node_modules", ".next", ".git"].includes(entry.name) && protectedContents(full)) return true;
+      }
+      return false;
+    }
+    if (protectedContents(candidate)) return deny("protected-database-or-runtime-data");
     for (const entry of readdirSync(candidate)) {
       const path = join(candidate, entry);
       const stat = lstatSync(path);
       if (/^\.env(?:\.|$)/.test(entry) && !/^\.env\.(example|sample|template)$/.test(entry)) {
         if (!stat.isSymbolicLink() || !inside(join(root, "shared"), resolve(candidate, readlinkSync(path))) || !inside(join(root, "shared"), realpathSync(path))) return deny("protected-environment-file");
       }
-      if (/^(data|uploads|backups?|storage|logs|\.backend-configuration-alias)$/i.test(entry)) return deny("protected-runtime-data-or-configuration");
+      if (/^(data|uploads|backups?|storage|runtime|logs|\.backend-configuration-alias)$/i.test(entry)) return deny("protected-runtime-data-or-configuration");
       if (entry === "RELEASE.json") {
         const manifest = JSON.parse(readFileSync(path, "utf8"));
         if (manifest.qualityStatus !== "passed") return deny("unfinished-release");
