@@ -1,5 +1,5 @@
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, symlinkSync, writeFileSync, rmSync, realpathSync } from "node:fs";
+import { mkdtempSync, mkdirSync, symlinkSync, writeFileSync, rmSync, realpathSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
@@ -87,5 +87,11 @@ describe("bounded server operations policy", () => {
     expect(evaluate("timerHealthy", { ...input, enabled: false })).toBe(false);
     expect(evaluate("timerHealthy", { ...input, lastTriggerSeconds: 1, maxLagSeconds: 600 })).toBe(false);
     expect(evaluate("timerHealthy", { ...input, uptimeSeconds: 100, lastTriggerSeconds: 0 })).toBe(true);
+  });
+  it("does not invoke the Gmail cron endpoint that also prunes retained data", () => {
+    const source = readFileSync(resolve("scripts/server-ops.mjs"), "utf8");
+    expect(source).not.toContain("/api/cron/gmail-metrics");
+    expect(source).toContain("BEGIN READ ONLY;");
+    expect(source).not.toMatch(/(?:DELETE FROM|UPDATE \\\"GmailConnection|refresh_token|encryptedRefreshToken)/i);
   });
 });

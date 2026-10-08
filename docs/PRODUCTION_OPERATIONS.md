@@ -162,8 +162,11 @@ Automatic mutations are limited to:
 The remaining units, containers and public websites are read-only checks.
 Successful idle oneshots are normal; `bot.jevhub.store` is expected to return
 401. Historic cumulative restart counts are not treated as current failures.
-Gmail metrics and an aggregate **read-only** `NEEDS_REAUTH` count distinguish
-expired/revoked authorization from sync/label failures. The timer cannot
+Existing Gmail cron results and aggregate **read-only** connection/job counts
+distinguish expired/revoked authorization from other connection failures.
+The metrics HTTP endpoint also runs application retention cleanup, so the
+monitor must not call it. It uses an enforced `BEGIN READ ONLY` SQL transaction.
+The timer cannot
 reauthorize Google, fake a connection status, send mail, or reset health data.
 
 Protected data: `shared/`, real environment files, databases, backups, uploads,

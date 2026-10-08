@@ -218,22 +218,21 @@ async function projectRun(project, mutate) {
 async function gmailHealth() {
   try {
     const env = parseEnv(readFileSync("/home/ubuntu/jev-email/shared/.env.production", "utf8"));
-    const response = await fetch("http://127.0.0.1:3500/api/cron/gmail-metrics", { headers: { authorization: `Bearer ${env.CRON_SECRET}` }, redirect: "error", signal: AbortSignal.timeout(10000) });
-    if (!response.ok) return { issues: [issue("gmail", "metrics-http-failed", { status: response.status })] };
-    const data = await response.json();
-    const names = ["staleSyncMailboxes", "unverifiedMailboxes", "failedLabelJobs", "missingLabelMailboxes", "oldestRepairSeconds", "queueDepth"];
-    const metrics = Object.fromEntries(names.map((name) => [name, Number.isSafeInteger(data[name]) ? data[name] : null]));
-    if (Object.values(metrics).some((value) => value === null)) return { issues: [issue("gmail", "invalid-metrics")] };
-    const database = new URL(env.DATABASE_URL).pathname.slice(1);
-    if (!/^[A-Za-z0-9_]+$/.test(database)) throw new Error("Unsupported database");
-    const query = exec("sudo", ["-n", "-u", "postgres", "psql", "-X", "-d", database, "-At", "-v", "ON_ERROR_STOP=1", "-c", `BEGIN READ ONLY; SET LOCAL statement_timeout='5s'; SELECT count(*) FROM "GmailConnection" WHERE status='NEEDS_REAUTH' AND "lastErrorCode"='GMAIL_AUTH_REVOKED'; COMMIT;`], { timeout: 8000 });
-    const count = query.status === 0 ? Number(query.stdout.split("\n").find((line) => /^\d+$/.test(line))) : NaN;
-    const owners = Number.isSafeInteger(count) ? count : null;
+    // The application's metrics cron also prunes retained data. Never invoke
+    // it here: inspect aggregate state in an enforced READ ONLY transaction.
+    const databaseUrl = new URL(env.DATABASE_URL);
+    const database = databaseUrl.pathname.slice(1);
+    if (!/^[A-Za-z0-9_]+$/.test(database) || !["127.0.0.1", "localhost"].includes(databaseUrl.hostname)) throw new Error("Unsupported database");
+    const query = exec("sudo", ["-n", "-u", "postgres", "psql", "-X", "-d", database, "-At", "-v", "ON_ERROR_STOP=1", "-c", `BEGIN READ ONLY; SET LOCAL statement_timeout='5s'; SELECT json_build_object('needsReauth', (SELECT count(*) FROM "GmailConnection" WHERE status='NEEDS_REAUTH' AND "lastErrorCode"='GMAIL_AUTH_REVOKED'), 'pendingJobs', (SELECT count(*) FROM "GmailWebhookJob" WHERE status::text IN ('PENDING','RUNNING')), 'otherConnectionErrors', (SELECT count(*) FROM "GmailConnection" WHERE "lastErrorCode" IS NOT NULL AND "lastErrorCode" <> 'GMAIL_AUTH_REVOKED')); COMMIT;`], { timeout: 8000 });
+    if (query.status !== 0) throw new Error("Readonly query failed");
+    const counts = JSON.parse(query.stdout.split("\n").find((line) => line.startsWith("{")) ?? "null");
+    if (!counts || Object.values(counts).some((value) => !Number.isSafeInteger(value))) throw new Error("Invalid aggregate counts");
+    const owners = counts.needsReauth;
+    const cron = unit("inboxrevamp-gmail-cron@gmail-metrics.service");
     const issues = [];
     if (owners > 0) issues.push(issue("gmail", "oauth-owner-required", { affectedConnections: owners, action: "Reconnect Gmail at https://inboxrevamp.com/dashboard" }));
-    if (metrics.staleSyncMailboxes > (owners ?? 0) || metrics.unverifiedMailboxes > (owners ?? 0) || metrics.failedLabelJobs > 0 || metrics.missingLabelMailboxes > 0 || metrics.oldestRepairSeconds > 1800) issues.push(issue("gmail", "sync-or-label-health-failed"));
-    if (owners === null) issues.push(issue("gmail", "reauth-state-unavailable"));
-    return { metrics, issues };
+    if (counts.otherConnectionErrors > 0 || (!unitHealthy(cron) && owners === 0)) issues.push(issue("gmail", "sync-or-label-health-failed"));
+    return { counts, metricsCronResult: cron.Result, issues };
   } catch { return { issues: [issue("gmail", "health-inspection-unavailable")] }; }
 }
 
