@@ -4,7 +4,7 @@
 使用现有 systemd-journald / logrotate；没有安装集中日志平台、采集器、
 日志数据库或自定义常驻清理程序。配置源位于 `deploy/logging/`。
 
-状态：**Web／后台任务／系统和选定文件日志已实施；容器及部分服务仍待停机窗口确认**。
+状态：**第一轮 Web／后台任务／系统和文件轮转已实施；用户已批准第二轮逐项重启／容器重建，验收仍在进行**。
 不能把下面的完整预算表说成所有运行进程都已经迁移完毕。
 
 ## 磁盘预算与实际生效范围
@@ -21,12 +21,12 @@
 | InboxRevamp Web | 32 MiB | 已验证真实应用日志投递 |
 | InboxRevamp scheduled tasks | 96 MiB | 四类原任务自动采用新池，结果均 success |
 | Store 前端 | 48 MiB | 已验证；不包含后端容器 |
-| VIP | 16 MiB | 配置已装；未重启，仍用原日志流；公网验证仍未配置 |
+| VIP | 16 MiB | 第二轮已重启，启动 guard、本机 200 和稳定 PID 通过；公网验证仍未配置 |
 | Workflow Lens | 24 MiB | Web 已验证；backup 下次执行采用新池 |
 | Caddy | 24 MiB | 已验证；未开启全量 access log |
-| Goofish Bot | 16 MiB | namespace 配置已装但未重启；文件轮转已生效 |
-| X Telegram relay | 16 MiB | namespace 配置已装但未重启；原文件 logger 已限 5 MB × 4 |
-| BEpusdt | 16 MiB | namespace 配置已装但未重启；支付文件日志暂未改 |
+| Goofish Bot | 16 MiB | 第二轮已重启，真实日志进入新池，受保护公网 401 符合预期；文件轮转已生效 |
+| X Telegram relay | 16 MiB | 第二轮已重启，真实日志进入新池；重复文件输出仍待关闭 |
+| BEpusdt | 16 MiB | 第二轮已重启，真实日志进入新池，公网 200；支付文件日志容量未改 |
 | 运维巡检 | 24 MiB | 原 timer 后续执行已进入新池 |
 | Umami backup | 16 MiB | 配置已装，下次原计划执行生效；容器日志另计 |
 | **合计** | **488 MiB** | 已包含默认池和尚未激活的预留池 |
@@ -82,19 +82,24 @@ logrotate maxage 在轮转时检查：其他长期静止的旧归档不保证精
 
 ## 容器和剩余文件日志：未完成的部分
 
-`docker-capacity-plan.json` **只是计划**，没有写入 daemon.json / Compose。
-六个现存容器仍使用无容量选项的 json-file；Telegram Forwarder 原有
-10 MiB × 3 的限制保留不变。新限额只有重建容器才会生效，普通 restart
-不能替代重建。没有重启 Docker、DB、Redis、支付或消息程序。
+`docker-capacity-plan.json` 是预算清单，不是可直接套用的 Compose。
+用户已批准逐项重建，并逐项核对实际容量选项；尚未验收的容器不能报生效。
+Telegram Forwarder 原有 10 MiB × 3 的限制保留不变。新限额只有重建容器
+才会生效，普通 restart 不能替代重建；不重启 Docker daemon。
 
 后续容量计划：Store 四容器合计 60 MiB，Umami 两容器合计 30 MiB，
 Telegram Forwarder 30 MiB，**容器合计 120 MiB**，不是各容器 120 MiB。
-json-file 不提供按天 TTL；需要另行确认容量优先是否可接受。
+json-file 不提供按天 TTL，现有方案只控制容器容量，不能报告严格 14 天过期。
 重建时必须保留固定镜像、原卷（含 Redis 匿名卷）、网络和所有资源／安全
 限制，并更新 Store root-only snapshot 与匹配检查；不修改数据卷内容。
 
-X relay 原生文件 logger 的容量已有界，未实现天数 TTL；BEpusdt 和 Store
-容器的自写文件也未完成独立容量治理。不要因此宣称全机日志已具备严格
+X relay 使用现有 `TWSCRAPE_RELAY_LOG_FILE=/dev/null` 配置关闭重复文件输出，
+保留 stderr → 独立 journal；正式安装前用真实 logger 函数做合成 canary。
+不要给整个 logs 目录加年龄删除规则：未知文件、数据库或运行状态可能被误删。
+NewAPI 使用当前官方版本的 `--log-dir` 空值关闭重复诊断文件，只修改该参数，
+保留其余 CLI 参数；不得用静态 command override 替换整条命令。
+BEpusdt 的原生 logger 仍为每类 300 MB × 6、7 天，程序没有容量配置项，
+修改同版本源码的日志参数仍待单独授权。不要因此宣称全机日志已具备严格
 1 GiB 总硬配额或严格 14 天逐行删除。
 
 ## 本轮验收及回退边界
@@ -147,7 +152,9 @@ sudo systemctl show logrotate.timer -p ActiveState -p UnitFileState
 ```
 
 诊断输出仍须脱敏，不向第三方发送日志，不打印环境变量、邮箱正文或原始
-Docker 配置。日志设置源和回归测试本轮尚未提交／推送；没有宣称已经进入 main。
+Docker 配置。第一轮配置／测试已推送 `codex/business-logging-20261008`，
+PR #7 的 14a13af 和 c29f807 均有成功 CI；本轮审查修复尚待验证、提交及安装。
+未合并 main，不混入原有 next-env.d.ts、tsconfig.tsbuildinfo 或 social-assets/。
 
 组件语义来源：[systemd 255 执行环境](https://github.com/systemd/systemd/blob/v255/man/systemd.exec.xml)、
 [journald 配置](https://github.com/systemd/systemd/blob/v255/man/journald.conf.xml)、

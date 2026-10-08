@@ -1,5 +1,0 @@
-{
-  "services": {
-    "new-api": { "command": ["--log-dir", ""] }
-  }
-}

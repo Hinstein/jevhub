@@ -101,16 +101,10 @@ describe("local business logging configuration", () => {
     }
   });
 
-  it("disables only NewAPI's duplicate diagnostic file through its existing CLI", () => {
-    expect(JSON.parse(read("compose-store-stdout.json"))).toEqual({ services: { "new-api": { command: ["--log-dir", ""] } } });
-  });
-
-  it("ages relay archives with an existing component while excluding live files", () => {
-    const rules = read("tmpfiles-x-relay.conf").split("\n").filter((line) => /^[a-zA-Z] /.test(line));
-    expect(rules).toContain("e /home/ubuntu/x-telegram-push/logs - - - mM:14d -");
-    expect(rules).toContain("x /home/ubuntu/x-telegram-push/logs/*.log - - - - -");
-    expect(rules.every((line) => /^[ex] \/home\/ubuntu\/x-telegram-push\/logs(?: |\/)/.test(line))).toBe(true);
-    expect(rules.some((line) => /^[rRDfFL]/.test(line))).toBe(false);
+  it("does not age unknown relay files and uses only the existing diagnostic-path override", () => {
+    expect(readdirSync(root)).not.toContain("tmpfiles-x-relay.conf");
+    expect(read("x-relay-stdout.conf")).toBe("[Service]\nEnvironmentFile=/etc/jevhub-ops/logging/x-relay-stdout.env\n");
+    expect(settings(read("x-relay-stdout.env"))).toEqual({ TWSCRAPE_RELAY_LOG_FILE: "/dev/null" });
   });
 
   it("does not truncate the Bot's delivery diagnostics or rotate its database", () => {

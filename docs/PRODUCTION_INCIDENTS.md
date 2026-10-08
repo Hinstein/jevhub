@@ -149,4 +149,29 @@ installed-versus-pending status, measurements and log-loss/config rollback bound
   not complete. Do not report a strict full-server 1 GiB/14-day guarantee.
 - Added seven local logging config tests; full local check passed (184 tests,
   one optional integration skip). No application code or ops worker upgrade
-  was deployed by this logging rollout; local config/docs/tests are not pushed.
+  was deployed by the first logging rollout. Config/docs/tests were subsequently
+  pushed on `codex/business-logging-20261008` / PR #7, not merged into main.
+
+### Second-round review and runtime gates
+
+- The owner approved sequential service/container restarts, preserving each
+  application's version, databases, data volumes and configuration. VIP,
+  Goofish, X relay and BEpusdt namespace migrations passed stable-PID and actual
+  journal-delivery checks; the protected Bot URL returned its expected 401.
+  Payment transaction/message delivery was not exercised by these checks.
+- An independent review found two unsafe proposed configurations before their
+  installation: a whole-directory relay archive expiry rule could remove unknown
+  files, and a static NewAPI command override could discard unrelated CLI flags.
+  Removed both; use the relay's existing diagnostic path override and a tested
+  argument-preserving NewAPI helper instead. No unknown relay files were deleted.
+- Umami recreation stopped on a runtime-invariant difference and restored its
+  original Compose file. The DB remained ready and public HTTP returned 200.
+  The DB's reproduced difference was only three absent DNS override lists
+  represented as `[]` versus `null`. A synthetic canary verifies normalization
+  is restricted to these absent lists; actual DNS overrides and unrelated host
+  differences still fail closed. Retry requires fresh runtime/HTTP verification.
+  The first Umami Web mismatch was not reproduced and is not assigned a guessed
+  root cause; its verified retry preserved the live parameters and fixed image.
+- BEpusdt's native logger has no size setting: two hardcoded 300 MB log families
+  can exceed the ordinary-log budget. Only its journal migration is complete;
+  a same-version, logging-only source rebuild still requires explicit approval.

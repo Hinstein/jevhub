@@ -321,8 +321,18 @@ PID 1 management messages remain in the default pool. Safe health JSON and
 incident/action paths are unchanged; existing timer/Result checks still apply.
 
 `logrotate.timer` now checks hourly. Never delete or truncate Docker-managed
-logs externally or recreate a DB/payment/message container just to apply the
-capacity plan. Six existing containers still have unbounded json-file output;
-the plan is not an effective fleet-wide quota or Docker age TTL. Old code release
-cleanup must continue to protect logs/runtime data; this separate logging
-approval does not expand the operations worker's deletion allowlist.
+logs externally. The owner explicitly approved a second, sequential maintenance
+round: hold global/project locks, preserve the running image/volumes/security
+and resource settings, recreate only the selected container, then check runtime
+invariants, health, HTTP and stability before the next one. Without this manual
+authority the capacity plan alone never authorizes a DB/payment/message restart.
+The Docker budget is capacity-only, not an age TTL or strict fleet-wide quota.
+Old code release cleanup must continue to protect logs/runtime data; this
+logging approval does not expand the operations worker's deletion allowlist.
+
+Use the relay's existing diagnostic file-path override to keep stderr in its
+business journal and suppress duplicate file output. Do not age arbitrary files
+under its logs directory. NewAPI's empty log-dir must preserve unrelated command
+flags; the tested `stdoutCommand()` helper changes only the diagnostic option.
+Install updated snapshot tooling from a pushed fixed commit outside releases,
+record its component SHA/hash, and retain the existing worker/policy authority.

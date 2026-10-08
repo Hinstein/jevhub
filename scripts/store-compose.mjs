@@ -11,6 +11,26 @@ const script = fileURLToPath(import.meta.url);
 const markerContents = "Protected Compose compatibility pointer; not an app release.\n";
 const escaped = (value) => typeof value === "string" ? value.replaceAll("$", () => "$$") : Array.isArray(value) ? value.map(escaped) : value;
 
+// NewAPI's official logger skips duplicate disk output when log-dir is empty.
+// Preserve all unrelated flags; never replace the whole command in an override.
+export function stdoutCommand(command) {
+  if (!Array.isArray(command) || command.some(value => typeof value !== "string" || /[\0\r\n]/.test(value))) throw new Error("Invalid NewAPI command");
+  const result = [...command];
+  let found = false;
+  for (let index = 0; index < result.length; index++) {
+    if (result[index] === "--log-dir") {
+      if (index + 1 >= result.length || result[index + 1].startsWith("--")) throw new Error("Ambiguous log-dir command");
+      result[++index] = "";
+      found = true;
+    } else if (result[index].startsWith("--log-dir=")) {
+      result[index] = "--log-dir=";
+      found = true;
+    }
+  }
+  if (!found) result.push("--log-dir", "");
+  return result;
+}
+
 function restrictions(host, data) {
   const integer = (from, to, minimum = 0, maximum = Number.MAX_SAFE_INTEGER, includeZero = false) => {
     const value = host[from];

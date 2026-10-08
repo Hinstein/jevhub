@@ -27,6 +27,18 @@ function containers() {
   }));
 }
 describe("Store Compose runtime snapshot", () => {
+  it.each([
+    [["--port", "3100", "--log-dir", "/app/logs"], ["--port", "3100", "--log-dir", ""]],
+    [["--log-dir=/app/logs", "--port", "3100"], ["--log-dir=", "--port", "3100"]],
+    [["--port", "3100"], ["--port", "3100", "--log-dir", ""]],
+  ])("changes only diagnostic log-dir while preserving other CLI arguments", (command, expected) => {
+    expect(storeCompose.stdoutCommand(command)).toEqual(expected);
+  });
+  it("fails closed on malformed or ambiguous log-dir arguments", () => {
+    expect(() => storeCompose.stdoutCommand(["--log-dir"])).toThrow();
+    expect(() => storeCompose.stdoutCommand(["--log-dir", "--port", "3100"])).toThrow();
+    expect(() => storeCompose.stdoutCommand("--log-dir /app/logs")).toThrow();
+  });
   it("pins running images and reuses the exact Redis volume and network", () => {
     const result = snapshot(containers());
     expect(result.status, result.stderr).toBe(0);
