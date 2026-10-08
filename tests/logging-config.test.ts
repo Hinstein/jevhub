@@ -75,7 +75,7 @@ describe("local business logging configuration", () => {
     }
   });
 
-  it("keeps Docker changes explicitly pending and totals container budgets by project", () => {
+  it("keeps Docker budgets separate from recreation authority and totals them by project", () => {
     const plan = JSON.parse(read("docker-capacity-plan.json")) as {
       note: string;
       driver: string;

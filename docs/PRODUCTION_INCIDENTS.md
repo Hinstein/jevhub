@@ -188,3 +188,40 @@ installed-versus-pending status, measurements and log-loss/config rollback bound
 - BEpusdt's native logger has no size setting: two hardcoded 300 MB log families
   can exceed the ordinary-log budget. Only its journal migration is complete;
   a same-version, logging-only source rebuild still requires explicit approval.
+
+### Verified second-round outcome
+
+All six formerly unbounded containers now use compressed json-file rotation at
+5 MiB × 3 each. Existing Telegram Forwarder remains at 10 MiB × 3 without a
+redundant recreation. Original image IDs, volumes, runtime values and security/
+resource settings were checked, including the original Redis anonymous volume.
+An explicit binding of that same volume and equivalent named-volume list order
+are normalized only after exact mapping checks; different sources/modes remain
+failures. Redis's initial rollback validation failed, but subsequent fresh PING,
+HTTP and mount checks were normal; its later bounded-logging retry passed. No
+unverified cause is asserted for the initial rollback validation failure.
+
+NewAPI and X relay use existing diagnostic-path settings to stop duplicate disk
+output while retaining actual Docker/journal diagnostics. No application source
+upgrade, SQL audit deletion, backup deletion or email/transaction test occurred.
+The updated Store tool is installed outside releases from pushed SHA
+`fa7d9d14317994e3442ed3ffd44450baac96ee00`; core ops SHA/policy remain unchanged.
+Local full check passed (200 tests plus one optional integration skip), and
+the same SHA has successful hosted CI. Fresh 15:38 UTC guards/HTTP/containers
+passed; known VIP public-URL absence and intentionally disabled Arc Observer
+are not new faults. See the receipt for remaining payment-native capacity limits.
+
+Final closeout at 16:14 UTC (2026-10-09 00:14 Asia/Shanghai) repeated four guard/
+HTTP checks, nine stable service PID checks, seven container-capacity checks and
+Store snapshot validation under the global lock. Ops/logrotate timers remained
+enabled/active with successful executions. The installer removed only its own
+identity-checked maintenance marker and 11 verified temporary uploads/helpers;
+root-owned source/configuration receipts and small configuration rollback copies
+remain. No production application commit was switched and no business data or
+backup was removed. New timer samples were checked without manually executing
+Gmail, payment or backup tasks.
+The final temporary closeout helper was then removed after identity/hash/reference
+checks (12 own temporary files total). The 16:16 UTC read-only audit confirmed no
+maintenance marker, an 86-second-old fresh automatic report, healthy configured
+HTTP routes/containers/timers and zero Gmail aggregate error/job counts; only the
+previously known disabled Arc and absent VIP public-URL conditions remained.

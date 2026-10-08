@@ -1,5 +1,5 @@
 {
-  "note": "Plan only: changing existing containers requires separately approved recreation. No age TTL is provided by json-file. Do not install this as daemon.json.",
+  "note": "Budget inventory: the 2026-10-08 separately approved recreation is verified in PRODUCTION_LOG_LOCAL_SETUP.md. Future changes still require separately approved recreation. No age TTL is provided by json-file. Do not install this as daemon.json.",
   "driver": "json-file",
   "containers": [
     {

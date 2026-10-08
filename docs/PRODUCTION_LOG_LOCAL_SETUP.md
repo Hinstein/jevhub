@@ -4,8 +4,8 @@
 使用现有 systemd-journald / logrotate；没有安装集中日志平台、采集器、
 日志数据库或自定义常驻清理程序。配置源位于 `deploy/logging/`。
 
-状态：**第一轮 Web／后台任务／系统和文件轮转已实施；用户已批准第二轮逐项重启／容器重建，验收仍在进行**。
-不能把下面的完整预算表说成所有运行进程都已经迁移完毕。
+状态：**两轮日志隔离与六容器容量限制已实施并验收；仅 BEpusdt 原生文件日志的硬编码容量仍待单独授权**。
+不要把尚未触发的 backup namespace 或支付原生文件预算说成已经全部完成。
 
 ## 磁盘预算与实际生效范围
 
@@ -25,7 +25,7 @@
 | Workflow Lens | 24 MiB | Web 已验证；backup 下次执行采用新池 |
 | Caddy | 24 MiB | 已验证；未开启全量 access log |
 | Goofish Bot | 16 MiB | 第二轮已重启，真实日志进入新池，受保护公网 401 符合预期；文件轮转已生效 |
-| X Telegram relay | 16 MiB | 第二轮已重启，真实日志进入新池；重复文件输出仍待关闭 |
+| X Telegram relay | 16 MiB | 第二轮已重启，4 条真实启动日志入池；现有路径配置关闭重复文件输出 |
 | BEpusdt | 16 MiB | 第二轮已重启，真实日志进入新池，公网 200；支付文件日志容量未改 |
 | 运维巡检 | 24 MiB | 原 timer 后续执行已进入新池 |
 | Umami backup | 16 MiB | 配置已装，下次原计划执行生效；容器日志另计 |
@@ -80,21 +80,21 @@ PostgreSQL／pgBackRest 沿用既有机制的丢记录窗口没有因此消失�
 logrotate maxage 在轮转时检查：其他长期静止的旧归档不保证精确 14 天删除。
 没有清理备份、数据库、支付流水、mail/job records 或运维的状态／审计 JSON。
 
-## 容器和剩余文件日志：未完成的部分
+## 容器与剩余原生文件日志
 
 `docker-capacity-plan.json` 是预算清单，不是可直接套用的 Compose。
-用户已批准逐项重建，并逐项核对实际容量选项；尚未验收的容器不能报生效。
+用户已批准逐项重建；六个原先无限额的容器现已逐项验收实际容量选项。
 Telegram Forwarder 原有 10 MiB × 3 的限制保留不变。新限额只有重建容器
-才会生效，普通 restart 不能替代重建；不重启 Docker daemon。
+才会生效，普通 restart 不能替代重建；没有重启 Docker daemon。
 
-后续容量计划：Store 四容器合计 60 MiB，Umami 两容器合计 30 MiB，
+当前有效容量预算：Store 四容器合计 60 MiB，Umami 两容器合计 30 MiB，
 Telegram Forwarder 30 MiB，**容器合计 120 MiB**，不是各容器 120 MiB。
 json-file 不提供按天 TTL，现有方案只控制容器容量，不能报告严格 14 天过期。
 重建时必须保留固定镜像、原卷（含 Redis 匿名卷）、网络和所有资源／安全
 限制，并更新 Store root-only snapshot 与匹配检查；不修改数据卷内容。
 
 X relay 使用现有 `TWSCRAPE_RELAY_LOG_FILE=/dev/null` 配置关闭重复文件输出，
-保留 stderr → 独立 journal；正式安装前用真实 logger 函数做合成 canary。
+保留 stderr → 独立 journal；已用真实 logger 函数做合成 canary，并验证新 PID 的实际投递。
 不要给整个 logs 目录加年龄删除规则：未知文件、数据库或运行状态可能被误删。
 NewAPI 使用当前官方版本的 `--log-dir` 空值关闭重复诊断文件，只修改该参数，
 保留其余 CLI 参数；不得用静态 command override 替换整条命令。
@@ -102,7 +102,7 @@ BEpusdt 的原生 logger 仍为每类 300 MB × 6、7 天，程序没有容量�
 修改同版本源码的日志参数仍待单独授权。不要因此宣称全机日志已具备严格
 1 GiB 总硬配额或严格 14 天逐行删除。
 
-## 本轮验收及回退边界
+## 第一轮验收及回退边界（历史记录）
 
 - systemd-analyze verify、全局 logrotate dry-run 通过；原 timer 在
   19:40 Asia/Shanghai 实际执行，Result=success / ExecMainStatus=0。
@@ -134,6 +134,60 @@ BEpusdt 的原生 logger 仍为每类 300 MB × 6、7 天，程序没有容量�
 只有自己的维护标记可在全部验收后移除，不能移除其他维护者的标记。
 现有自动运维代码／policy 不因日志配置变更获得任何新增操作权限。
 
+## 第二轮验收 — 2026-10-08
+
+- 从已推送固定提交 `fa7d9d14317994e3442ed3ffd44450baac96ee00` 安装日志配置源及
+  Store 快照工具，位置在 release 外；工具 SHA256 为
+  `4880a20d8061f96db0b28ab83b14110590c1865c7537e3b59bdede78406a0f9c`。
+  原巡检 worker/core SHA `8e449b2f5bfdeabab8a5f080db5539b81e050917` 与 root policy 未变，
+  core INSTALL 中单独记录组件 SHA/hash，不冒称整个 worker 已升级。
+- VIP、Goofish、X relay、BEpusdt 逐项重启，实际 journal 投递及稳定 PID 已验证。
+  没有做消息发送或付款交易测试。X relay 应用源码、启动命令未改，旧日志 FD 为零。
+- Umami Web、DB 和 Store Adapter、PostgreSQL、Redis、NewAPI 逐项重建，原实际镜像
+  ID、数据卷、环境值、网络别名集合和资源/安全设置通过比较；其余容器不同时重建。
+  PostgreSQL readiness 与 Redis 认证 PING 通过；七个容器均 running，四个配置了
+  healthcheck 的容器均 healthy，采样时 restart count 均为 0。
+- NewAPI 仅将现有 log-dir 值改为空，未丢弃其他参数。Docker 仍有真实诊断输出，
+  原生诊断日志 FD 为零；SQL 审计/计费记录与数据卷未清理。Telegram Forwarder 已有
+  30 MiB 容量限制，因此本轮保留其配置和 PID，没有为相同配置再重建。
+- 运行门禁先后阻止 DNS 空列表表示、重复 DNS 别名、挂载列表/绑定列表顺序和
+  Redis 原匿名卷显式绑定的表示差异。先回退并核实真实运行状态，再限制等价判定范围；
+  未忽略任意网络、卷来源或权限变化。初次 Redis 回退验收失败后，只读实查确认原卷、
+  PING 和三处 HTTP 正常；未猜测该次验收失败的具体原因。随后重新验收成功。
+- 独立审查在安装前阻止了目录范围的未知文件删除与整条 NewAPI command 覆盖。
+  移除这两个配置；挂载排序/别名去重都有先失败、后通过的回归测试。
+  稳定排序安装后，连续 12 次只读快照审计全部通过。
+- 最新本地 `npm run check`：lint、typecheck、200 tests、production build 通过，
+  一个原有可选 DB integration test 跳过。[该固定提交 CI](https://github.com/Hinstein/jevhub/actions/runs/37797913863) 通过。
+  没有安装/升级依赖，没有部署应用代码或切换 current；另一轮 InboxRevamp 发布推进到
+  `4627ae53-utc-evidence-20261008`，只读 guard 和本机/公网 200 均正常，未回退它。
+- 15:38 UTC 的新只读全机审计：四项目 guard PASS，本机 HTTP 全部 200；三个已配置
+  公网主站和 Workflow/两处 analytics/Store admin/payment 均 200，Bot 为预期 401。
+  VIP 未配置公网验证、Arc Observer 按原批准停用，均不是本轮新增异常。
+  Gmail needsReauth/pendingJobs/otherConnectionErrors 均 0，没有调用任何 cron HTTP。
+- 运维及 logrotate timer 为 enabled/active，其 service Result=success/0。
+  高频 Apply timer 先取触发时间、再取 uptime，实测新鲜并 success/0，未人工触发任务。
+  root 使用率约 47%，可用约 30.2 GiB；不能将其他并行发布的容量变化归因于日志。
+- 此时 journal 合计约 117.7 MiB；各 journal cgroup MemoryCurrent 合计约 55.4 MiB，
+  含缓存的瞬时采样，不是 RSS 或永久 RAM 上限。业务池不互相挤占容量；默认池仍由
+  系统/安全/PID 1 共享。analytics backup 尚未自然触发，新池为 0B，没有为它启动备份。
+- 关闭重复写入后保留了约 4.8 MiB relay、5.5 MiB NewAPI 的旧诊断文件，未对这些目录
+  或未知文件做年龄删除；它们不再继续产生重复新日志。BEpusdt 原生文件实测约 1.3 MiB，
+  但两类硬编码的潜在总容量约 3.6 GB，仍是待授权项，不能宣称全机严格 1 GiB/14 天。
+- 收尾于 2026-10-09 00:14 Asia/Shanghai（2026-10-08 16:14 UTC）：持有全局锁重新
+  验证四项目 guard／HTTP、九服务稳定 PID、七容器原镜像及容量配置、Store 快照、
+  运维／logrotate timer 的 enabled/active 和 service success/0，然后仅移除本轮创建、
+  inode／owner／内容均匹配的维护标记。没有因采样告警人工触发后台任务。
+  root-owned `logging/INSTALL.json` 为 600，记录 13 个 journal 配置 hash、固定源提交、
+  七容器限额及未授权的支付原生容量项；未扩大原运维权限。
+- 删除本轮 11 个已核对 inode／uid／大小、无进程／服务／挂载引用的临时上传包和助手
+  （406,132 字节）。正式配置源和小型配置回退副本保留，不包含旧应用代码或日志内容；
+  不清理 shared、真实备份、数据库、数据卷或未知文件。
+- 完成后最后一个临时收尾脚本也按 inode／hash／无引用检查删除；本轮共移除 12 个
+  临时文件、416,507 字节，源代码和正式配置可追溯。00:16 的维护后只读审计确认
+  标记不存在、自动报告仅 86 秒且新鲜，guard／HTTP／七容器及全部 timer 正常，
+  Gmail aggregate 的三类计数均 0。VIP 公网未配置和已停用 Arc 仍为原已知非行动状态。
+
 ## 后续发布和排错
 
 部署应用继续遵守 PRODUCTION_OPERATIONS.md，保留上述 root-owned drop-in。
@@ -152,8 +206,8 @@ sudo systemctl show logrotate.timer -p ActiveState -p UnitFileState
 ```
 
 诊断输出仍须脱敏，不向第三方发送日志，不打印环境变量、邮箱正文或原始
-Docker 配置。第一轮配置／测试已推送 `codex/business-logging-20261008`，
-PR #7 的 14a13af 和 c29f807 均有成功 CI；本轮审查修复尚待验证、提交及安装。
+Docker 配置。配置／测试／门禁修复已推送 `codex/business-logging-20261008`，
+PR #7；固定安装提交 fa7d9d1 的完整 CI 已通过，最终验收记录沿用同一 PR 提交。
 未合并 main，不混入原有 next-env.d.ts、tsconfig.tsbuildinfo 或 social-assets/。
 
 组件语义来源：[systemd 255 执行环境](https://github.com/systemd/systemd/blob/v255/man/systemd.exec.xml)、
