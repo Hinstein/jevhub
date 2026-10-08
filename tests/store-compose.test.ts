@@ -67,6 +67,21 @@ describe("Store Compose runtime snapshot", () => {
     network.Aliases.push("different-backend");
     expect(JSON.parse(snapshot(items).stdout)).not.toEqual(original);
   });
+  it("reconstructs identical volume mappings regardless of Docker inspect mount order", () => {
+    const items = containers();
+    items[0].Mounts = [
+      { Type: "volume", Name: "new_api_data", Destination: "/data", RW: true },
+      { Type: "volume", Name: "new_api_logs", Destination: "/app/logs", RW: true },
+    ];
+    const original = snapshot(items).stdout;
+    items[0].Mounts.reverse();
+    expect(snapshot(items).stdout).toBe(original);
+    expect(JSON.parse(original).services["new-api"].volumes).toEqual([
+      "new_api_logs:/app/logs:rw", "new_api_data:/data:rw",
+    ]);
+    items[0].Mounts.find((mount) => mount.Destination === "/data")!.Name = "different_data";
+    expect(snapshot(items).stdout).not.toBe(original);
+  });
   it("fails closed for missing, duplicate or foreign containers and unsupported mounts", () => {
     expect(snapshot(containers().slice(1)).status).toBe(2);
     expect(snapshot([...containers(), containers()[0]]).status).toBe(2);

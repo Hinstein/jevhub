@@ -116,7 +116,9 @@ export function buildCompose(items) {
     if (item.Config.StopSignal) data.stop_signal = item.Config.StopSignal;
     if (item.Config.StopTimeout) data.stop_grace_period = `${item.Config.StopTimeout}s`;
     const mounts = [];
-    for (const mount of item.Mounts) {
+    // Docker inspect can return its mount map in a different order each time.
+    // Serialize stable destinations; retain every original volume/mode mapping.
+    for (const mount of [...item.Mounts].sort((a, b) => a.Destination.localeCompare(b.Destination))) {
       if (mount.Type !== "volume" || !/^[A-Za-z0-9_.-]+$/.test(mount.Name)) throw new Error("Unsupported mount; do not reconstruct blindly");
       volumes[mount.Name] = { external: true, name: mount.Name };
       mounts.push(`${mount.Name}:${mount.Destination}:${mount.RW ? "rw" : "ro"}`);

@@ -179,6 +179,12 @@ installed-versus-pending status, measurements and log-loss/config rollback bound
   custom aliases. A regression test first failed on duplicate growth and also
   checks that an actually added alias still changes the snapshot; the runtime
   gate compares unique names, not ignored networks or guessed exceptions.
+- A repeated, locked, read-only Store audit then reproduced a separate existing
+  nondeterminism: 3 of 12 checks reported only NewAPI's volume-array order changed.
+  Docker returned the same mount mappings in different orders. Reconstruction
+  now sorts by mount destination, retaining all source names and access modes.
+  A red-first regression compares byte-identical snapshots from reversed mount
+  order and ensures an actually changed volume still produces a different result.
 - BEpusdt's native logger has no size setting: two hardcoded 300 MB log families
   can exceed the ordinary-log budget. Only its journal migration is complete;
   a same-version, logging-only source rebuild still requires explicit approval.
