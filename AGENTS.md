@@ -117,6 +117,8 @@ V0.1 上线并取得真实数据后再决定。
 - 清理后再次检查文件依赖，再重启受影响的应用并验证本机/公网 HTTP；仅 `systemctl active` 不足以确认安全。
 - `tests/release-guard.test.ts` 必须保留在 `npm run check` 和现有 CI 的测试范围内，不得绕过失败的质量检查或启动检查。
 - 参照 `docs/PRODUCTION_OPERATIONS.md`；不得清理 `shared/`、环境变量、数据库、备份或未获批准的其他项目。
+- 2026-10-08 用户已批准限定自动运维：仅按 `deploy/server-ops-policy.json` 对 JevHub、InboxRevamp、Store 前端和 Jev VIP 运行经过测试的巡检、受限 Web 恢复和未被引用的旧代码 release 清理；同样必须通过 guard、最新引用检查、本机/公网 HTTP 与稳定性检查并持有项目锁。不得将此批准扩大为自动部署新代码、删除业务数据或重启数据库/支付/交易/消息服务。
+- 自动化代码必须从已推送固定 commit 安装在 release 外，配置由 root 持有；更新故障记录 `docs/PRODUCTION_INCIDENTS.md`。Google OAuth 失效只检测、去重提醒，必须由本人重新授权，禁止伪造健康状态；维护时使用 `/etc/jevhub-ops/maintenance` 暂停自动变更。保留自动运维和 release guard 的回归测试。
 
 <!-- BEGIN:nextjs-agent-rules -->
 

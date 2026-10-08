@@ -129,6 +129,141 @@ Keep the installed guard outside `releases/`; application release cleanup must
 not remove it. Never restart or reconfigure unrelated services as part of a
 JevHub deployment.
 
-These rules are not an automatic deployment, cleanup, or monitoring service.
-They do not intercept arbitrary manual file deletion. Each operator must use
-the checks and retain explicit approval for destructive actions.
+## Approved automatic operations (2026-10-08)
+
+The owner approved bounded automatic handling of recurring production issues.
+`deploy/server-ops-policy.json` is an explicit allowlist, not permission to
+change arbitrary programs. The root-owned `jevhub-ops.timer` runs the checked-in
+`scripts/server-ops.mjs` every five minutes independently of the desktop app.
+The timer does **not** deploy a new application commit or bypass quality gates.
+
+Automatic mutations are limited to:
+
+- Recover an enabled, stopped/failed Web unit for JevHub, InboxRevamp, Store
+  frontend, or Jev VIP. The release guard must pass and at least 1 GiB of disk
+  must remain. The operations worker has a 30-minute cooldown and at most two
+  recovery attempts per application per rolling 24 hours, including failures.
+  Running services with HTTP-only failures are reported, not restarted blindly.
+- Remove unused code releases for those same four project roots after the
+  approved current-only retention policy passes all checks. Cleanup needs two
+  observations of the same release/PID/restart count, at least two minutes of
+  process uptime, local/public HTTP success, a fresh `cleanup-plan`, and a fresh
+  check for process cwd/argv/mapped files/open files, systemd configuration and
+  loaded units, Docker references, and cross-release symlinks before **each**
+  deletion. Releases younger than one hour or with an unfinished `RELEASE.json`
+  are skipped. Cleanup normally runs at most once per six hours, or sooner when
+  disk use is at least 85%. Re-run the guard, restart only the cleaned Web
+  application, and verify local/public HTTP and stable PID/restart count.
+- Restore exactly two legacy Store Compose pointers, but only when the
+  root-only persistent Compose snapshot still matches the live four containers.
+  This operation never runs `docker compose up/down`, restarts a database, or
+  changes an image, credential, network or volume.
+
+The remaining units, containers and public websites are read-only checks.
+Successful idle oneshots are normal; `bot.jevhub.store` is expected to return
+401. Historic cumulative restart counts are not treated as current failures.
+Gmail metrics and an aggregate **read-only** `NEEDS_REAUTH` count distinguish
+expired/revoked authorization from sync/label failures. The timer cannot
+reauthorize Google, fake a connection status, send mail, or reset health data.
+
+Protected data: `shared/`, real environment files, databases, backups, uploads,
+logs/runtime-data directories, Arc observer observations, OrdoFi run history,
+Docker volumes/images, and all other projects. Code cleanup is irreversible;
+the action log records every removed release. It is not a general disk vacuum.
+
+### Deployment/maintenance coordination
+
+All deployment and cleanup operators must hold the **same** project lock:
+
+```bash
+sudo flock -n /run/lock/jevhub-release.lock COMMAND
+sudo flock -n /run/lock/jev-email-release.lock COMMAND
+sudo flock -n /run/lock/jev-store-new-api-release.lock COMMAND
+sudo flock -n /run/lock/jev-vip-release.lock COMMAND
+```
+
+Hold the lock for the complete install/check/switch/HTTP-validation transaction.
+The timer skips a busy project. Locks do not intercept an arbitrary manual
+`rm`; bypassing the deployment runbook remains unsafe.
+
+Before intentional stops or broader maintenance, pause automatic mutations:
+
+```bash
+sudo touch /etc/jevhub-ops/maintenance
+# Perform the approved maintenance, then validate the affected services.
+sudo unlink /etc/jevhub-ops/maintenance
+```
+
+Read-only health reporting continues during maintenance. Do not disable startup
+guards or set a cleanup/recovery flag on a new project without owner approval.
+
+### Installed paths and verification
+
+Operations code is installed from a **pushed fixed commit**, outside app releases:
+
+```text
+/usr/local/lib/jevhub-ops/{release-guard,server-ops,server-ops-policy,store-compose}.mjs
+/etc/jevhub-ops/policy.json
+/etc/jevhub-ops/jev-mvp/compose.json         # root:root 600; contains credentials
+/var/lib/jevhub-ops/latest.json             # safe current health report
+/var/lib/jevhub-ops/{jevhub,inboxrevamp,store,vip}.json
+/var/lib/jevhub-ops/incidents.jsonl          # meaningful changes, deduplicated
+/var/lib/jevhub-ops/actions.jsonl            # per-release cleanup audit
+```
+
+Incident/action logs rotate at 5 MiB, retaining one prior log. No environment
+values, mailbox content, refresh tokens, user input or raw Docker inspection
+output are written to these reports. Review safe status with:
+
+```bash
+sudo systemctl list-timers jevhub-ops.timer
+sudo systemctl show jevhub-ops.service -p Result -p ExecMainStatus
+sudo /usr/local/bin/node /usr/local/lib/jevhub-ops/server-ops.mjs audit
+sudo journalctl -u jevhub-ops.service -n 10 --no-pager
+```
+
+`audit` is read-only; `run` is the approved bounded worker. A Codex thread
+heartbeat follows the safe report for meaningful changes requiring notification;
+the server timer keeps running even if the desktop app is closed. Unchanged
+pending OAuth authorization must not generate repetitive reminders.
+
+### InboxRevamp release layout
+
+Use `/home/ubuntu/jev-email/current`, one canonical `inboxrevamp.service`, and a
+startup guard; do not append ever-longer `zzzz-release-*.conf` overrides. Archive
+retired service configuration outside `/etc/systemd/system`, preserving a
+recoverable copy, before cleaning the referenced unused code releases.
+The root-only shared environment file remains `600`; systemd reads it. A build
+runner may read it as root and pass needed values **in memory** to the Ubuntu
+build user, never as command-line arguments or printed shell exports.
+
+On this 3.7 GiB server, an unconstrained TypeScript check hit Node's default
+heap ceiling. Use a resource-limited build scope and verify host memory/swap
+headroom before increasing a heap limit. Do not skip a typecheck or remove the
+running release to make a build fit. A failed build leaves production unchanged.
+
+### Store persistent backend configuration
+
+`scripts/store-compose.mjs install` captures the live, fixed four-container
+configuration to the root-only persistent file and validates it with Compose.
+It pins existing image IDs (`pull_policy: never`) and uses the exact external
+network and data volumes, **including the existing anonymous Redis volume**.
+Credentials are stored only in this protected server configuration, never Git.
+Legacy labels for releases `4e286dd` and `26857b6` resolve through tiny protected
+compatibility pointers; these are configuration directories, not deployable
+Next.js releases and must not be cleaned.
+
+Inspect without mutating containers:
+
+```bash
+sudo /usr/local/bin/node /usr/local/lib/jevhub-ops/store-compose.mjs audit
+sudo docker compose -p jev-mvp -f /etc/jevhub-ops/jev-mvp/compose.json config --quiet
+```
+
+Do not print `config` without `--quiet`, because the configuration contains
+credentials. Do not use `down -v`, remove the active images, change image tags,
+or run a backend upgrade as part of frontend release cleanup. A later approved
+backend upgrade must explicitly preserve volumes and update this snapshot.
+
+See [incident registry](PRODUCTION_INCIDENTS.md) for reproduced failures,
+root causes, verification and the boundary of each automatic remedy.
