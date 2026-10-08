@@ -113,7 +113,9 @@ sudo systemctl daemon-reload
 Verify the loaded command with `systemctl show jevhub.service -p ExecStartPre`.
 Run the guard as the service user (`ubuntu`) too, to catch permission problems.
 Installing this drop-in does not restart the service. The other projects can
-use the read-only guard without changing their systemd configuration.
+use the read-only guard without changing their systemd configuration. The
+2026-10-08 approved rollout also installed startup gates on Store frontend
+and VIP; InboxRevamp's canonical gate awaits its independent-release repair.
 
 ## Keeping the policy in effect
 
@@ -240,6 +242,28 @@ sudo journalctl -u jevhub-ops.service -n 10 --no-pager
 heartbeat follows the safe report for meaningful changes requiring notification;
 the server timer keeps running even if the desktop app is closed. Unchanged
 pending OAuth authorization must not generate repetitive reminders.
+
+The installed hourly heartbeat is `生产服务器异常跟进`. It only reads the safe
+report, service/timer results and recent incident/action metadata. A missing
+report, one older than 15 minutes, or a disabled/failed monitor is a fault, not
+permission to reuse stale health results or execute arbitrary recovery. It
+deduplicates known blockers, detects meaningful recovery and flags disk pressure
+worsening below 1 GiB free or to 98% used. The notification heartbeat requires
+the local computer and app to be running; see the [official scheduled-task
+documentation](https://learn.chatgpt.com/docs/automations?surface=app).
+Server-side checks and approved recovery do not depend on that desktop heartbeat.
+
+Store's two tiny Compose compatibility directories are intentionally retained.
+Their `cleanup-blocked` skip entries (`recent-release` initially, later
+`protected-runtime-data-or-configuration`) are expected protection, not a failed
+Web service. Never remove their markers to make a cleanup plan appear clear.
+
+Activation was from fixed SHA `8e449b2f5bfdeabab8a5f080db5539b81e050917` after
+maintenance-mode systemd verification, with source hashes and activation metadata
+in root-owned `/etc/jevhub-ops/INSTALL.json`. JevHub, Store and VIP have the
+bounded failure-restart drop-in (`10s` retry, at most three starts in five
+minutes); their PIDs did not change during configuration installation. Worker
+recovery budgets still apply independently. No new application code was deployed.
 
 ### InboxRevamp release layout
 
