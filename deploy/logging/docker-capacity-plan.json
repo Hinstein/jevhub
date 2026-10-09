@@ -1,0 +1,48 @@
+{
+  "note": "Budget inventory: the 2026-10-08 separately approved recreation is verified in PRODUCTION_LOG_LOCAL_SETUP.md. Future changes still require separately approved recreation. No age TTL is provided by json-file. Do not install this as daemon.json.",
+  "driver": "json-file",
+  "containers": [
+    {
+      "name": "jev-mvp-new-api-1",
+      "project": "store",
+      "maxSizeMiB": 5,
+      "maxFiles": 3
+    },
+    {
+      "name": "jev-mvp-jev-adapter-1",
+      "project": "store",
+      "maxSizeMiB": 5,
+      "maxFiles": 3
+    },
+    {
+      "name": "jev-mvp-new-api-postgres-1",
+      "project": "store",
+      "maxSizeMiB": 5,
+      "maxFiles": 3
+    },
+    {
+      "name": "jev-mvp-new-api-redis-1",
+      "project": "store",
+      "maxSizeMiB": 5,
+      "maxFiles": 3
+    },
+    {
+      "name": "umami-umami-1",
+      "project": "analytics",
+      "maxSizeMiB": 5,
+      "maxFiles": 3
+    },
+    {
+      "name": "umami-db-1",
+      "project": "analytics",
+      "maxSizeMiB": 5,
+      "maxFiles": 3
+    },
+    {
+      "name": "telegram-forwarder",
+      "project": "telegram-forwarder",
+      "maxSizeMiB": 10,
+      "maxFiles": 3
+    }
+  ]
+}

@@ -92,3 +92,176 @@ No release, environment file, database, backup or business data was removed in
 this rollout. Record any later automatic removals from the per-release action
 log. Do not clear the InboxRevamp dependency or disk-pressure incidents merely
 because the monitoring service is healthy.
+
+## Owner-approved historical data removal — 2026-10-08
+
+At 17:26 Asia/Shanghai, the owner separately authorized one-time deletion of
+Arc Observer observations and Ordo historical experimental runs. This exception
+does not expand the automatic operations policy: future observations/run data
+remain protected without new authorization.
+
+- Rechecked stopped producers, the disabled/inactive Arc unit, process
+  cwd/argv/maps/open-file references, target filesystem boundaries, and all
+  Docker container mounts. No active producer or data mount was found.
+- Held the global ops lock plus the two data-cleanup locks. Checked directory
+  and regular-file identities again before deletion; rejected symlinks,
+  cross-filesystem entries, protected filenames, and multiple hardlinks.
+- Removed 122 `observations.ndjson*` files from `/var/lib/arc-arb-observer`
+  (6,386,429,952 allocated bytes). Preserved its 4 KiB `status.json` and directory.
+- Removed 18 historical JSON/NDJSON run files from
+  `/home/ubuntu/ordofi-b2/data/runs` (5,462,761,472 allocated bytes). Preserved
+  its empty directories, code/releases, other data such as audits, and config.
+- Intent and completion are recorded under journal tag
+  `jevhub-manual-cleanup`; 140 files deleted, 11,849,191,424 bytes (about
+  11.0 GiB) freed. No backup/archive was created; the deleted files cannot be
+  recovered from a backup made by this operation.
+- Root usage decreased from 71% to 51%, with about 27.7 GiB available. The nine
+  checked application/proxy/bot PIDs remained unchanged; no service was restarted.
+  JevHub, InboxRevamp, Store, and VIP local HTTP returned 200; the three configured
+  public main sites returned 200. VIP public verification remains unconfigured.
+- Databases, WAL/backups, environment files, payment/message state, and the
+  existing installed ops code/policy were not changed. Logging retention was
+  only inventoried and proposed in `PRODUCTION_LOG_RETENTION_PLAN.md`, not applied.
+
+## Owner-approved local logging — 2026-10-08
+
+The owner later approved business-isolated local logging and declined a Web UI.
+See [implementation receipt](PRODUCTION_LOG_LOCAL_SETUP.md) for exact budgets,
+installed-versus-pending status, measurements and log-loss/config rollback bounds.
+
+- Installed ordinary journal limits totalling 488 MiB across all configured
+  pools, 14-day maximum retention targets and small file rotation granularity.
+  Main Web/task/ops pools are active; some service mappings await an approved
+  restart. Capacity/rotation may retain less than 14 days.
+- Preserved plain task stdout/stderr at notice while filtering routine info-level
+  PID 1 lifecycle noise. A synthetic success/failure canary proved visibility;
+  real Gmail timers/frequency and successful task outcomes were unchanged.
+- Existing logrotate checks hourly; actual 19:40 run succeeded. Standard rotation
+  reduced the old syslog/journal footprint, without deleting DB/WAL/backups or
+  changing OAuth, business records or container volumes. Deleted historical
+  logs have no backup made by this operation; only old small configs are saved.
+- Five Web services were migrated one at a time, preserving current code and
+  checking guard where applicable, local/public HTTP and stable PID. No DB,
+  Bot, payment, VIP or container restart. A concurrent InboxRevamp release was
+  respected, not reverted or attributed to this logging change.
+- All seven containers remain running; six still lack log capacity options.
+  Container recreation and remaining native-file age/capacity controls are
+  not complete. Do not report a strict full-server 1 GiB/14-day guarantee.
+- Added seven local logging config tests; full local check passed (184 tests,
+  one optional integration skip). No application code or ops worker upgrade
+  was deployed by the first logging rollout. Config/docs/tests were subsequently
+  pushed on `codex/business-logging-20261008` / PR #7, not merged into main.
+
+### Second-round review and runtime gates
+
+- The owner approved sequential service/container restarts, preserving each
+  application's version, databases, data volumes and configuration. VIP,
+  Goofish, X relay and BEpusdt namespace migrations passed stable-PID and actual
+  journal-delivery checks; the protected Bot URL returned its expected 401.
+  Payment transaction/message delivery was not exercised by these checks.
+- An independent review found two unsafe proposed configurations before their
+  installation: a whole-directory relay archive expiry rule could remove unknown
+  files, and a static NewAPI command override could discard unrelated CLI flags.
+  Removed both; use the relay's existing diagnostic path override and a tested
+  argument-preserving NewAPI helper instead. No unknown relay files were deleted.
+- Umami recreation stopped on a runtime-invariant difference and restored its
+  original Compose file. The DB remained ready and public HTTP returned 200.
+  The DB's reproduced difference was only three absent DNS override lists
+  represented as `[]` versus `null`. A synthetic canary verifies normalization
+  is restricted to these absent lists; actual DNS overrides and unrelated host
+  differences still fail closed. Retry requires fresh runtime/HTTP verification.
+  The first Umami Web mismatch was not reproduced and is not assigned a guessed
+  root cause; its verified retry preserved the live parameters and fixed image.
+- Store Adapter recreation also failed its initial network invariant and rolled
+  back; runtime HTTP stayed healthy. Fresh inspection reproduced only duplicate
+  aliases: the same two DNS names appeared four times, with no changed alias set
+  or network. Snapshot reconstruction now deduplicates names while preserving
+  custom aliases. A regression test first failed on duplicate growth and also
+  checks that an actually added alias still changes the snapshot; the runtime
+  gate compares unique names, not ignored networks or guessed exceptions.
+- A repeated, locked, read-only Store audit then reproduced a separate existing
+  nondeterminism: 3 of 12 checks reported only NewAPI's volume-array order changed.
+  Docker returned the same mount mappings in different orders. Reconstruction
+  now sorts by mount destination, retaining all source names and access modes.
+  A red-first regression compares byte-identical snapshots from reversed mount
+  order and ensures an actually changed volume still produces a different result.
+- BEpusdt's native logger has no size setting: two hardcoded 300 MB log families
+  can exceed the ordinary-log budget. Only its journal migration is complete;
+  on 2026-10-09 the owner declined a native-logger rebuild and accepted this
+  exception. It is closed, not a pending authorization request. Do not rebuild,
+  add cleanup rules or repeatedly request approval. A strict fleet-wide 1 GiB
+  limit still cannot be claimed; normal disk-pressure reporting remains enabled.
+
+### Verified second-round outcome
+
+All six formerly unbounded containers now use compressed json-file rotation at
+5 MiB × 3 each. Existing Telegram Forwarder remains at 10 MiB × 3 without a
+redundant recreation. Original image IDs, volumes, runtime values and security/
+resource settings were checked, including the original Redis anonymous volume.
+An explicit binding of that same volume and equivalent named-volume list order
+are normalized only after exact mapping checks; different sources/modes remain
+failures. Redis's initial rollback validation failed, but subsequent fresh PING,
+HTTP and mount checks were normal; its later bounded-logging retry passed. No
+unverified cause is asserted for the initial rollback validation failure.
+
+NewAPI and X relay use existing diagnostic-path settings to stop duplicate disk
+output while retaining actual Docker/journal diagnostics. No application source
+upgrade, SQL audit deletion, backup deletion or email/transaction test occurred.
+The updated Store tool is installed outside releases from pushed SHA
+`fa7d9d14317994e3442ed3ffd44450baac96ee00`; core ops SHA/policy remain unchanged.
+Local full check passed (200 tests plus one optional integration skip), and
+the same SHA has successful hosted CI. Fresh 15:38 UTC guards/HTTP/containers
+passed; known VIP public-URL absence and intentionally disabled Arc Observer
+are not new faults. See the receipt for remaining payment-native capacity limits.
+
+Final closeout at 16:14 UTC (2026-10-09 00:14 Asia/Shanghai) repeated four guard/
+HTTP checks, nine stable service PID checks, seven container-capacity checks and
+Store snapshot validation under the global lock. Ops/logrotate timers remained
+enabled/active with successful executions. The installer removed only its own
+identity-checked maintenance marker and 11 verified temporary uploads/helpers;
+root-owned source/configuration receipts and small configuration rollback copies
+remain. No production application commit was switched and no business data or
+backup was removed. New timer samples were checked without manually executing
+Gmail, payment or backup tasks.
+The final temporary closeout helper was then removed after identity/hash/reference
+checks (12 own temporary files total). The 16:16 UTC read-only audit confirmed no
+maintenance marker, an 86-second-old fresh automatic report, healthy configured
+HTTP routes/containers/timers and zero Gmail aggregate error/job counts; only the
+previously known disabled Arc and absent VIP public-URL conditions remained.
+
+### Review closeout — 2026-10-09
+
+The second-round configuration-equivalence gate and DNS synthetic check had
+remained only in a one-time maintenance helper. Archive the reusable read-only
+gate in `scripts/container-runtime-guard.mjs` and its executable fixture tests in
+`tests/container-runtime-guard.test.ts`, included by the existing full quality
+gate. It never runs Docker or mutates files/services. It permits only scoped
+representation differences (absent DNS lists, exact named-volume ordering,
+the selected original anonymous Redis volume) and rejects real image, network,
+source/mode, secret, command, resource or security changes. The selected target
+must have exact compressed json-file 5m x 3 rotation; only Store NewAPI may
+explicitly opt into the existing argument-preserving stdout-only helper.
+Protected input snapshots never enter Git, logs or CI; output contains only
+fixed difference categories and ordinal container indexes.
+
+InboxRevamp's namespace is persisted in its root-owned canonical service file,
+not in the optional logging drop-in. Both on-disk and loaded values were checked
+as `inbox-web`; this is equivalent placement, not a restart-persistence failure.
+Do not overwrite that unit merely to obtain byte-identical template placement.
+The BEpusdt native capacity exception above is accepted, while capacity/TTL
+claims retain their documented limits. No business code deployment, container
+recreation, timer trigger, data cleanup or service restart belongs to this
+source-archival closeout.
+
+Before pushing, two-axis review reproduced three gaps in the initial new gate:
+effective/unknown top-level fields were omitted, sorting duplicate environment
+names could hide precedence changes, and Redis equivalence was incorrectly
+bidirectional. CLI regressions failed on each before fixes. Retain effective
+Path/Args/AppArmor and unknown outer/State/GraphDriver fields, reject duplicate
+environment names and require Redis's exact explicit binding after the selected
+transition. Generated engine metadata exclusions are narrow and do not erase
+unknown fields. Follow-up Standards/Spec review found no remaining actionable
+findings. The clean, locked-dependency Node22 check at 03:15 UTC passed lint,
+typecheck, 240 tests (40 container-gate tests), production build, with the one
+existing optional database integration test skipped. No unreviewed version of
+the new comparator was pushed or installed on the production server.

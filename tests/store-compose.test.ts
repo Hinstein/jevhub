@@ -27,6 +27,18 @@ function containers() {
   }));
 }
 describe("Store Compose runtime snapshot", () => {
+  it.each([
+    [["--port", "3100", "--log-dir", "/app/logs"], ["--port", "3100", "--log-dir", ""]],
+    [["--log-dir=/app/logs", "--port", "3100"], ["--log-dir=", "--port", "3100"]],
+    [["--port", "3100"], ["--port", "3100", "--log-dir", ""]],
+  ])("changes only diagnostic log-dir while preserving other CLI arguments", (command, expected) => {
+    expect(storeCompose.stdoutCommand(command)).toEqual(expected);
+  });
+  it("fails closed on malformed or ambiguous log-dir arguments", () => {
+    expect(() => storeCompose.stdoutCommand(["--log-dir"])).toThrow();
+    expect(() => storeCompose.stdoutCommand(["--log-dir", "--port", "3100"])).toThrow();
+    expect(() => storeCompose.stdoutCommand("--log-dir /app/logs")).toThrow();
+  });
   it("pins running images and reuses the exact Redis volume and network", () => {
     const result = snapshot(containers());
     expect(result.status, result.stderr).toBe(0);
@@ -40,6 +52,35 @@ describe("Store Compose runtime snapshot", () => {
     expect(data.services["new-api-redis"].volumes).toEqual(["existing_anonymous_redis_volume:/data:rw"]);
     expect(data.services["new-api"].environment.PASSWORD).toBe("fixture-secret");
     expect(data.services["new-api"].command).toEqual(["run", "--password", "fixture-secret"]);
+  });
+  it("deduplicates repeated Compose DNS aliases without discarding custom aliases", () => {
+    const items = containers();
+    const network = items[1].NetworkSettings.Networks["jev-mvp_jev-backend"];
+    network.Aliases.push("custom-backend");
+    const original = JSON.parse(snapshot(items).stdout);
+    network.Aliases.push(...network.Aliases);
+    const rebuilt = JSON.parse(snapshot(items).stdout);
+    expect(rebuilt).toEqual(original);
+    expect(rebuilt.services["jev-adapter"].networks.backend.aliases).toEqual([
+      "jev-mvp-jev-adapter-1", "jev-adapter", "custom-backend",
+    ]);
+    network.Aliases.push("different-backend");
+    expect(JSON.parse(snapshot(items).stdout)).not.toEqual(original);
+  });
+  it("reconstructs identical volume mappings regardless of Docker inspect mount order", () => {
+    const items = containers();
+    items[0].Mounts = [
+      { Type: "volume", Name: "new_api_data", Destination: "/data", RW: true },
+      { Type: "volume", Name: "new_api_logs", Destination: "/app/logs", RW: true },
+    ];
+    const original = snapshot(items).stdout;
+    items[0].Mounts.reverse();
+    expect(snapshot(items).stdout).toBe(original);
+    expect(JSON.parse(original).services["new-api"].volumes).toEqual([
+      "new_api_logs:/app/logs:rw", "new_api_data:/data:rw",
+    ]);
+    items[0].Mounts.find((mount) => mount.Destination === "/data")!.Name = "different_data";
+    expect(snapshot(items).stdout).not.toBe(original);
   });
   it("fails closed for missing, duplicate or foreign containers and unsupported mounts", () => {
     expect(snapshot(containers().slice(1)).status).toBe(2);
@@ -63,6 +104,38 @@ describe("Store Compose runtime snapshot", () => {
     expect(snapshot(stopped).status).toBe(2);
     const noPid = containers(); noPid[0].State.Pid = 0;
     expect(snapshot(noPid).status).toBe(2);
+  });
+  it("preserves bounded logging options without changing pinned images, volumes or other settings", () => {
+    const items = containers();
+    items[0].HostConfig.LogConfig = { Type: "json-file", Config: { "compress": "true", "max-file": "3", "max-size": "5m" } };
+    const original = JSON.parse(snapshot(containers()).stdout);
+    const changed = JSON.parse(snapshot(items).stdout);
+    expect(changed.services["new-api"].logging).toEqual({ driver: "json-file", options: { "compress": "true", "max-file": "3", "max-size": "5m" } });
+    delete changed.services["new-api"].logging;
+    expect(changed).toEqual(original);
+  });
+  it("keeps existing unbounded default-json snapshots compatible", () => {
+    const items = containers();
+    for (const item of items) item.HostConfig.LogConfig = { Type: "json-file", Config: {} };
+    expect(snapshot(items).stdout).toBe(snapshot(containers()).stdout);
+  });
+  it("includes log-option drift in snapshot equality and escapes Compose interpolation", () => {
+    const items = containers();
+    items[0].HostConfig.LogConfig = { Type: "syslog", Config: { tag: "fixture-$service" } };
+    const before = snapshot(items);
+    expect(JSON.parse(before.stdout).services["new-api"].logging.options.tag).toBe("fixture-$$service");
+    items[0].HostConfig.LogConfig = { Type: "syslog", Config: { tag: "changed" } };
+    expect(snapshot(items).stdout).not.toBe(before.stdout);
+  });
+  it.each([
+    { Type: "json-file", Config: { "max-file": 3 } },
+    { Type: "json-file", Config: null },
+    { Type: "json-file", Config: { tag: "bad\nvalue" } },
+    { Type: "json-file", Config: { "bad key": "value" } },
+    { Type: "bad/driver", Config: {} },
+  ])("rejects malformed logging settings rather than discarding them", (logging) => {
+    const items = containers(); items[0].HostConfig.LogConfig = logging;
+    expect(snapshot(items).status).toBe(2);
   });
   it("keeps default resource and security fields omitted for the installed snapshot", () => {
     const omitted = containers();

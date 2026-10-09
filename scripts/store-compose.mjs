@@ -11,6 +11,26 @@ const script = fileURLToPath(import.meta.url);
 const markerContents = "Protected Compose compatibility pointer; not an app release.\n";
 const escaped = (value) => typeof value === "string" ? value.replaceAll("$", () => "$$") : Array.isArray(value) ? value.map(escaped) : value;
 
+// NewAPI's official logger skips duplicate disk output when log-dir is empty.
+// Preserve all unrelated flags; never replace the whole command in an override.
+export function stdoutCommand(command) {
+  if (!Array.isArray(command) || command.some(value => typeof value !== "string" || /[\0\r\n]/.test(value))) throw new Error("Invalid NewAPI command");
+  const result = [...command];
+  let found = false;
+  for (let index = 0; index < result.length; index++) {
+    if (result[index] === "--log-dir") {
+      if (index + 1 >= result.length || result[index + 1].startsWith("--")) throw new Error("Ambiguous log-dir command");
+      result[++index] = "";
+      found = true;
+    } else if (result[index].startsWith("--log-dir=")) {
+      result[index] = "--log-dir=";
+      found = true;
+    }
+  }
+  if (!found) result.push("--log-dir", "");
+  return result;
+}
+
 function restrictions(host, data) {
   const integer = (from, to, minimum = 0, maximum = Number.MAX_SAFE_INTEGER, includeZero = false) => {
     const value = host[from];
@@ -74,15 +94,31 @@ export function buildCompose(items) {
       image: item.Image, pull_policy: "never", container_name: item.Name.replace(/^\//, ""),
       restart: item.HostConfig.RestartPolicy.Name, environment,
       command: escaped(item.Config.Cmd), entrypoint: escaped(item.Config.Entrypoint),
-      networks: { backend: { aliases: item.NetworkSettings.Networks["jev-mvp_jev-backend"].Aliases ?? [service] } },
+      networks: { backend: { aliases: [...new Set(item.NetworkSettings.Networks["jev-mvp_jev-backend"].Aliases ?? [service])] } },
     };
     restrictions(item.HostConfig, data);
+    const logging = item.HostConfig.LogConfig;
+    if (logging != null) {
+      if (!logging || typeof logging !== "object" || Array.isArray(logging) ||
+          typeof logging.Type !== "string" || !/^[a-z][a-z0-9-]*$/.test(logging.Type) ||
+          !logging.Config || typeof logging.Config !== "object" || Array.isArray(logging.Config) ||
+          Object.entries(logging.Config).some(([key, value]) => !/^[a-z][a-z0-9.-]*$/.test(key) || typeof value !== "string" || /[\0\r\n]/.test(value))) {
+        throw new Error("Unsupported runtime logging configuration");
+      }
+      // Keep old default-json snapshots compatible, but never discard actual
+      // rotation settings or a non-default driver during runtime reconstruction.
+      if (logging.Type !== "json-file" || Object.keys(logging.Config).length) {
+        data.logging = { driver: logging.Type, options: Object.fromEntries(Object.entries(logging.Config).map(([key, value]) => [key, escaped(value)])) };
+      }
+    }
     if (item.Config.WorkingDir) data.working_dir = item.Config.WorkingDir;
     if (item.Config.User) data.user = item.Config.User;
     if (item.Config.StopSignal) data.stop_signal = item.Config.StopSignal;
     if (item.Config.StopTimeout) data.stop_grace_period = `${item.Config.StopTimeout}s`;
     const mounts = [];
-    for (const mount of item.Mounts) {
+    // Docker inspect can return its mount map in a different order each time.
+    // Serialize stable destinations; retain every original volume/mode mapping.
+    for (const mount of [...item.Mounts].sort((a, b) => a.Destination.localeCompare(b.Destination))) {
       if (mount.Type !== "volume" || !/^[A-Za-z0-9_.-]+$/.test(mount.Name)) throw new Error("Unsupported mount; do not reconstruct blindly");
       volumes[mount.Name] = { external: true, name: mount.Name };
       mounts.push(`${mount.Name}:${mount.Destination}:${mount.RW ? "rw" : "ro"}`);

@@ -305,3 +305,34 @@ backend upgrade must explicitly preserve volumes and update this snapshot.
 
 See [incident registry](PRODUCTION_INCIDENTS.md) for reproduced failures,
 root causes, verification and the boundary of each automatic remedy.
+
+## Local business logging (2026-10-08)
+
+The owner chose existing local components and declined a Web log UI. Preserve
+the root-owned logging drop-ins and namespace configurations independently of
+code releases. See [the rollout, budgets and pending work](PRODUCTION_LOG_LOCAL_SETUP.md).
+Source configurations are in `deploy/logging/`, with regression coverage in
+`tests/logging-config.test.ts`. Existing processes need an approved restart to
+enter a namespace; `LogNamespace` alone is not evidence of actual log delivery.
+
+Use `journalctl --namespace=ops -u jevhub-ops.service` for new worker output,
+and `--namespace='*'` when old/default and new business records are both needed.
+PID 1 management messages remain in the default pool. Safe health JSON and
+incident/action paths are unchanged; existing timer/Result checks still apply.
+
+`logrotate.timer` now checks hourly. Never delete or truncate Docker-managed
+logs externally. The owner explicitly approved a second, sequential maintenance
+round: hold global/project locks, preserve the running image/volumes/security
+and resource settings, recreate only the selected container, then check runtime
+invariants, health, HTTP and stability before the next one. Without this manual
+authority the capacity plan alone never authorizes a DB/payment/message restart.
+The Docker budget is capacity-only, not an age TTL or strict fleet-wide quota.
+Old code release cleanup must continue to protect logs/runtime data; this
+logging approval does not expand the operations worker's deletion allowlist.
+
+Use the relay's existing diagnostic file-path override to keep stderr in its
+business journal and suppress duplicate file output. Do not age arbitrary files
+under its logs directory. NewAPI's empty log-dir must preserve unrelated command
+flags; the tested `stdoutCommand()` helper changes only the diagnostic option.
+Install updated snapshot tooling from a pushed fixed commit outside releases,
+record its component SHA/hash, and retain the existing worker/policy authority.
