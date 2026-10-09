@@ -48,7 +48,9 @@ function redisBinding(before, after, target) {
       !same({ ...mount, Mode: "rw" }, { ...next, Mode: "rw" })) return null;
   const binding = `${mount.Name}:/data:rw`;
   const allowed = value => value === null || (Array.isArray(value) && (value.length === 0 || same(value, [binding])));
-  return allowed(before.HostConfig.Binds) && allowed(after.HostConfig.Binds) ? binding : null;
+  // Directional: introducing/retaining this explicit binding is safe; removing
+  // it can make the next recreation allocate a different anonymous volume.
+  return allowed(before.HostConfig.Binds) && same(after.HostConfig.Binds, [binding]) ? binding : null;
 }
 
 function invariant(item, { target, stdout, redis }) {
@@ -63,6 +65,13 @@ function invariant(item, { target, stdout, redis }) {
   }
   if (config.Env) {
     if (!Array.isArray(config.Env) || config.Env.some(value => typeof value !== "string")) invalid();
+    const names = new Set();
+    for (const entry of config.Env) {
+      const separator = entry.indexOf("=");
+      const name = entry.slice(0, separator);
+      if (separator < 1 || names.has(name)) invalid();
+      names.add(name);
+    }
     config.Env.sort();
   }
   if (stdout) config.Cmd = stdoutCommand(config.Cmd);
@@ -86,7 +95,33 @@ function invariant(item, { target, stdout, redis }) {
     }
     if (target) for (const key of ["EndpointID", "IPAddress", "GlobalIPv6Address", "MacAddress"]) delete network[key];
   }
-  return { image: item.Image, config, host, mounts, networks };
+  // Retain everything outside the named sections too: effective Path/Args,
+  // AppArmor, labels, future engine fields and non-endpoint network settings.
+  const extra = structuredClone(item);
+  for (const key of ["Image", "Config", "HostConfig", "Mounts"]) delete extra[key];
+  delete extra.NetworkSettings.Networks;
+  // Healthcheck execution transcripts and size counters change during ordinary
+  // operation; health status and every unclassified field remain strict.
+  for (const key of ["ExecIDs", "SizeRw", "SizeRootFs"]) delete extra[key];
+  if (extra.State.Health) delete extra.State.Health.Log;
+  if (stdout && Array.isArray(extra.Args)) extra.Args = stdoutCommand(extra.Args);
+  if (target) {
+    for (const key of ["Id", "Created"]) delete extra[key];
+    for (const key of ["Pid", "StartedAt", "FinishedAt"]) delete extra.State[key];
+    for (const key of ["SandboxID", "SandboxKey", "EndpointID", "IPAddress", "GlobalIPv6Address", "MacAddress"]) delete extra.NetworkSettings[key];
+    // Recreated writable-layer paths are engine metadata, not storage mounts.
+    // Preserve driver name and all unknown graph-driver fields.
+    if (object(extra.GraphDriver?.Data)) {
+      for (const key of ["LowerDir", "UpperDir", "MergedDir", "WorkDir"]) delete extra.GraphDriver.Data[key];
+    }
+    for (const [key, suffix] of [["ResolvConfPath", "resolv.conf"], ["HostnamePath", "hostname"], ["HostsPath", "hosts"], ["LogPath", `${item.Id}-json.log`]]) {
+      const value = extra[key];
+      if (typeof value !== "string") continue;
+      const ending = `/containers/${item.Id}/${suffix}`;
+      if (value.endsWith(ending)) extra[key] = `${value.slice(0, -ending.length)}/containers/<automatic-id>/${key}`;
+    }
+  }
+  return { image: item.Image, config, host, mounts, networks, extra };
 }
 
 export function compareRuntime(beforeItems, afterItems, { target = null, newapiStdout = false } = {}) {

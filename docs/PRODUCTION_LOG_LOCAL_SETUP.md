@@ -203,13 +203,15 @@ PR/main CI 自动执行。它不运行 Docker、不写文件、不重建或重�
 比较规则限定为：
 
 - 实际固定 image ID、环境值、启动参数、用户、健康配置、资源与安全限制保持不变；
-  无关容器的 ID/PID/restart count 必须不变。未知配置字段保持严格比较。
+  同时比较有效 `Path/Args`、`AppArmorProfile` 和外层网络属性，不只比较 Config。
+  环境变量名必须唯一，不能靠排序抹掉重复变量的优先级；无关容器的 ID/PID/
+  restart count 必须不变。未知配置字段保持严格比较。
 - 仅 `Dns` / `DnsOptions` / `DnsSearch` 的 `null` 与空数组视为等价；真实覆盖值不忽略。
 - 原网络 ID、自定义别名和网络配置保持不变；去重同名别名，目标容器的自动
   ID/hostname、endpoint/动态地址和两类 Compose 生成收据允许变化。
 - 挂载顺序不影响比较；仅与有效卷精确匹配的简单 named-volume 绑定可排序。
   Redis 例外只允许选定 `jev-mvp/new-api-redis` 原有单一匿名卷 `/data:rw`
-  变为显式绑定；卷名、来源、driver、权限和 propagation 均不能改变。
+  变为或保留显式绑定，禁止反向移除；卷名、来源、driver、权限和 propagation 均不能改变。
 - 只有显式选择的目标容器允许变更日志设置，变更后必须精确为压缩 `json-file`
   `5m × 3`；可选 `--newapi-stdout` 只允许 Store NewAPI 的 log-dir 变为空，
   不丢弃其他命令参数。没有该开关则所有参数严格不变。
@@ -227,6 +229,9 @@ node scripts/container-runtime-guard.mjs /root/approved-maintenance/before.json 
 通过/失败、容器数量和差异类别，不包含环境值、命令、路径或容器名；失败退出 2。
 权限不合格、symlink、格式错误、不健康容器、缺失容器或未知开关均失败，不绕过。
 合成快照测试同时验证可接受表示差异和真正配置变化，未在生产创建 canary 容器。
+目标重建的 engine ID/时间戳、自动容器文件路径、已知 writable-layer 路径与网络
+endpoint 允许变化；routine healthcheck transcript/大小计数不参与配置比较。
+其余未知顶层、State、GraphDriver 和网络字段保留，不因 metadata 类别而全量忽略。
 
 日志配置／工具／测试／脱敏实施记录统一保存在 JevHub 运维分支，并不是复制到
 每个业务仓库。运行日志、原始 Docker 快照、root 收据和凭据只留服务器，不进 Git。
@@ -248,6 +253,13 @@ production build（107 个生成页面），原有可选 DB integration test 跳
 success/0，全局 logrotate dry-run 通过。Inbox Web 的 on-disk/loaded namespace
 均为 `inbox-web`。root 使用率 48%，可用约 29.9 GiB；VIP 公网未配置与已停用
 Arc 均为原已知非行动状态。本轮只做源码归档与只读验收，不部署、重启或清理。
+
+推送前双轴审查用合成输入复现了三处遗漏：有效/未知顶层字段未比较、重复 Env
+排序可能掩盖有效值变化、Redis 等价处理不应接受移除显式绑定。逐项先写失败 CLI
+用例再修正；原审查者复核 Standards 与 Spec 均无剩余 actionable findings。
+最终 11:15 的同一干净、锁文件依赖副本重跑完整 `npm run check` 通过：lint、
+typecheck、**240 tests（含 40 项容器门禁用例）**、production build，原有可选
+数据库集成测试跳过 1 项。未把初版 232 测试结果冒称为修正后的最终结果。
 
 ## 后续发布和排错
 

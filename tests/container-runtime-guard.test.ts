@@ -13,6 +13,7 @@ const sentinel = "synthetic-secret-not-for-output";
 function container(service = "new-api") {
   return {
     Id: originalId, Name: `/jev-mvp-${service}-1`, Image: `sha256:${"3".repeat(64)}`,
+    Path: "entry", Args: ["run", "--port", "3000", "--log-dir", "/app/logs"], AppArmorProfile: "docker-default",
     State: { Running: true, Restarting: false, Pid: 123, OOMKilled: false },
     Config: {
       Image: "original-image-tag", Hostname: originalId.slice(0, 12),
@@ -96,6 +97,14 @@ describe("read-only container runtime equivalence gate", () => {
     expect(check(before, after).status).toBe(2);
   });
 
+  it("fails closed on duplicate environment names instead of sorting their effective precedence", () => {
+    const before = [container()];
+    before[0].Config.Env = ["MODE=first", "MODE=second"];
+    const after = structuredClone(before);
+    after[0].Config.Env.reverse();
+    expect(check(before, after).status).toBe(2);
+  });
+
   it("deduplicates aliases but rejects real network identity or alias changes", () => {
     const before = [container()];
     const after = structuredClone(before);
@@ -144,10 +153,12 @@ describe("read-only container runtime equivalence gate", () => {
     const before = [container()];
     const after = structuredClone(before);
     after[0].Config.Cmd = ["run", "--port", "3000", "--log-dir", ""];
+    after[0].Args = [...after[0].Config.Cmd];
     after[0].HostConfig.LogConfig = boundedLogging;
     const options = ["--target", before[0].Name, "--newapi-stdout"];
     expect(check(before, after, options).status).toBe(0);
     after[0].Config.Cmd[2] = "8080";
+    after[0].Args[2] = "8080";
     expect(check(before, after, options).status).toBe(2);
     expect(check(before, after, ["--target", before[0].Name]).status).toBe(2);
   });
@@ -171,6 +182,17 @@ describe("read-only container runtime equivalence gate", () => {
     after[0].HostConfig.LogConfig = boundedLogging;
     expect(check(before, after, ["--target", before[0].Name]).status).toBe(0);
     after[0].HostConfig.Binds = ["different-volume:/data:rw"];
+    expect(check(before, after, ["--target", before[0].Name]).status).toBe(2);
+  });
+
+  it("never permits removing Redis's persistent explicit binding even when current mounts survive", () => {
+    const before = [container("new-api-redis")];
+    before[0].HostConfig.Binds = [`${volume}:/data:rw`];
+    before[0].Mounts[0].Mode = "rw";
+    const after = structuredClone(before);
+    after[0].HostConfig.LogConfig = boundedLogging;
+    expect(check(before, after, ["--target", before[0].Name]).status).toBe(0);
+    after[0].HostConfig.Binds = [];
     expect(check(before, after, ["--target", before[0].Name]).status).toBe(2);
   });
 
@@ -227,6 +249,30 @@ describe("read-only container runtime equivalence gate", () => {
     const after = structuredClone(before);
     after[0].HostConfig.FutureRestriction = "changed";
     expect(check(before, after).status).toBe(2);
+  });
+
+  it.each(["Path", "Args", "AppArmorProfile", "FutureConfiguration", "FutureNetworkRestriction"])("rejects effective or unknown runtime changes in %s", (field) => {
+    const before = [container()];
+    const after = structuredClone(before);
+    if (field === "FutureNetworkRestriction") Object.assign(after[0].NetworkSettings, { [field]: "changed" });
+    else Object.assign(after[0], { [field]: field === "Args" ? ["different-command"] : "changed" });
+    after[0].HostConfig.LogConfig = boundedLogging;
+    expect(check(before, after, ["--target", before[0].Name]).status).toBe(2);
+  });
+
+  it("retains unknown state and graph-driver fields while allowing only routine healthcheck transcripts", () => {
+    const before = [container()];
+    Object.assign(before[0], { GraphDriver: { Name: "overlay2", Data: { UnknownRestriction: "retain" } } });
+    Object.assign(before[0].State, { Health: { Status: "healthy", FailingStreak: 0, Log: [{ Output: "initial", ExitCode: 0 }] } });
+    const after = structuredClone(before);
+    Object.assign(after[0].State, { Health: { Status: "healthy", FailingStreak: 0, Log: [{ Output: "next-check", ExitCode: 0 }] } });
+    expect(check(before, after).status).toBe(0);
+    Object.assign(after[0].State, { FutureSecurityRestriction: "changed" });
+    expect(check(before, after).status).toBe(2);
+    const graphChanged = structuredClone(before);
+    Object.assign(graphChanged[0], { GraphDriver: { Name: "overlay2", Data: { UnknownRestriction: "changed" } } });
+    graphChanged[0].HostConfig.LogConfig = boundedLogging;
+    expect(check(before, graphChanged, ["--target", before[0].Name]).status).toBe(2);
   });
 
   it("rejects stopped or OOM containers, duplicates, removals and unknown targets", () => {

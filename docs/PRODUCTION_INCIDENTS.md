@@ -252,3 +252,16 @@ The BEpusdt native capacity exception above is accepted, while capacity/TTL
 claims retain their documented limits. No business code deployment, container
 recreation, timer trigger, data cleanup or service restart belongs to this
 source-archival closeout.
+
+Before pushing, two-axis review reproduced three gaps in the initial new gate:
+effective/unknown top-level fields were omitted, sorting duplicate environment
+names could hide precedence changes, and Redis equivalence was incorrectly
+bidirectional. CLI regressions failed on each before fixes. Retain effective
+Path/Args/AppArmor and unknown outer/State/GraphDriver fields, reject duplicate
+environment names and require Redis's exact explicit binding after the selected
+transition. Generated engine metadata exclusions are narrow and do not erase
+unknown fields. Follow-up Standards/Spec review found no remaining actionable
+findings. The clean, locked-dependency Node22 check at 03:15 UTC passed lint,
+typecheck, 240 tests (40 container-gate tests), production build, with the one
+existing optional database integration test skipped. No unreviewed version of
+the new comparator was pushed or installed on the production server.
