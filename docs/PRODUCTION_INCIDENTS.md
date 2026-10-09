@@ -187,7 +187,10 @@ installed-versus-pending status, measurements and log-loss/config rollback bound
   order and ensures an actually changed volume still produces a different result.
 - BEpusdt's native logger has no size setting: two hardcoded 300 MB log families
   can exceed the ordinary-log budget. Only its journal migration is complete;
-  a same-version, logging-only source rebuild still requires explicit approval.
+  on 2026-10-09 the owner declined a native-logger rebuild and accepted this
+  exception. It is closed, not a pending authorization request. Do not rebuild,
+  add cleanup rules or repeatedly request approval. A strict fleet-wide 1 GiB
+  limit still cannot be claimed; normal disk-pressure reporting remains enabled.
 
 ### Verified second-round outcome
 
@@ -225,3 +228,27 @@ checks (12 own temporary files total). The 16:16 UTC read-only audit confirmed n
 maintenance marker, an 86-second-old fresh automatic report, healthy configured
 HTTP routes/containers/timers and zero Gmail aggregate error/job counts; only the
 previously known disabled Arc and absent VIP public-URL conditions remained.
+
+### Review closeout — 2026-10-09
+
+The second-round configuration-equivalence gate and DNS synthetic check had
+remained only in a one-time maintenance helper. Archive the reusable read-only
+gate in `scripts/container-runtime-guard.mjs` and its executable fixture tests in
+`tests/container-runtime-guard.test.ts`, included by the existing full quality
+gate. It never runs Docker or mutates files/services. It permits only scoped
+representation differences (absent DNS lists, exact named-volume ordering,
+the selected original anonymous Redis volume) and rejects real image, network,
+source/mode, secret, command, resource or security changes. The selected target
+must have exact compressed json-file 5m x 3 rotation; only Store NewAPI may
+explicitly opt into the existing argument-preserving stdout-only helper.
+Protected input snapshots never enter Git, logs or CI; output contains only
+fixed difference categories and ordinal container indexes.
+
+InboxRevamp's namespace is persisted in its root-owned canonical service file,
+not in the optional logging drop-in. Both on-disk and loaded values were checked
+as `inbox-web`; this is equivalent placement, not a restart-persistence failure.
+Do not overwrite that unit merely to obtain byte-identical template placement.
+The BEpusdt native capacity exception above is accepted, while capacity/TTL
+claims retain their documented limits. No business code deployment, container
+recreation, timer trigger, data cleanup or service restart belongs to this
+source-archival closeout.

@@ -6,7 +6,7 @@ Status: historical initial shared-pool proposal. The owner has since requested
 business-isolated retention instead; see [current tooling research and recommendation](PRODUCTION_LOG_SERVICES_RESEARCH.md).
 The shared-pool design below is not the current implementation decision.
 This historical shared-pool proposal was not applied. For the later approved,
-partially installed business-isolated configuration, see
+installed business-isolated configuration and accepted native-logger exception, see
 [local logging rollout](PRODUCTION_LOG_LOCAL_SETUP.md).
 
 ## Recommended decision

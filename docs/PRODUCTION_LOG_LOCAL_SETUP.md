@@ -4,8 +4,9 @@
 使用现有 systemd-journald / logrotate；没有安装集中日志平台、采集器、
 日志数据库或自定义常驻清理程序。配置源位于 `deploy/logging/`。
 
-状态：**两轮日志隔离与六容器容量限制已实施并验收；仅 BEpusdt 原生文件日志的硬编码容量仍待单独授权**。
-不要把尚未触发的 backup namespace 或支付原生文件预算说成已经全部完成。
+状态：**两轮日志隔离与六容器容量限制已实施并验收；BEpusdt 原生文件日志容量为用户已接受的例外，不再处理**。
+2026-10-09 用户明确决定不修改该原生 logger；这不是待授权任务。
+不要把静默 backup namespace 或支付原生文件预算说成具备已验证的严格容量上限。
 
 ## 磁盘预算与实际生效范围
 
@@ -98,9 +99,10 @@ X relay 使用现有 `TWSCRAPE_RELAY_LOG_FILE=/dev/null` 配置关闭重复文�
 不要给整个 logs 目录加年龄删除规则：未知文件、数据库或运行状态可能被误删。
 NewAPI 使用当前官方版本的 `--log-dir` 空值关闭重复诊断文件，只修改该参数，
 保留其余 CLI 参数；不得用静态 command override 替换整条命令。
-BEpusdt 的原生 logger 仍为每类 300 MB × 6、7 天，程序没有容量配置项，
-修改同版本源码的日志参数仍待单独授权。不要因此宣称全机日志已具备严格
-1 GiB 总硬配额或严格 14 天逐行删除。
+BEpusdt 的原生 logger 仍为每类 300 MB × 6、7 天，程序没有容量配置项。
+2026-10-09 用户明确接受该例外，不修改源码、不重建、不增加文件清理规则，
+也不继续催促授权。不要因此宣称全机日志已具备严格 1 GiB 总硬配额或
+严格 14 天逐行删除；真实磁盘压力仍按现有阈值报告。
 
 ## 第一轮验收及回退边界（历史记录）
 
@@ -173,13 +175,15 @@ BEpusdt 的原生 logger 仍为每类 300 MB × 6、7 天，程序没有容量�
   系统/安全/PID 1 共享。analytics backup 尚未自然触发，新池为 0B，没有为它启动备份。
 - 关闭重复写入后保留了约 4.8 MiB relay、5.5 MiB NewAPI 的旧诊断文件，未对这些目录
   或未知文件做年龄删除；它们不再继续产生重复新日志。BEpusdt 原生文件实测约 1.3 MiB，
-  但两类硬编码的潜在总容量约 3.6 GB，仍是待授权项，不能宣称全机严格 1 GiB/14 天。
+  两类硬编码的潜在总容量约 3.6 GB；当时尚未获准修改，2026-10-09 用户决定保留
+  为已接受例外，不再处理。不能宣称全机严格 1 GiB/14 天。
 - 收尾于 2026-10-09 00:14 Asia/Shanghai（2026-10-08 16:14 UTC）：持有全局锁重新
   验证四项目 guard／HTTP、九服务稳定 PID、七容器原镜像及容量配置、Store 快照、
   运维／logrotate timer 的 enabled/active 和 service success/0，然后仅移除本轮创建、
   inode／owner／内容均匹配的维护标记。没有因采样告警人工触发后台任务。
   root-owned `logging/INSTALL.json` 为 600，记录 13 个 journal 配置 hash、固定源提交、
-  七容器限额及未授权的支付原生容量项；未扩大原运维权限。
+  七容器限额及当时未获修改授权的支付原生容量项；该历史收据不等于待办授权请求，
+  现状按上面的已接受例外处理。未扩大原运维权限。
 - 删除本轮 11 个已核对 inode／uid／大小、无进程／服务／挂载引用的临时上传包和助手
   （406,132 字节）。正式配置源和小型配置回退副本保留，不包含旧应用代码或日志内容；
   不清理 shared、真实备份、数据库、数据卷或未知文件。
@@ -188,9 +192,67 @@ BEpusdt 的原生 logger 仍为每类 300 MB × 6、7 天，程序没有容量�
   标记不存在、自动报告仅 86 秒且新鲜，guard／HTTP／七容器及全部 timer 正常，
   Gmail aggregate 的三类计数均 0。VIP 公网未配置和已停用 Arc 仍为原已知非行动状态。
 
+## 收尾校验工具与已接受例外 — 2026-10-09
+
+审查发现完整容器等价比较器和 DNS 合成验证仅存于一次性维护助手，未随配置源
+入库。现在将可复用的**只读**比较器保存为 `scripts/container-runtime-guard.mjs`，
+回归用例保存为 `tests/container-runtime-guard.test.ts`，由现有 `npm run check` 和
+PR/main CI 自动执行。它不运行 Docker、不写文件、不重建或重启任何容器，
+不替代维护锁、授权、ready、HTTP、稳定 PID 检查或失败回退。
+
+比较规则限定为：
+
+- 实际固定 image ID、环境值、启动参数、用户、健康配置、资源与安全限制保持不变；
+  无关容器的 ID/PID/restart count 必须不变。未知配置字段保持严格比较。
+- 仅 `Dns` / `DnsOptions` / `DnsSearch` 的 `null` 与空数组视为等价；真实覆盖值不忽略。
+- 原网络 ID、自定义别名和网络配置保持不变；去重同名别名，目标容器的自动
+  ID/hostname、endpoint/动态地址和两类 Compose 生成收据允许变化。
+- 挂载顺序不影响比较；仅与有效卷精确匹配的简单 named-volume 绑定可排序。
+  Redis 例外只允许选定 `jev-mvp/new-api-redis` 原有单一匿名卷 `/data:rw`
+  变为显式绑定；卷名、来源、driver、权限和 propagation 均不能改变。
+- 只有显式选择的目标容器允许变更日志设置，变更后必须精确为压缩 `json-file`
+  `5m × 3`；可选 `--newapi-stdout` 只允许 Store NewAPI 的 log-dir 变为空，
+  不丢弃其他命令参数。没有该开关则所有参数严格不变。
+
+在**另外获准的**手工维护中，先持有项目锁并捕获完整 before/after inspect 到
+同一操作者持有、权限 600 的常规文件；不能把原始 inspect 打印到聊天、上传 CI
+或提交 Git。以下仅比较已捕获的文件，不执行维护：
+
+```bash
+node scripts/container-runtime-guard.mjs /root/approved-maintenance/before.json /root/approved-maintenance/after.json \
+  --target /jev-mvp-new-api-1 --newapi-stdout
+```
+
+不传 `--target` 时只验证无日志策略、镜像引用或进程变更的运行等价性。输出仅含
+通过/失败、容器数量和差异类别，不包含环境值、命令、路径或容器名；失败退出 2。
+权限不合格、symlink、格式错误、不健康容器、缺失容器或未知开关均失败，不绕过。
+合成快照测试同时验证可接受表示差异和真正配置变化，未在生产创建 canary 容器。
+
+日志配置／工具／测试／脱敏实施记录统一保存在 JevHub 运维分支，并不是复制到
+每个业务仓库。运行日志、原始 Docker 快照、root 收据和凭据只留服务器，不进 Git。
+InboxRevamp 的 `LogNamespace=inbox-web` 现由 root 持有的主 service 文件持久化；
+无需为逐字匹配模板重加 drop-in。后续发布同时核验磁盘配置、loaded 属性和实际
+投递，不因 drop-in 位置不同错误覆盖另一发布流程的主配置。
+
+收尾验证（2026-10-09 11:07–11:08 Asia/Shanghai）：从固定 HEAD 导出的干净副本
+仅叠加本轮工具、测试与运维文档，排除原工作区页面修改；按锁文件 `npm ci`，
+使用 Node 22 / Next 16.3.6，完整 `npm run check` 通过：lint、typecheck、232 tests、
+production build（107 个生成页面），原有可选 DB integration test 跳过 1 项。
+现有工作区 `node_modules` 实际为 Next 16.2.6，因此未复用它作为锁文件验收结果。
+初次沙箱构建因本机端口权限失败，按原质量命令在正常权限下重跑成功，没有
+改构建脚本、放宽测试或升级锁文件。Vite 的已有配置加载兼容提示仍存在。
+
+11:08 的 SSH 只读验收：自动报告仅 105 秒，四项目 guard 通过，所有已配置
+本机／公网检查通过（Bot 为预期 401），七容器均 running、无 OOM/restart，
+无 failed 服务；Gmail 三类聚合计数为 0，运维／轮转／四类 Gmail timer 新鲜且
+success/0，全局 logrotate dry-run 通过。Inbox Web 的 on-disk/loaded namespace
+均为 `inbox-web`。root 使用率 48%，可用约 29.9 GiB；VIP 公网未配置与已停用
+Arc 均为原已知非行动状态。本轮只做源码归档与只读验收，不部署、重启或清理。
+
 ## 后续发布和排错
 
-部署应用继续遵守 PRODUCTION_OPERATIONS.md，保留上述 root-owned drop-in。
+部署应用继续遵守 PRODUCTION_OPERATIONS.md，保留上述 root-owned 日志映射
+（drop-in 或已核实的主 service 指令）。
 检查 LogNamespace 属性后，还应确认新进程的实际日志进入目标池；只改配置
 或 daemon-reload 不会搬走已经启动的 stdout 连接。不要为迁移日志手工执行
 邮件／支付／备份任务。正常 scheduled tasks 在原 timer 的下一次执行采用新配置。
