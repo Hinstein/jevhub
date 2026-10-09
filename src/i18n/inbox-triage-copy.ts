@@ -46,6 +46,15 @@ export type InboxTriageCopy = {
   learnBody: string;
   playgroundLink: string;
   templateLink: string;
+  fullApp: {
+    heroLink: string;
+    eyebrow: string;
+    title: string;
+    description: string;
+    steps: { title: string; description: string }[];
+    button: string;
+    note: string;
+  };
   queues: Record<InboxQueue, { title: string; description: string }>;
   types: Record<MessageType, string>;
 };
@@ -95,6 +104,20 @@ const en: InboxTriageCopy = {
   learnBody: "Inspect Jev's typed judgments in the Playground or start from a support routing template.",
   playgroundLink: "Open Playground",
   templateLink: "See support routing",
+  fullApp: {
+    heroLink: "Full Gmail experience: InboxRevamp",
+    eyebrow: "From demo to daily use",
+    title: "Put Jev to work in your real inbox",
+    description: "InboxRevamp is a Gmail organizer built with Jev. Review a label plan for your inbox, approve the changes, and keep incoming mail sorted in Gmail.",
+    steps: [
+      { title: "Check", description: "Connect Gmail and check your existing labels." },
+      { title: "Review", description: "Review and adjust a plan for your inbox." },
+      { title: "Organize", description: "Approve the plan before changes are applied." },
+      { title: "Maintain", description: "Sort new mail into your approved labels." },
+    ],
+    button: "Try InboxRevamp",
+    note: "Opens inboxrevamp.com in a new tab. Sign up and connect Gmail there to use the full service.",
+  },
   queues: {
     needs_reply: { title: "Needs reply", description: "A direct response appears to be requested." },
     review: { title: "Review", description: "Urgent, uncertain, or suspicious: check this yourself." },
@@ -118,22 +141,78 @@ export const INBOX_TRIAGE_COPY: Record<Locale, InboxTriageCopy> = {
     resultTitle: "建议队列", resultDescription: "这些只是供你检查的建议。我们不会移动、删除或发送任何邮件。", loading: "Jev 正在整理…", error: "请求未能完成。", retry: "重试", details: "查看判断信号", typeLabel: "邮件类型", replyLabel: "直接回复请求", timeLabel: "时间紧迫度", typeConfidence: "类型判断置信度", timeConfidence: "时间判断置信度", noReply: "这里只建议邮件分类，不会代你撰写或发送回复。",
     howTitle: "如何分类", howBody: "Jev 对每封邮件回答三个固定问题：类型（Choice）、是否明确要求直接回复（Noul）和文本里的时间要求（Score）。JevHub 再按公开规则建议队列。可疑或不确定的邮件进入“需检查”。",
     limitTitle: "试玩范围", limitBody: "不会读取 Gmail、打开链接、发送回复、删除邮件或判断发件人一定安全。采取行动前请自行核实。", learnTitle: "构建自己的判断流程", learnBody: "可以在 Playground 查看 Jev 的结构化判断，或参考客服路由模板。", playgroundLink: "打开 Playground", templateLink: "查看客服路由",
+    fullApp: {
+      heroLink: "完整 Gmail 体验：InboxRevamp",
+      eyebrow: "从试玩到日常使用",
+      title: "把 Jev 用到你的真实邮箱",
+      description: "InboxRevamp 是基于 Jev 构建的 Gmail 邮件整理工具。查看适合你邮箱的标签方案，确认后应用，并让新邮件持续按这套标签分类，直接在 Gmail 中使用。",
+      steps: [
+        { title: "检查邮箱", description: "连接 Gmail，检查现有标签。" },
+        { title: "审阅方案", description: "查看并调整适合你的整理方案。" },
+        { title: "确认整理", description: "经你确认后，再应用标签变更。" },
+        { title: "持续分类", description: "新邮件按你确认的标签自动分类。" },
+      ],
+      button: "体验 InboxRevamp",
+      note: "将在新标签页打开 inboxrevamp.com。完整体验需在该站注册并授权 Gmail。",
+    },
     queues: { needs_reply: { title: "待回复", description: "看起来需要直接回复。" }, review: { title: "需检查", description: "紧急、不确定或可疑，请亲自核实。" }, read_later: { title: "稍后阅读", description: "没有明确的直接回复或立即行动要求。" } },
     types: { conversation: "对话", account_update: "账户通知", newsletter: "简报", promotion: "促销", sales_outreach: "销售邀约", suspected_junk: "可疑或垃圾邮件", other: "其他" },
   },
   ja: {
     ...en,
+    fullApp: {
+      heroLink: "Gmail の本格的な整理：InboxRevamp",
+      eyebrow: "デモから日常の利用へ",
+      title: "実際の受信箱で Jev を活用する",
+      description: "InboxRevamp は Jev を使った Gmail 整理ツールです。受信箱に合ったラベルの整理案を確認し、承認後に適用。新着メールも同じラベルで分類し、Gmail でそのまま使えます。",
+      steps: [
+        { title: "チェック", description: "Gmail に接続して既存のラベルを確認。" },
+        { title: "確認", description: "受信箱の整理案を確認・調整。" },
+        { title: "整理", description: "承認してからラベルの変更を適用。" },
+        { title: "維持", description: "新着メールを承認済みのラベルに分類。" },
+      ],
+      button: "InboxRevamp を試す",
+      note: "inboxrevamp.com を新しいタブで開きます。利用には同サイトでの登録と Gmail へのアクセス許可が必要です。",
+    },
     previewButton: "サンプルの仕分けを見る", previewNotice: "JevHub が事前に作成した例です。Jev は呼び出されておらず、確信度も表示しません。", liveUnavailable: "このサーバーでは Jev のキーが設定されていません。サンプルは閲覧できます。自分のメールを試すにはサーバー側の TypeSafe API Key が必要です。", liveChecking: "Jev の利用状況を確認中…",
     title: "Jev メール仕分け", description: "6 件のサンプルメールを返信・確認・後で読むに仕分けます。自分のメールも 1 件試せます。登録や Gmail 接続は不要です。", eyebrow: "実用アプリ · メール仕分け", meta: ["サンプル 6 件", "サンプルまたは Jev", "受信箱との接続不要"], demoStep: "01 / サンプル", customStep: "02 / 自分のメール", inboxCount: "メール / 06", liveResultLabel: "JEV / 結果", previewResultLabel: "サンプル / プレビュー",
     sampleTitle: "サンプル受信箱から試す", sampleBody: "以下は架空のメールです。事前に用意した例を確認できます。サービスが利用可能なら Jev による仕分けも試せます。", sampleButton: "サンプルを仕分ける", samplesLabel: "サンプルメール", customTitle: "自分のメールを試す", customBody: "送信者、件名、本文をテキストで貼り付けてください。1 件 3,000 文字まで。", customButton: "このメールを仕分ける", customOpen: "自分のメールを試す", customClose: "入力を閉じる", privacy: "入力内容は、このリクエストのため JevHub と TypeSafe AI に送信されます。パスワード、決済情報、機密情報を入力しないでください。JevHub はメールを保存せず、受信箱にも接続しません。", resultTitle: "推奨キュー", resultDescription: "提案は必ず確認してください。メールの移動、削除、送信は行いません。", loading: "Jev が仕分け中…", error: "処理を完了できませんでした。", retry: "再試行", details: "判断の根拠を見る", typeLabel: "メールの種類", replyLabel: "直接の返信要求", timeLabel: "緊急度", typeConfidence: "種類の確信度", timeConfidence: "緊急度の確信度", noReply: "この機能はメールを分類するだけです。返信文の作成や送信は行いません。", howTitle: "仕組み", howBody: "Jev は各メールについて Choice、Noul、Score の固定された 3 問に回答します。JevHub がその結果をキューに振り分けます。不審または不確実なメールは確認へ送ります。", limitTitle: "このデモの範囲", limitBody: "Gmail の読み取り、リンクの表示、返信、削除、安全性の保証は行いません。", learnTitle: "独自の判断フローを作る", learnBody: "Playground で型付き判断を確認し、サポート振り分け例から始められます。", playgroundLink: "Playground を開く", templateLink: "サポート振り分けを見る", queues: { needs_reply: { title: "返信", description: "直接の返答が必要そうです。" }, review: { title: "確認", description: "緊急、不確実、または不審です。" }, read_later: { title: "後で読む", description: "明確な返信や即時対応は不要です。" } }, types: { conversation: "会話", account_update: "アカウント通知", newsletter: "ニュースレター", promotion: "宣伝", sales_outreach: "営業", suspected_junk: "不審なメール", other: "その他" },
   },
   fr: {
     ...en,
+    fullApp: {
+      heroLink: "L’expérience Gmail complète : InboxRevamp",
+      eyebrow: "De la démo au quotidien",
+      title: "Utilisez Jev dans votre vraie boîte mail",
+      description: "InboxRevamp est un outil d’organisation Gmail basé sur Jev. Vérifiez un plan de libellés adapté à votre boîte mail, approuvez les changements et gardez les nouveaux messages classés directement dans Gmail.",
+      steps: [
+        { title: "Vérifier", description: "Connectez Gmail et vérifiez vos libellés." },
+        { title: "Examiner", description: "Examinez et ajustez le plan proposé." },
+        { title: "Organiser", description: "Approuvez le plan avant son application." },
+        { title: "Maintenir", description: "Classez les nouveaux e-mails avec vos libellés approuvés." },
+      ],
+      button: "Essayer InboxRevamp",
+      note: "Ouvre inboxrevamp.com dans un nouvel onglet. Inscrivez-vous et autorisez l’accès à Gmail sur ce site pour utiliser le service complet.",
+    },
     previewButton: "Voir le tri d’exemple", previewNotice: "Exemple préparé par JevHub. Jev n’a pas été appelé et aucun score de confiance n’est affiché.", liveUnavailable: "Jev n’est pas configuré sur ce serveur. Vous pouvez voir l’exemple. Pour essayer votre e-mail, le site doit configurer une clé TypeSafe côté serveur.", liveChecking: "Vérification du service Jev…",
     title: "Tri des e-mails avec Jev", description: "Classez six e-mails fictifs entre Répondre, Vérifier et Lire plus tard. Essayez ensuite un message personnel, sans compte ni connexion Gmail.", eyebrow: "Application réelle · Tri des e-mails", meta: ["Six exemples", "Exemple ou Jev", "Sans connexion à la boîte mail"], demoStep: "01 / EXEMPLE", customStep: "02 / VOTRE E-MAIL", inboxCount: "E-MAILS / 06", liveResultLabel: "JEV / RÉSULTAT", previewResultLabel: "EXEMPLE / APERÇU", sampleTitle: "Commencer par des exemples", sampleBody: "Ces six messages sont fictifs. Consultez le tri préparé, ou lancez Jev si le service est disponible.", sampleButton: "Trier les exemples", samplesLabel: "Exemples d’e-mails", customTitle: "Essayer votre message", customBody: "Collez expéditeur, objet et corps en texte brut. Un message de 3 000 caractères maximum.", customButton: "Trier ce message", customOpen: "Essayer mon e-mail", customClose: "Fermer la saisie", privacy: "Votre texte est envoyé à JevHub et TypeSafe AI pour cette demande. Ne collez ni mot de passe, ni donnée de paiement, ni information sensible. JevHub ne conserve pas le message et ne se connecte pas à votre boîte mail.", resultTitle: "Files suggérées", resultDescription: "Vérifiez chaque suggestion. Aucun e-mail n’est déplacé, supprimé ou envoyé.", loading: "Jev classe les messages…", error: "La demande n’a pas abouti.", retry: "Réessayer", details: "Voir les signaux", typeLabel: "Type de message", replyLabel: "Réponse directe demandée", timeLabel: "Urgence", typeConfidence: "Confiance du type", timeConfidence: "Confiance de l’urgence", noReply: "Cet outil classe les e-mails ; il ne rédige ni n’envoie de réponse à votre place.", howTitle: "Comment fonctionne le tri", howBody: "Jev répond à trois questions fixes par e-mail : type (Choice), réponse directe (Noul) et urgence explicite (Score). JevHub applique des règles visibles. Les messages suspects ou incertains passent en Vérifier.", limitTitle: "Limites de l’essai", limitBody: "Pas d’accès Gmail, de lien ouvert, de réponse, de suppression ou de garantie de sécurité de l’expéditeur.", learnTitle: "Créer votre propre flux", learnBody: "Explorez les décisions typées dans Playground ou partez d’un exemple de routage du support.", playgroundLink: "Ouvrir Playground", templateLink: "Voir le routage du support", queues: { needs_reply: { title: "Répondre", description: "Une réponse directe semble demandée." }, review: { title: "Vérifier", description: "Urgent, incertain ou suspect : vérifiez vous-même." }, read_later: { title: "Lire plus tard", description: "Pas de réponse directe clairement nécessaire." } }, types: { conversation: "Conversation", account_update: "Notification de compte", newsletter: "Newsletter", promotion: "Promotion", sales_outreach: "Prospection", suspected_junk: "Suspect ou indésirable", other: "Autre" },
   },
   pl: {
     ...en,
+    fullApp: {
+      heroLink: "Pełna obsługa Gmaila: InboxRevamp",
+      eyebrow: "Od demonstracji do codziennego użytku",
+      title: "Korzystaj z Jev w swojej skrzynce",
+      description: "InboxRevamp to narzędzie do porządkowania Gmaila oparte na Jev. Przejrzyj plan etykiet dopasowany do swojej skrzynki, zatwierdź zmiany i porządkuj nowe wiadomości bezpośrednio w Gmailu.",
+      steps: [
+        { title: "Sprawdź", description: "Połącz Gmaila i sprawdź obecne etykiety." },
+        { title: "Przejrzyj", description: "Przejrzyj i dostosuj proponowany plan." },
+        { title: "Uporządkuj", description: "Zatwierdź plan przed zastosowaniem zmian." },
+        { title: "Utrzymuj", description: "Klasyfikuj nową pocztę według zatwierdzonych etykiet." },
+      ],
+      button: "Wypróbuj InboxRevamp",
+      note: "Otwiera inboxrevamp.com w nowej karcie. Pełna usługa wymaga rejestracji i udzielenia dostępu do Gmaila na tej stronie.",
+    },
     previewButton: "Zobacz przykładowe sortowanie", previewNotice: "Przykład przygotowany przez JevHub. Jev nie został wywołany; nie pokazujemy fikcyjnych poziomów pewności.", liveUnavailable: "Na tym serwerze nie skonfigurowano klucza Jev. Możesz obejrzeć przykład. Własna wiadomość wymaga klucza TypeSafe po stronie serwera.", liveChecking: "Sprawdzanie dostępności Jev…",
     title: "Sortowanie poczty z Jev", description: "Podziel sześć przykładowych e-maili na odpowiedź, sprawdzenie i później. Następnie wypróbuj jedną własną wiadomość bez rejestracji i łączenia Gmaila.", eyebrow: "Prawdziwa aplikacja · Sortowanie poczty", meta: ["Sześć przykładów", "Przykład lub Jev", "Bez połączenia ze skrzynką"], demoStep: "01 / PRZYKŁAD", customStep: "02 / TWÓJ E-MAIL", inboxCount: "POCZTA / 06", liveResultLabel: "JEV / WYNIK", previewResultLabel: "PRZYKŁAD / PODGLĄD", sampleTitle: "Zacznij od przykładów", sampleBody: "Sześć wiadomości jest fikcyjnych. Obejrzyj przygotowany przykład lub uruchom Jev, jeśli usługa jest dostępna.", sampleButton: "Posortuj przykłady", samplesLabel: "Przykładowe wiadomości", customTitle: "Wypróbuj własną wiadomość", customBody: "Wklej nadawcę, temat i treść jako zwykły tekst. Jedna wiadomość do 3000 znaków.", customButton: "Posortuj wiadomość", customOpen: "Wypróbuj mój e-mail", customClose: "Zamknij pole", privacy: "Tekst jest wysyłany do JevHub i TypeSafe AI na potrzeby tego żądania. Nie wklejaj haseł, danych płatniczych ani informacji wrażliwych. JevHub nie zapisuje wiadomości i nie łączy się ze skrzynką.", resultTitle: "Sugerowane kolejki", resultDescription: "Sprawdź każdą sugestię. Żadna wiadomość nie jest przenoszona, usuwana ani wysyłana.", loading: "Jev sortuje wiadomości…", error: "Nie udało się ukończyć żądania.", retry: "Spróbuj ponownie", details: "Zobacz sygnały decyzji", typeLabel: "Typ wiadomości", replyLabel: "Prośba o odpowiedź", timeLabel: "Pilność", typeConfidence: "Pewność typu", timeConfidence: "Pewność pilności", noReply: "To narzędzie tylko sortuje wiadomości. Nie tworzy ani nie wysyła za Ciebie odpowiedzi.", howTitle: "Jak działa sortowanie", howBody: "Jev odpowiada na trzy stałe pytania o każdą wiadomość: typ (Choice), prośba o odpowiedź (Noul) i pilność (Score). JevHub stosuje jawne reguły. Podejrzane lub niepewne wiadomości trafiają do Sprawdź.", limitTitle: "Zakres próby", limitBody: "Brak dostępu do Gmaila, otwierania linków, odpowiedzi, usuwania i gwarancji bezpieczeństwa nadawcy.", learnTitle: "Zbuduj własny przepływ", learnBody: "Sprawdź typowane decyzje w Playground lub zacznij od wzorca routingu wsparcia.", playgroundLink: "Otwórz Playground", templateLink: "Zobacz routing wsparcia", queues: { needs_reply: { title: "Odpowiedz", description: "Prawdopodobnie potrzebna jest bezpośrednia odpowiedź." }, review: { title: "Sprawdź", description: "Pilne, niepewne lub podejrzane." }, read_later: { title: "Przeczytaj później", description: "Brak wyraźnej potrzeby odpowiedzi." } }, types: { conversation: "Rozmowa", account_update: "Powiadomienie o koncie", newsletter: "Newsletter", promotion: "Promocja", sales_outreach: "Oferta handlowa", suspected_junk: "Podejrzane", other: "Inne" },
   },

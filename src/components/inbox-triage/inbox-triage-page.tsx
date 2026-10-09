@@ -34,13 +34,31 @@ export function InboxTriagePage({ locale = "en" }: { locale?: Locale }) {
         <h1>{copy.title}</h1>
         <p className="hero-copy">{copy.description}</p>
         <div className="inbox-hero-meta">{copy.meta.map((item) => <span key={item}>✓ {item}</span>)}</div>
+        <a className="inbox-app-shortcut" href="#inboxrevamp">{copy.fullApp.heroLink} <span aria-hidden="true">↓</span></a>
       </div>
     </section>
 
     <InboxTriage locale={locale} />
 
-    <section className="section">
+    <section className="section inbox-followup">
       <div className="shell inbox-content">
+        <section className="inbox-app-card" id="inboxrevamp" aria-labelledby="inboxrevamp-title">
+          <div className="inbox-app-intro">
+            <div className="eyebrow">{copy.fullApp.eyebrow}</div>
+            <h2 id="inboxrevamp-title">{copy.fullApp.title}</h2>
+            <p>{copy.fullApp.description}</p>
+            <div className="actions">
+              <a className="button-primary" href="https://inboxrevamp.com/" target="_blank" rel="noopener noreferrer" aria-describedby="inboxrevamp-note">{copy.fullApp.button} <span aria-hidden="true">↗</span></a>
+            </div>
+            <p className="inbox-app-note" id="inboxrevamp-note">{copy.fullApp.note}</p>
+          </div>
+          <ol className="inbox-app-steps">
+            {copy.fullApp.steps.map((step, index) => <li key={step.title}>
+              <span className="inbox-app-step-number" aria-hidden="true">0{index + 1}</span>
+              <div><h3>{step.title}</h3><p>{step.description}</p></div>
+            </li>)}
+          </ol>
+        </section>
         <div className="grid grid-2">
           <div className="card"><h2>{copy.howTitle}</h2><p>{copy.howBody}</p></div>
           <div className="card"><h2>{copy.limitTitle}</h2><p>{copy.limitBody}</p></div>
